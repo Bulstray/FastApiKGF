@@ -1,16 +1,16 @@
+from collections.abc import AsyncIterator
 from contextlib import asynccontextmanager
-from typing import AsyncIterator
 
 from fastapi import FastAPI
 
-from core.models import db_helper, Base
+from core.models import Base, db_helper
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI) -> AsyncIterator[None]:
-    async with db_helper.engine.begin() as connection:
-        await connection.run_sync(Base.metadata.create_all)
+    with db_helper.engine.begin() as connection:
+        connection.run_sync(Base.metadata.create_all)  # type: ignore
 
-    yield
+    yield None
 
-    await db_helper.dispose()
+    db_helper.dispose()
