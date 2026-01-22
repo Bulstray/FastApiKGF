@@ -1,8 +1,8 @@
 from fastapi import APIRouter
 
-from .programs import router as program_router
-
 from core.config import settings
+
+from .programs import router as program_router
 
 router = APIRouter(prefix=settings.api.v1.prefix)
 
