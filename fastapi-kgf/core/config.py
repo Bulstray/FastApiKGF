@@ -1,9 +1,9 @@
-from pydantic import BaseModel
-from pydantic_settings import BaseSettings
 from pathlib import Path
 
+from pydantic import BaseModel
+from pydantic_settings import BaseSettings
 
-BASE_UPLOADS_PROGRAMS = Path("uploads/programs")
+BASE_UPLOADS_PROGRAMS: Path = Path("uploads/programs")
 
 
 class ApiV1Prefix(BaseModel):
