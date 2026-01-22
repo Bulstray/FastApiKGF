@@ -96,3 +96,4 @@ select = [
 
 [lint.per-file-ignores]
 "fastapi-kgf/core/schemas/programs.py" = ['RUF002']
+"fastapi-kgf/app_lifespan" = ["ARG001"]
