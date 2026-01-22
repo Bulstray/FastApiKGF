@@ -9,5 +9,6 @@ router = APIRouter(
 )
 
 programs_router.include_router(
+    programs_router,
     prefix=settings.api.v1.programs,
 )
