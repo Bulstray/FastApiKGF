@@ -1,12 +1,11 @@
-from fastapi import APIRouter, Depends
-
 from typing import Annotated
 
-from core.schemas import ProgramRead
-
+from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 
-from core.models import db_helper
+from core.models import Program, db_helper
+from core.schemas import ProgramRead
+from crud import programs
 
 router = APIRouter(tags=["Programs"])
 
@@ -17,6 +16,5 @@ def get_programs(
         Session,
         Depends(db_helper.session_getter),
     ],
-):
-    programs = db_helper.get_programs(session=session)
-    return programs
+) -> list[Program]:
+    return list(programs.get_all_programs(session=session))
