@@ -1,4 +1,3 @@
-from pathlib import Path
 from typing import Annotated
 
 from annotated_types import Len, MaxLen
