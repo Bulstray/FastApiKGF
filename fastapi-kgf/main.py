@@ -1,6 +1,8 @@
-def main():
-    print("Hello from fastapikgf!")
+from fastapi import FastAPI
+import uvicorn
+
+app = FastAPI()
 
 
 if __name__ == "__main__":
-    main()
+    uvicorn.run(app)
