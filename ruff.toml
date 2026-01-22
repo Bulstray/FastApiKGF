@@ -95,4 +95,4 @@ select = [
 ]
 
 [lint.per-file-ignores]
-"schemas/programs.py" = ['RUF002']
+"fastapi-kgf/schemas/programs.py" = ['RUF002']
