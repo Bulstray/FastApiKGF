@@ -1,16 +1,13 @@
 import shutil
 from collections.abc import Sequence
 
+from fastapi import UploadFile
 from sqlalchemy import select
 from sqlalchemy.orm import Session
-from fastapi import UploadFile
-
-from core.models import Program
-from core.schemas import ProgramCreate
 
 from core.config import BASE_UPLOADS_PROGRAMS
-
-from pathlib import Path
+from core.models import Program
+from core.schemas import ProgramCreate
 
 
 def get_all_programs(
@@ -26,15 +23,16 @@ def create_program(
     program_create: ProgramCreate,
     file: UploadFile,
 ) -> None:
-    folder_path = BASE_UPLOADS_PROGRAMS / file.filename
+
+    folder_path = BASE_UPLOADS_PROGRAMS / str(file.filename)
 
     program = Program(
         name=program_create.name,
         description=program_create.description,
-        folder_path=folder_path,
+        folder_path=str(folder_path),
     )
 
-    with Path(folder_path, "wb") as buffer:
+    with folder_path.open(mode="wb") as buffer:
         shutil.copyfileobj(file.file, buffer)
 
     session.add(program)
