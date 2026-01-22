@@ -13,7 +13,9 @@ class DatabaseHelper:
             echo=settings.db.echo,
         )
 
-        self.session_factory = sessionmaker(bind=self.engine)
+        self.session_factory = sessionmaker(
+            bind=self.engine,
+        )
 
     def dispose(self) -> None:
         self.engine.dispose()
