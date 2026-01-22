@@ -93,3 +93,6 @@ select = [
 	"PERF", # Perflint (PERF)
 	"FURB" # refurb (FURB)
 ]
+
+[lint.per-file-ignores]
+"schemas/programs.py" = ['RUF002']
