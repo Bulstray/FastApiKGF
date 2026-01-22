@@ -17,7 +17,6 @@ class DatabaseHelper:
 
     def dispose(self) -> None:
         self.engine.dispose()
-        return None
 
     def session_getter(self) -> Generator[Session]:
         with self.session_factory() as session:
