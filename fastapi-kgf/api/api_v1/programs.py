@@ -1,10 +1,10 @@
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, status
+from fastapi import APIRouter, Depends, Form, UploadFile, status
 from sqlalchemy.orm import Session
 
 from core.models import Program, db_helper
-from core.schemas import ProgramRead
+from core.schemas import ProgramCreate, ProgramRead
 from crud import programs as crud_programs
 
 router = APIRouter(tags=["Programs"])
@@ -22,3 +22,28 @@ def get_programs(
     ],
 ) -> list[Program]:
     return list(crud_programs.get_all_programs(session=session))
+
+
+@router.post(
+    "",
+    status_code=status.HTTP_201_CREATED,
+)
+def add_program(
+    session: Annotated[
+        Session,
+        Depends(db_helper.session_getter),
+    ],
+    file: UploadFile,
+    name: Annotated[str, Form(...)],
+    description: Annotated[str, Form(...)],
+) -> None:
+    program_create = ProgramCreate(
+        name=name,
+        description=description,
+    )
+
+    crud_programs.create_program(
+        session=session,
+        program_create=program_create,
+        file=file,
+    )
