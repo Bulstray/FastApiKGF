@@ -1,7 +1,6 @@
 from typing import Annotated
 
 from fastapi import APIRouter, Depends, status
-
 from sqlalchemy.orm import Session
 
 from core.models import Program, db_helper
