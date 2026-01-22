@@ -1,6 +1,6 @@
 from typing import Annotated
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, status
 from sqlalchemy.orm import Session
 
 from core.models import Program, db_helper
@@ -10,7 +10,11 @@ from crud import programs
 router = APIRouter(tags=["Programs"])
 
 
-@router.get("", response_model=list[ProgramRead])
+@router.get(
+    "",
+    response_model=list[ProgramRead],
+    status_code=status.HTTP_200_OK,
+)
 def get_programs(
     session: Annotated[
         Session,
