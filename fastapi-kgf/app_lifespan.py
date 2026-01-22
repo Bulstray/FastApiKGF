@@ -8,8 +8,7 @@ from core.models import Base, db_helper
 
 @asynccontextmanager
 async def lifespan(app: FastAPI) -> AsyncIterator[None]:
-    with db_helper.engine.begin() as connection:
-        connection.run_sync(Base.metadata.create_all)  # type: ignore
+    Base.metadata.create_all(bind=db_helper.engine)
 
     yield None
 
