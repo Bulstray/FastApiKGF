@@ -10,6 +10,8 @@ from core.schemas import ProgramCreate
 
 from core.config import BASE_UPLOADS_PROGRAMS
 
+from pathlib import Path
+
 
 def get_all_programs(
     session: Session,
@@ -27,8 +29,8 @@ def create_program(
     folder_path = BASE_UPLOADS_PROGRAMS / file.filename
 
     program = Program(
-        name=program.name,
-        description=program.description,
+        name=program_create.name,
+        description=program_create.description,
         folder_path=folder_path,
     )
 
