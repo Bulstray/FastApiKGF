@@ -18,7 +18,6 @@ DescriptionString = Annotated[
 class ProgramBase(BaseModel):
     name: NameString
     description: DescriptionString
-    folder_path: Path
 
 
 class Program(ProgramBase):
