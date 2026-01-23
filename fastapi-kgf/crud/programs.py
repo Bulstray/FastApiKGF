@@ -9,6 +9,7 @@ from sqlalchemy.orm import Session
 from core.config import BASE_UPLOADS_PROGRAMS
 from core.models import Program
 from core.schemas import ProgramCreate
+from utils import get_file_size
 
 
 def get_all_programs(
@@ -27,10 +28,14 @@ def create_program(
 
     folder_path = BASE_UPLOADS_PROGRAMS / str(file.filename)
 
+    with folder_path.open(mode="wb") as buffer:
+        shutil.copyfileobj(file.file, buffer)
+
     program = Program(
         name=program_create.name,
         description=program_create.description,
         folder_path=str(folder_path),
+        file_size=get_file_size(folder_path),
     )
 
     with folder_path.open(mode="wb") as buffer:
