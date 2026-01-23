@@ -3,12 +3,12 @@ from typing import Annotated
 from annotated_types import Len, MaxLen
 from pydantic import BaseModel
 
-NameString = Annotated[
+DescriptionString = Annotated[
     str,
     MaxLen(max_length=500),
 ]
 
-DescriptionString = Annotated[
+NameString = Annotated[
     str,
     Len(min_length=3, max_length=50),
 ]
