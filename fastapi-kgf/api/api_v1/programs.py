@@ -57,9 +57,9 @@ def add_program(
 )
 def delete_program(
     session: Annotated[Session, Depends(db_helper.session_getter)],
-    program_id: Annotated[int, Form(...)],
+    program_name: Annotated[str, Form(...)],
 ) -> None:
     crud_programs.delete_program(
         session=session,
-        program_id=program_id,
+        name=program_name,
     )

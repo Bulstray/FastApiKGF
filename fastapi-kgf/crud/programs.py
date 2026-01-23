@@ -1,9 +1,10 @@
 import shutil
 from collections.abc import Sequence
+from pathlib import Path
 from typing import Any
 
 from fastapi import UploadFile
-from sqlalchemy import Row, delete, select
+from sqlalchemy import Row, delete, func, select
 from sqlalchemy.orm import Session
 
 from core.config import BASE_UPLOADS_PROGRAMS
@@ -19,11 +20,23 @@ def get_all_programs(
 
     :rtype: object
     """
-    stmt = select(Program.name,
-                  Program.description,
-                  Program.file_size).order_by(Program.id)
+    stmt = select(
+        Program.name,
+        Program.description,
+        Program.file_size,
+    ).order_by(
+        Program.id,
+    )
     result = session.execute(stmt)
     return result.all()
+
+
+def get_file_by_name(session: Session, name: str) -> Row[tuple[str]]:
+    stmt = select(Program.folder_path).where(
+        func.lower(Program.name) == name.lower(),
+    )
+    result = session.execute(stmt)
+    return result.first()
 
 
 def create_program(
@@ -44,14 +57,12 @@ def create_program(
         file_size=get_file_size(folder_path),
     )
 
-    with folder_path.open(mode="wb") as buffer:
-        shutil.copyfileobj(file.file, buffer)
-
     session.add(program)
     session.commit()
 
 
-def delete_program(session: Session, program_id: int) -> None:
-    stmt = delete(Program).where(Program.id == program_id)
+def delete_program(session: Session, name: str) -> None:
+    Path(get_file_by_name(session=session, name=name)[0]).unlink()
+    stmt = delete(Program).where(func.lower(Program.name) == name.lower())
     session.execute(stmt)
     session.commit()
