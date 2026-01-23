@@ -47,3 +47,17 @@ def add_program(
         program_create=program_create,
         file=file,
     )
+
+
+@router.delete(
+    "",
+    status_code=status.HTTP_204_NO_CONTENT,
+)
+def delete_program(
+    session: Annotated[Session, Depends(db_helper.session_getter)],
+    program_id: Annotated[int, Form(...)],
+) -> None:
+    crud_programs.delete_program(
+        session=session,
+        program_id=program_id,
+    )
