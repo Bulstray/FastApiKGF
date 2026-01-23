@@ -1,28 +1,29 @@
 from pathlib import Path
 
+KB = 1024
 
-def get_file_size(file_path):
+
+def get_file_size(file_path: str) -> str:
     """
     Получить размер файла в удобном формате.
 
     Args:
         file_path: путь к файлу (str или Path)
-        unit: 'B', 'KB', 'MB', 'GB', 'auto'
 
     Returns:
-        tuple: (размер, единица_измерения)
+        str: размер
     """
-
     path = Path(file_path)
-
     size_bytes = path.stat().st_size
 
     units = ["B", "KB", "MB", "GB", "TB"]
 
     # Автоматически выбираем подходящую единицу
-    size = size_bytes
+    current_value: float = float(size_bytes)
     unit_index = 0
-    while size >= 1024 and unit_index < len(units) - 1:
-        size /= 1024
+
+    while current_value >= KB and unit_index < len(units) - 1:
+        current_value = current_value / KB  # Делим float
         unit_index += 1
-    return round(size, 2), units[unit_index]
+
+    return f"{round(current_value, 2)} {units[unit_index]}"
