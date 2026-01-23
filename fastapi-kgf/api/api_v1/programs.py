@@ -1,9 +1,11 @@
-from typing import Annotated
+from collections.abc import Sequence
+from typing import Annotated, Any
 
 from fastapi import APIRouter, Depends, Form, UploadFile, status
+from sqlalchemy import Row
 from sqlalchemy.orm import Session
 
-from core.models import Program, db_helper
+from core.models import db_helper
 from core.schemas import ProgramCreate, ProgramRead
 from crud import programs as crud_programs
 
@@ -20,8 +22,8 @@ def get_programs(
         Session,
         Depends(db_helper.session_getter),
     ],
-) -> list[Program]:
-    return list(crud_programs.get_all_programs(session=session))
+) -> Sequence[Row[tuple[Any, Any]]]:
+    return crud_programs.get_all_programs(session=session)
 
 
 @router.post(

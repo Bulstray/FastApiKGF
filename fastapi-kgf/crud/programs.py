@@ -1,8 +1,9 @@
 import shutil
 from collections.abc import Sequence
+from typing import Any
 
 from fastapi import UploadFile
-from sqlalchemy import delete, select
+from sqlalchemy import Row, delete, select
 from sqlalchemy.orm import Session
 
 from core.config import BASE_UPLOADS_PROGRAMS
@@ -12,9 +13,9 @@ from core.schemas import ProgramCreate
 
 def get_all_programs(
     session: Session,
-) -> Sequence[Program]:
+) -> Sequence[Row[tuple[Any, Any]]]:
     stmt = select(Program.name, Program.description).order_by(Program.id)
-    result = session.scalars(stmt)
+    result = session.execute(stmt)
     return result.all()
 
 
