@@ -4,6 +4,7 @@ from pydantic import BaseModel
 from pydantic_settings import BaseSettings
 
 BASE_UPLOADS_PROGRAMS: Path = Path("uploads/programs")
+BASE_UPLOADS_PROGRAMS.mkdir(parents=True, exist_ok=True)
 
 
 class ApiV1Prefix(BaseModel):
