@@ -2,7 +2,7 @@ import shutil
 from collections.abc import Sequence
 
 from fastapi import UploadFile
-from sqlalchemy import select, delete
+from sqlalchemy import delete, select
 from sqlalchemy.orm import Session
 
 from core.config import BASE_UPLOADS_PROGRAMS
