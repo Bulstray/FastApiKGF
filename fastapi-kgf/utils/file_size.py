@@ -3,7 +3,7 @@ from pathlib import Path
 KB = 1024
 
 
-def get_file_size(file_path: str) -> str:
+def get_file_size(file_path: Path) -> str:
     """
     Получить размер файла в удобном формате.
 
@@ -13,8 +13,7 @@ def get_file_size(file_path: str) -> str:
     Returns:
         str: размер
     """
-    path = Path(file_path)
-    size_bytes = path.stat().st_size
+    size_bytes = file_path.stat().st_size
 
     units = ["B", "KB", "MB", "GB", "TB"]
 
