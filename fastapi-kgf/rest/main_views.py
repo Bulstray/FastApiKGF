@@ -1,8 +1,9 @@
+from pathlib import Path
 from typing import Annotated, Any
 
 from fastapi import APIRouter, Depends
 from fastapi.requests import Request
-from fastapi.responses import HTMLResponse
+from fastapi.responses import FileResponse, HTMLResponse
 from sqlalchemy.orm import Session
 
 from core.models import db_helper
@@ -33,4 +34,27 @@ def home_page(
         request=request,
         name="home.html",
         context=context,
+    )
+
+
+@router.get(
+    "/{name}/",
+    name="program:get",
+)
+def get_program(
+    session: Annotated[
+        Session,
+        Depends(db_helper.session_getter),
+    ],
+    name: str,
+) -> FileResponse:
+    folder_path = Path(
+        crud_programs.get_file_by_name(
+            session=session,
+            name=name,
+        )[0],
+    )
+    return FileResponse(
+        filename=folder_path.name,
+        path=str(folder_path),
     )
