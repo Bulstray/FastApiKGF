@@ -22,7 +22,7 @@ def get_programs(
         Session,
         Depends(db_helper.session_getter),
     ],
-) -> Sequence[Row[tuple[Any, Any]]]:
+) -> Sequence[Row[tuple[Any, Any, Any]]]:
     return crud_programs.get_all_programs(session=session)
 
 

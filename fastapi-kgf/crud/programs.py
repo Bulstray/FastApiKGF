@@ -14,8 +14,14 @@ from utils import get_file_size
 
 def get_all_programs(
     session: Session,
-) -> Sequence[Row[tuple[Any, Any]]]:
-    stmt = select(Program.name, Program.description).order_by(Program.id)
+) -> Sequence[Row[tuple[Any, Any, Any]]]:
+    """
+
+    :rtype: object
+    """
+    stmt = select(Program.name,
+                  Program.description,
+                  Program.file_size).order_by(Program.id)
     result = session.execute(stmt)
     return result.all()
 
