@@ -5,6 +5,7 @@ from fastapi import APIRouter, Depends
 from fastapi.requests import Request
 from fastapi.responses import FileResponse, HTMLResponse
 from sqlalchemy.orm import Session
+from starlette import status
 
 from core.models import db_helper
 from crud import programs as crud_programs
@@ -40,6 +41,7 @@ def home_page(
 @router.get(
     "/{name}/",
     name="program:get",
+    status_code=status.HTTP_200_OK,
 )
 def get_program(
     session: Annotated[
