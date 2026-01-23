@@ -2,7 +2,7 @@ import shutil
 from collections.abc import Sequence
 
 from fastapi import UploadFile
-from sqlalchemy import select
+from sqlalchemy import select, delete
 from sqlalchemy.orm import Session
 
 from core.config import BASE_UPLOADS_PROGRAMS
@@ -36,4 +36,10 @@ def create_program(
         shutil.copyfileobj(file.file, buffer)
 
     session.add(program)
+    session.commit()
+
+
+def delete_program(session: Session, program_id: int) -> None:
+    stmt = delete(Program).where(Program.id == program_id)
+    session.execute(stmt)
     session.commit()
