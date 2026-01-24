@@ -1,7 +1,7 @@
 from pathlib import Path
 from typing import Annotated, Any
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 from fastapi.requests import Request
 from fastapi.responses import FileResponse, HTMLResponse
 from sqlalchemy.orm import Session
@@ -39,7 +39,7 @@ def home_page(
 
 
 @router.get(
-    "/{name}/",
+    "/program/{name}/",
     name="program:get",
     status_code=status.HTTP_200_OK,
 )
@@ -56,6 +56,7 @@ def get_program(
             name=name,
         )[0],
     )
+
     return FileResponse(
         filename=folder_path.name,
         path=str(folder_path),
