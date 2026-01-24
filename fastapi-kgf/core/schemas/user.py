@@ -1,7 +1,6 @@
-from utils import hash_password_simple
-from pydantic import BaseModel, BeforeValidator, validator
-
 from typing import Annotated
+
+from pydantic import BaseModel, BeforeValidator
 
 from core.enums import UserRole
 
@@ -12,11 +11,21 @@ def to_lowercase(value: str) -> str:
 
 class UserBase(BaseModel):
     username: str
-    password: Annotated[
-        str,
-        BeforeValidator(hash_password_simple),
-    ]
+    password: str
     role: Annotated[
         UserRole,
         BeforeValidator(to_lowercase),
     ]
+
+
+class User(UserBase):
+    """Модель для хранения данных о пользователей"""
+
+
+class UserCreate(UserBase):
+    """Модель для создания данных о пользователей"""
+
+
+class UserRead(BaseModel):
+    username: str
+    role: str
