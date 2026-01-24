@@ -1,7 +1,7 @@
 from pathlib import Path
 from typing import Annotated, Any
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends
 from fastapi.requests import Request
 from fastapi.responses import FileResponse, HTMLResponse
 from sqlalchemy.orm import Session
