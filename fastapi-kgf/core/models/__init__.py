@@ -1,6 +1,7 @@
 __all__ = (
     "Base",
     "Program",
+    "User",
     "db_helper",
 )
 
