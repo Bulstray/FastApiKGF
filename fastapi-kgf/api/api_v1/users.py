@@ -43,10 +43,7 @@ def create_user(
     ],
     user_create: UserCreate,
 ) -> User:
-    return crud_user.create_user(
-        session=session,
-        user_create=user_create,
-    )
+    return crud_user.create_user(session=session, user_in=user_create)
 
 
 @router.delete(
