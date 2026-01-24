@@ -21,8 +21,8 @@ def check_user_exist(
     username: str,
 ):
     stmt = select(User).where(User.username == username)
-    result = session.execute(stmt)
-    return result.scalar_one_or_none()
+    result = session.scalar(stmt)
+    return result
 
 
 def create_user(
