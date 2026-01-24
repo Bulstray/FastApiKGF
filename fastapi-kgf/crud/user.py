@@ -5,6 +5,7 @@ from sqlalchemy.orm import Session
 
 from core.models.user import User
 from core.schemas import UserCreate
+from .user_exceptions import UserAlreadyExists
 
 
 def get_all_users(
@@ -15,11 +16,22 @@ def get_all_users(
     return result.all()
 
 
+def check_user_exist(
+    session: Session,
+    username: str,
+):
+    stmt = select(User).where(User.username == username)
+    result = session.execute(stmt)
+    return result.scalar_one_or_none()
+
+
 def create_user(
     session: Session,
-    user_create: UserCreate,
+    user_in: UserCreate,
 ) -> User:
-    user = User(**user_create.model_dump())
+    user = User(**user_in.model_dump())
+    if check_user_exist(session, user.username) is not None:
+        raise UserAlreadyExists(user_in.username)
     session.add(user)
     session.commit()
 
