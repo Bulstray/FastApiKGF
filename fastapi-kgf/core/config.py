@@ -10,6 +10,7 @@ BASE_UPLOADS_PROGRAMS.mkdir(parents=True, exist_ok=True)
 class ApiV1Prefix(BaseModel):
     prefix: str = "/v1"
     programs: str = "/programs"
+    users: str = "/users"
 
 
 class ApiPrefix(BaseModel):
