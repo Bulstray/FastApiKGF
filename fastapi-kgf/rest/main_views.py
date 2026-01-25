@@ -10,6 +10,7 @@ from starlette import status
 from core.models import db_helper
 from crud import programs as crud_programs
 from templating.jinja_template import templates
+from dependencies.auth import validate_basic_auth
 
 router = APIRouter(include_in_schema=False)
 
@@ -42,6 +43,7 @@ def home_page(
     "/program/{name}/",
     name="program:get",
     status_code=status.HTTP_200_OK,
+    dependencies=[Depends(validate_basic_auth)],
 )
 def get_program(
     session: Annotated[
