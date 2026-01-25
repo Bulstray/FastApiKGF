@@ -16,6 +16,15 @@ def get_all_users(
     return result.all()
 
 
+def get_user_by_username(
+    session: Session,
+    username: str,
+):
+    stmt = select(User).where(User.username == username)
+    result = session.execute(stmt)
+    return result.first()
+
+
 def check_user_exist(
     session: Session,
     username: str,
@@ -28,10 +37,18 @@ def check_user_exist(
 def create_user(
     session: Session,
     user_in: UserCreate,
-) -> User:
+) -> User | None:
     user = User(**user_in.model_dump())
-    if check_user_exist(session, user.username) is not None:
+
+    if (
+        user_in.role == "admin"
+        and check_user_exist(session, user_in.username) is not None
+    ):
+        return None
+
+    elif check_user_exist(session, user.username) is not None:
         raise UserAlreadyExists(user_in.username)
+
     session.add(user)
     session.commit()
 
