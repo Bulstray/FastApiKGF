@@ -6,6 +6,7 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 BASE_UPLOADS_PROGRAMS: Path = Path("uploads/programs")
 BASE_UPLOADS_PROGRAMS.mkdir(parents=True, exist_ok=True)
 
+BASE_DIR = Path(__file__).resolve().parent.parent
 
 class Admin(BaseModel):
     username: str
