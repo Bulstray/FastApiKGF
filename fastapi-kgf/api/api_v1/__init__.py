@@ -9,9 +9,9 @@ from dependencies.auth_admin import validate_basic_auth_admin
 
 router = APIRouter(
     prefix=settings.api.v1.prefix,
-    dependencies=[
-        Depends(validate_basic_auth_admin),
-    ],
+    # dependencies=[
+    #     Depends(validate_basic_auth_admin),
+    # ],
 )
 
 router.include_router(
