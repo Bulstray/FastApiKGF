@@ -14,7 +14,7 @@ class User(Base):
     @validates("password")
     def hash_password(self, key, password):
         if password and not password.startswith("$2b$"):
-            password_bytes = password.encode("utf-8")
+            password_bytes = password.encode('utf-8')
             salt = bcrypt.gensalt()
-            return bcrypt.hashpw(password_bytes, salt).decode("utf-8")
+            return bcrypt.hashpw(password_bytes, salt)
         return password
