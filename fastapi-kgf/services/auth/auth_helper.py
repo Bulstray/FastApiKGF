@@ -12,7 +12,7 @@ def get_user_password(session: Session, username: str):
 
 
 def check_password_match(password1: str, password2: str) -> bool:
-    hashed_password_bytes = password1.encode("utf-8")
+    hashed_password_bytes = password1
     return bcrypt.checkpw(
         password=password2.encode("utf-8"),
         hashed_password=hashed_password_bytes,
