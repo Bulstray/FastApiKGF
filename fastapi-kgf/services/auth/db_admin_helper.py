@@ -13,15 +13,15 @@ def validate_admin_password(
     db_password = get_user_password(
         username=username,
         session=session,
-    )[0]
+    )
 
     if db_password is None:
         return False
 
-    if db_password.role != settings.admin.role:
+    if db_password[0].role != settings.admin.role:
         return False
 
     return check_password_match(
-        password1=db_password.password,
+        password1=db_password[0].password,
         password2=password,
     )
