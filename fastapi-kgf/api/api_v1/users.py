@@ -1,15 +1,13 @@
 from collections.abc import Sequence
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, status, Form
+from fastapi import APIRouter, Depends, Form, status
 from sqlalchemy import Row
 from sqlalchemy.orm import Session
 
-from core.models import db_helper
-from core.schemas import UserRead, UserCreate
+from core.models import User, db_helper
+from core.schemas import UserCreate, UserRead
 from crud import user as crud_user
-
-from core.models import User
 
 router = APIRouter(tags=["Users"])
 
@@ -42,7 +40,7 @@ def create_user(
         Depends(db_helper.session_getter),
     ],
     user_create: UserCreate,
-) -> User:
+) -> User | None:
     return crud_user.create_user(session=session, user_in=user_create)
 
 
@@ -55,7 +53,7 @@ def delete_user(
         Session,
         Depends(db_helper.session_getter),
     ],
-    username: str = Form(),
+    username: Annotated[str, Form()],
 ) -> None:
     return crud_user.delete_user(
         session=session,
