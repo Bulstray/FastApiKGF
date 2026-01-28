@@ -1,13 +1,11 @@
-from fastapi.security import HTTPBasic, HTTPBasicCredentials
-from fastapi import Depends, HTTPException, status
-
 from typing import Annotated
 
+from fastapi import Depends, HTTPException, status
+from fastapi.security import HTTPBasic, HTTPBasicCredentials
 from sqlalchemy.orm import Session
 
-from services.auth.db_user_helper import validate_user_password
 from core.models import db_helper
-
+from services.auth.db_user_helper import validate_user_password
 
 user_basic_auth = HTTPBasic(
     scheme_name="Basic Auth",
@@ -25,13 +23,13 @@ def validate_basic_auth(
         Session,
         Depends(db_helper.session_getter),
     ],
-):
+) -> None:
     if credentials and validate_user_password(
         session=session,
         password=credentials.password,
         username=credentials.username,
     ):
-        return None
+        return
 
     raise HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
