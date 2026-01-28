@@ -98,4 +98,5 @@ select = [
 "fastapi-kgf/core/schemas/programs.py" = ['RUF002']
 "fastapi-kgf/app_lifespan.py" = ["ARG001", "PGH003"]
 "fastapi-kgf/core/schemas/user.py" = ["RUF002"]
+"fastapi-kgf/core/models/user.py" = ["ARG002"]
 
