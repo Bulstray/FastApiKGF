@@ -9,8 +9,9 @@ from starlette import status
 
 from core.models import db_helper
 from crud import programs as crud_programs
-from templating.jinja_template import templates
+from crud.program_exceptions import ProgramNameDoesNotExistError
 from dependencies.auth import validate_basic_auth
+from templating.jinja_template import templates
 
 router = APIRouter(include_in_schema=False)
 
@@ -52,12 +53,16 @@ def get_program(
     ],
     name: str,
 ) -> FileResponse:
-    folder_path = Path(
-        crud_programs.get_file_by_name(
-            session=session,
-            name=name,
-        )[0],
+    result = crud_programs.get_file_by_name(
+        session=session,
+        name=name,
     )
+
+    if result is None:
+        raise ProgramNameDoesNotExistError(name)
+
+    folder_path_str = result[0]
+    folder_path = Path(folder_path_str)
 
     return FileResponse(
         filename=folder_path.name,
