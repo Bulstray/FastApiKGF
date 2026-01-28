@@ -1,11 +1,10 @@
 from fastapi import APIRouter, Depends
 
 from core.config import settings
+from dependencies.auth_admin import validate_basic_auth_admin
 
 from .programs import router as program_router
 from .users import router as users_router
-
-from dependencies.auth_admin import validate_basic_auth_admin
 
 router = APIRouter(
     prefix=settings.api.v1.prefix,
