@@ -1,11 +1,12 @@
 from collections.abc import Sequence
 
-from sqlalchemy import Row, select, delete
+from sqlalchemy import Row, delete, select
 from sqlalchemy.orm import Session
 
 from core.models.user import User
 from core.schemas import UserCreate
-from .user_exceptions import UserAlreadyExists
+
+from .user_exceptions import UserAlreadyExistsError
 
 
 def get_all_users(
@@ -19,7 +20,7 @@ def get_all_users(
 def get_user_by_username(
     session: Session,
     username: str,
-):
+) -> tuple[User] | None:
     stmt = select(User).where(User.username == username)
     result = session.execute(stmt)
     return result.first()
@@ -28,10 +29,9 @@ def get_user_by_username(
 def check_user_exist(
     session: Session,
     username: str,
-):
+) -> User | None:
     stmt = select(User).where(User.username == username)
-    result = session.scalar(stmt)
-    return result
+    return session.scalar(stmt)
 
 
 def create_user(
@@ -46,8 +46,8 @@ def create_user(
     ):
         return None
 
-    elif check_user_exist(session, user.username) is not None:
-        raise UserAlreadyExists(user_in.username)
+    if check_user_exist(session, user.username) is not None:
+        raise UserAlreadyExistsError(user_in.username)
 
     session.add(user)
     session.commit()
