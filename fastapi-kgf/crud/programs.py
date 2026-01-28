@@ -12,6 +12,12 @@ from core.models import Program
 from core.schemas import ProgramCreate
 from utils import get_file_size
 
+from .program_exceptions import (
+    ProgramFileNameAlreadyExistsError,
+    ProgramNameAlreadyExistsError,
+    ProgramNameDoesNotExistError,
+)
+
 
 def get_all_programs(
     session: Session,
@@ -31,7 +37,7 @@ def get_all_programs(
     return result.all()
 
 
-def get_file_by_name(session: Session, name: str) -> Row[tuple[str]]:
+def get_file_by_name(session: Session, name: str) -> Row[tuple[str]] | None:
     stmt = select(Program.folder_path).where(
         func.lower(Program.name) == name.lower(),
     )
@@ -44,8 +50,13 @@ def create_program(
     program_create: ProgramCreate,
     file: UploadFile,
 ) -> None:
-
     folder_path = BASE_UPLOADS_PROGRAMS / str(file.filename)
+
+    if folder_path.exists():
+        raise ProgramFileNameAlreadyExistsError(folder_path)
+
+    if get_file_by_name(session=session, name=program_create.name) is not None:
+        raise ProgramNameAlreadyExistsError(program_create.name)
 
     with folder_path.open(mode="wb") as buffer:
         shutil.copyfileobj(file.file, buffer)
@@ -62,7 +73,14 @@ def create_program(
 
 
 def delete_program(session: Session, name: str) -> None:
-    Path(get_file_by_name(session=session, name=name)[0]).unlink()
+    result = get_file_by_name(session, name=name)
+
+    if result is None:
+        raise ProgramNameDoesNotExistError(name)
+
+    folder_path_str = result[0]
+    Path(folder_path_str).unlink()
+
     stmt = delete(Program).where(func.lower(Program.name) == name.lower())
     session.execute(stmt)
     session.commit()
