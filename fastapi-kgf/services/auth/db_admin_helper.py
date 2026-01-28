@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session
 
 from core.config import settings
-from services.auth.auth_helper import get_user_password, check_password_match
+from services.auth.auth_helper import check_password_match, get_user_password
 
 
 def validate_admin_password(
