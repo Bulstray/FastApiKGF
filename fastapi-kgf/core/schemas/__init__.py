@@ -3,9 +3,9 @@ __all__ = (
     "ProgramCreate",
     "ProgramRead",
     "User",
-    "UserRead",
     "UserCreate",
+    "UserRead",
 )
 
 from .programs import Program, ProgramCreate, ProgramRead
-from .user import User, UserRead, UserCreate
+from .user import User, UserCreate, UserRead
