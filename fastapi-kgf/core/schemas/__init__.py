@@ -1,5 +1,4 @@
 __all__ = (
-    "Program",
     "ProgramCreate",
     "ProgramRead",
     "User",
@@ -7,5 +6,5 @@ __all__ = (
     "UserRead",
 )
 
-from .programs import Program, ProgramCreate, ProgramRead
+from .programs import ProgramCreate, ProgramRead
 from .user import User, UserCreate, UserRead
