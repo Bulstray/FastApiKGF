@@ -1,13 +1,16 @@
-from collections.abc import Sequence
-from typing import Annotated, Any
+from typing import Annotated
 
-from fastapi import APIRouter, Depends, Form, UploadFile, status
-from sqlalchemy import Row
-from sqlalchemy.orm import Session
+from fastapi import APIRouter, Depends, Form, HTTPException, UploadFile, status
 
-from core.models import db_helper
+from core.models import Program
 from core.schemas import ProgramCreate, ProgramRead
-from crud import programs as crud_programs
+from crud.program_exceptions import (
+    ProgramFileNameAlreadyExistsError,
+    ProgramNameAlreadyExistsError,
+    ProgramNameDoesNotExistError,
+)
+from dependencies.providers import get_program_service
+from services.programs.service import ProgramService
 
 router = APIRouter(tags=["Programs"])
 
@@ -18,12 +21,12 @@ router = APIRouter(tags=["Programs"])
     status_code=status.HTTP_200_OK,
 )
 def get_programs(
-    session: Annotated[
-        Session,
-        Depends(db_helper.session_getter),
+    program_service: Annotated[
+        ProgramService,
+        Depends(get_program_service),
     ],
-) -> Sequence[Row[tuple[Any, Any, Any]]]:
-    return crud_programs.get_all_programs(session=session)
+) -> list[Program]:
+    return program_service.get_all_programs()
 
 
 @router.post(
@@ -31,24 +34,36 @@ def get_programs(
     status_code=status.HTTP_201_CREATED,
 )
 def add_program(
-    session: Annotated[
-        Session,
-        Depends(db_helper.session_getter),
+    program_service: Annotated[
+        ProgramService,
+        Depends(get_program_service),
     ],
     file: UploadFile,
     name: Annotated[str, Form(...)],
     description: Annotated[str, Form(...)],
-) -> None:
-    program_create = ProgramCreate(
+) -> dict[str, str]:
+    program_data = ProgramCreate(
         name=name,
         description=description,
     )
 
-    crud_programs.create_program(
-        session=session,
-        program_create=program_create,
-        file=file,
-    )
+    try:
+        program = program_service.create_program(
+            program_data,
+            file,
+        )
+    except ProgramNameAlreadyExistsError as e:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=str(e),
+        ) from e
+    except ProgramFileNameAlreadyExistsError as e:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=str(e),
+        ) from e
+
+    return {"message": f"Program {program.name} created successfully"}
 
 
 @router.delete(
@@ -56,10 +71,16 @@ def add_program(
     status_code=status.HTTP_204_NO_CONTENT,
 )
 def delete_program(
-    session: Annotated[Session, Depends(db_helper.session_getter)],
-    program_name: Annotated[str, Form(...)],
+    program_service: Annotated[
+        ProgramService,
+        Depends(get_program_service),
+    ],
+    program_name: str,
 ) -> None:
-    crud_programs.delete_program(
-        session=session,
-        name=program_name,
-    )
+    try:
+        program_service.delete_program(program_name)
+    except ProgramNameDoesNotExistError as e:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=str(e),
+        ) from e
