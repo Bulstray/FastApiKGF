@@ -1,13 +1,11 @@
-from collections.abc import Sequence
 from typing import Annotated
 
 from fastapi import APIRouter, Depends, Form, status
-from sqlalchemy import Row
-from sqlalchemy.orm import Session
 
-from core.models import User, db_helper
+from core.models import User
 from core.schemas import UserCreate, UserRead
-from crud import user as crud_user
+from dependencies.providers import get_user_service
+from services.user.service import UserService
 
 router = APIRouter(tags=["Users"])
 
@@ -17,16 +15,14 @@ router = APIRouter(tags=["Users"])
     status_code=status.HTTP_200_OK,
     response_model=list[UserRead],
 )
-def get_users(
-    session: Annotated[
-        Session,
-        Depends(db_helper.session_getter),
+def get_all_users(
+    user_service: Annotated[
+        UserService,
+        Depends(get_user_service),
     ],
-) -> Sequence[Row[tuple[str, str]]] | None:
+) -> list[User]:
 
-    return crud_user.get_all_users(
-        session=session,
-    )
+    return user_service.get_all_users()
 
 
 @router.post(
@@ -35,13 +31,15 @@ def get_users(
     response_model=UserRead,
 )
 def create_user(
-    session: Annotated[
-        Session,
-        Depends(db_helper.session_getter),
+    user_service: Annotated[
+        UserService,
+        Depends(get_user_service),
     ],
     user_create: UserCreate,
 ) -> User | None:
-    return crud_user.create_user(session=session, user_in=user_create)
+    return user_service.create_user(
+        user_data=user_create,
+    )
 
 
 @router.delete(
@@ -49,13 +47,9 @@ def create_user(
     status_code=status.HTTP_204_NO_CONTENT,
 )
 def delete_user(
-    session: Annotated[
-        Session,
-        Depends(db_helper.session_getter),
-    ],
+    user_service: Annotated[UserService, Depends(get_user_service)],
     username: Annotated[str, Form()],
 ) -> None:
-    return crud_user.delete_user(
-        session=session,
+    return user_service.delete_user(
         username=username,
     )
