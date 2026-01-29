@@ -11,3 +11,4 @@ class Program(Base):
     description: Mapped[str] = mapped_column(String(500), nullable=False)
     folder_path: Mapped[str] = mapped_column(String(500), nullable=False)
     file_size: Mapped[str] = mapped_column(nullable=False)
+    author: Mapped[str] = mapped_column(String(500), nullable=False)

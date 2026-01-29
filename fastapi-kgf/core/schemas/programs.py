@@ -13,10 +13,16 @@ NameString = Annotated[
     Len(min_length=3, max_length=50),
 ]
 
+AuthorName = Annotated[
+    str,
+    Len(min_length=3, max_length=50),
+]
+
 
 class ProgramBase(BaseModel):
     name: NameString
     description: DescriptionString
+    author: AuthorName
 
 
 class ProgramRead(ProgramBase):

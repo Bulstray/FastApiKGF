@@ -39,12 +39,14 @@ def add_program(
         Depends(get_program_service),
     ],
     file: UploadFile,
-    name: Annotated[str, Form(...)],
-    description: Annotated[str, Form(...)],
+    name: Annotated[str, Form()],
+    description: Annotated[str, Form()],
+    author: Annotated[str, Form()],
 ) -> dict[str, str]:
     program_data = ProgramCreate(
         name=name,
         description=description,
+        author=author,
     )
 
     try:
