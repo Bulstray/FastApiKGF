@@ -1,16 +1,15 @@
 from pathlib import Path
-from typing import Annotated, Any
+from typing import Annotated
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 from fastapi.requests import Request
 from fastapi.responses import FileResponse, HTMLResponse
-from sqlalchemy.orm import Session
 from starlette import status
 
-from core.models import db_helper
-from crud import programs as crud_programs
-from crud.program_exceptions import ProgramNameDoesNotExistError
+from core.schemas import ProgramRead
 from dependencies.auth import validate_basic_auth
+from dependencies.providers import get_program_service
+from services.programs import ProgramService
 from templating.jinja_template import templates
 
 router = APIRouter(include_in_schema=False)
@@ -19,52 +18,52 @@ router = APIRouter(include_in_schema=False)
 @router.get("/", name="home")
 def home_page(
     request: Request,
-    session: Annotated[
-        Session,
-        Depends(db_helper.session_getter),
+    program_service: Annotated[
+        ProgramService,
+        Depends(get_program_service),
     ],
 ) -> HTMLResponse:
-    context: dict[str, Any] = {}
-    programs = crud_programs.get_all_programs(
-        session=session,
-    )
 
-    context.update(
-        programs=programs,
-    )
+    programs = program_service.get_all_programs()
+
+    programs_schemas = [ProgramRead.model_validate(program) for program in programs]
 
     return templates.TemplateResponse(
         request=request,
         name="home.html",
-        context=context,
+        context={"programs": programs_schemas},
     )
 
 
 @router.get(
-    "/program/{name}/",
-    name="program:get",
-    status_code=status.HTTP_200_OK,
+    "/program/{name}/download",
+    name="program:download",
     dependencies=[Depends(validate_basic_auth)],
 )
-def get_program(
-    session: Annotated[
-        Session,
-        Depends(db_helper.session_getter),
+def download_program(
+    program_service: Annotated[
+        ProgramService,
+        Depends(get_program_service),
     ],
     name: str,
 ) -> FileResponse:
-    result = crud_programs.get_file_by_name(
-        session=session,
-        name=name,
-    )
+    program = program_service.get_program_by_name(program_name=name)
 
-    if result is None:
-        raise ProgramNameDoesNotExistError(name)
+    if not program:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Program {name} not found",
+        )
 
-    folder_path_str = result[0]
-    folder_path = Path(folder_path_str)
+    file_path = Path(program.folder_path)
+
+    if not file_path.exists():
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="File not found in server",
+        )
 
     return FileResponse(
-        filename=folder_path.name,
-        path=str(folder_path),
+        str(file_path),
+        filename=file_path.name,
     )
