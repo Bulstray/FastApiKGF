@@ -3,26 +3,26 @@ from pathlib import Path
 from pydantic import BaseModel
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
-BASE_UPLOADS_PROGRAMS: Path = Path("uploads/programs")
-BASE_UPLOADS_PROGRAMS.mkdir(parents=True, exist_ok=True)
+from .enums import UserRole
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-class Admin(BaseModel):
+
+class AdminConfig(BaseModel):
     username: str
     password: str
-    role: str
+    role: UserRole
 
 
-class ApiV1Prefix(BaseModel):
+class ApiV1Config(BaseModel):
     prefix: str = "/v1"
     programs: str = "/programs"
     users: str = "/users"
 
 
-class ApiPrefix(BaseModel):
+class ApiConfig(BaseModel):
     prefix: str = "/api"
-    v1: ApiV1Prefix = ApiV1Prefix()
+    v1: ApiV1Config = ApiV1Config()
 
 
 class DatabaseConfig(BaseModel):
@@ -37,9 +37,11 @@ class Settings(BaseSettings):
         env_nested_delimiter="__",
         env_prefix="APP_CONFIG__",
     )
+    admin: AdminConfig
     db: DatabaseConfig = DatabaseConfig()
-    api: ApiPrefix = ApiPrefix()
-    admin: Admin
+    api: ApiConfig = ApiConfig()
+
+    uploads_program_dir: Path = Path("uploads/programs")
 
 
-settings = Settings()
+settings = Settings()  # type: ignore
