@@ -1,11 +1,8 @@
 from sqlalchemy.orm import (
     DeclarativeBase,
     Mapped,
-    declared_attr,
     mapped_column,
 )
-
-from utils import camel_case_to_snake_case
 
 
 class Base(DeclarativeBase):
@@ -15,7 +12,3 @@ class Base(DeclarativeBase):
         primary_key=True,
         autoincrement=True,
     )
-
-    @declared_attr.directive
-    def __tablename__(self) -> str:
-        return f"{camel_case_to_snake_case(input_str=self.__name__)}"
