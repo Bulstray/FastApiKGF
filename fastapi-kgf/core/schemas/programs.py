@@ -1,7 +1,7 @@
 from typing import Annotated
 
 from annotated_types import Len, MaxLen
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 
 DescriptionString = Annotated[
     str,
@@ -19,12 +19,12 @@ class ProgramBase(BaseModel):
     description: DescriptionString
 
 
-class Program(ProgramBase):
-    """Модель для хранения данных о программе"""
-
-
 class ProgramRead(ProgramBase):
     """Модель для чтения данных о программе"""
+
+    file_size: str
+
+    model_config = ConfigDict(from_attributes=True)
 
 
 class ProgramCreate(ProgramBase):
