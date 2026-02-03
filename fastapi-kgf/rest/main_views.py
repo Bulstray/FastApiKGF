@@ -1,7 +1,7 @@
 from pathlib import Path
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Query
 from fastapi.requests import Request
 from fastapi.responses import FileResponse, HTMLResponse
 from starlette import status
@@ -12,11 +12,24 @@ from dependencies.providers import get_program_service
 from services.programs import ProgramService
 from templating.jinja_template import templates
 
+from parsers.core import tender_parse_core
+
 router = APIRouter(include_in_schema=False)
 
 
 @router.get("/", name="home")
 def home_page(
+    request: Request,
+) -> HTMLResponse:
+
+    return templates.TemplateResponse(
+        request=request,
+        name="home_page.html",
+    )
+
+
+@router.get("/programs", name="programs:page")
+def programs_page(
     request: Request,
     program_service: Annotated[
         ProgramService,
@@ -30,8 +43,35 @@ def home_page(
 
     return templates.TemplateResponse(
         request=request,
-        name="home.html",
+        name="programs.html",
         context={"programs": programs_schemas},
+    )
+
+
+@router.get("/tenders", name="tenders:page")
+def tenders_page(
+    request: Request,
+) -> HTMLResponse:
+
+    return templates.TemplateResponse(
+        request=request,
+        name="tenders.html",
+        context={"tenders": []},
+    )
+
+
+@router.get("/tenders_search", name="tenders:search")
+def tenders_search(
+    request: Request,
+    search: str = Query(None),
+):
+    context = {
+        "tenders": tender_parse_core.search_all_platforms(key_word=search),
+    }
+    return templates.TemplateResponse(
+        request=request,
+        name="tenders.html",
+        context=context,
     )
 
 
