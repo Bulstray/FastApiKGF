@@ -1,0 +1,192 @@
+{% extends "base.html" %}
+
+{% block style %}
+  <style>
+
+    :root {
+      --primary-color: #4361ee;
+      --secondary-color: #3a0ca3;
+      --accent-color: #4cc9f0;
+      --success-color: #4CAF50;
+      --warning-color: #FF9800;
+      --light-bg: #f8f9fa;
+      --dark-bg: #212529;
+      --card-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+    }
+
+    /* Основное содержимое */
+    .main-content {
+      margin-left: 280px;
+      padding: 2rem;
+      min-height: 100vh;
+    }
+
+    .hero-section {
+      background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+      border-radius: 20px;
+      padding: 4rem;
+      color: white;
+      margin-bottom: 3rem;
+      box-shadow: var(--card-shadow);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-section::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 300px;
+      height: 300px;
+      background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="none"><path fill="rgba(255,255,255,0.1)" d="M0,0 L100,0 L100,100 Z"/></svg>');
+      background-size: cover;
+    }
+
+    .hero-title {
+      font-size: 3rem;
+      font-weight: 800;
+      margin-bottom: 1rem;
+    }
+
+    .hero-subtitle {
+      font-size: 1.2rem;
+      opacity: 0.9;
+      margin-bottom: 2rem;
+      max-width: 600px;
+    }
+
+    .cta-button {
+      background-color: white;
+      color: var(--primary-color);
+      border: none;
+      padding: 12px 30px;
+      border-radius: 50px;
+      font-weight: 700;
+      font-size: 1.1rem;
+      transition: all 0.3s;
+      display: inline-flex;
+      align-items: center;
+    }
+
+    .cta-button:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+      color: var(--primary-color);
+    }
+
+    .cta-button i {
+      margin-left: 10px;
+    }
+
+    /* Карточки функций */
+    .feature-card {
+      border: none;
+      border-radius: 15px;
+      padding: 2rem;
+      height: 100%;
+      transition: all 0.3s ease;
+      box-shadow: var(--card-shadow);
+      background-color: white;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .feature-card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+    }
+
+    .feature-icon {
+      width: 70px;
+      height: 70px;
+      border-radius: 15px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 1.5rem;
+      color: white;
+      font-size: 2rem;
+      background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-color) 100%);
+    }
+
+    .feature-title {
+      font-weight: 700;
+      margin-bottom: 1rem;
+      color: var(--dark-bg);
+    }
+
+    .feature-description {
+      color: #666;
+      font-size: 1rem;
+      line-height: 1.6;
+    }
+
+    /* Секция программ */
+    .section-title {
+      font-weight: 700;
+      margin-bottom: 2rem;
+      color: var(--dark-bg);
+      position: relative;
+      padding-bottom: 10px;
+    }
+
+    .section-title::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 60px;
+      height: 4px;
+      background: linear-gradient(to right, var(--primary-color), var(--accent-color));
+      border-radius: 2px;
+    }
+
+  </style>
+
+{% endblock %}
+
+{% block main %}
+
+  <main class="main-content">
+    <!-- Герой-секция -->
+    <section class="hero-section fade-in">
+      <div class="row align-items-center">
+        <div class="col-lg-8">
+          <h1 class="hero-title">KGF DevSoft</h1>
+          <p class="hero-subtitle">Автоматизируйте поиск тендеров и используйте инструменты для работы с ними.
+            Также сервис предоставляет программы для анализа.</p>
+          <button class="cta-button">
+            Начать бесплатно <i class="bi bi-arrow-right"></i>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <h2 class="section-title mt-5">Ключевые возможности</h2>
+    <div class="row mb-5 justify-content-center">
+      <div class="col-lg-5 col-md-8 mb-4 fade-in" style="animation-delay: 0.1s">
+        <div class="feature-card">
+          <div class="feature-icon">
+            <i class="bi bi-search"></i>
+          </div>
+          <h3 class="feature-title">Парсинг тендеров</h3>
+          <p class="feature-description">
+            Сбор данных с площадок госзакупок. Узнавайте о новых тендерах по вашим критериям
+          </p>
+        </div>
+      </div>
+      <div class="col-lg-5 col-md-8 mb-4 fade-in" style="animation-delay: 0.2s">
+        <div class="feature-card">
+          <div class="feature-icon">
+            <i class="bi bi-download"></i>
+          </div>
+          <h3 class="feature-title">Программы для работы</h3>
+          <p class="feature-description">
+            Специализированные программы для анализа, подготовки документации и автоматизации.
+          </p>
+        </div>
+      </div>
+    </div>
+  </main>
+{% endblock %}
