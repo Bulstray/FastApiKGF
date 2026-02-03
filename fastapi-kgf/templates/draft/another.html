@@ -1,0 +1,1166 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Поиск тендеров - современный дизайн</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
+    <style>
+        :root {
+            --primary-color: #2a6e3f;
+            --secondary-color: #1e4d2b;
+            --accent-color: #4caf50;
+            --light-bg: #f8f9fa;
+            --dark-bg: #212529;
+            --card-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            --warning-color: #ff9800;
+            --danger-color: #f44336;
+            --info-color: #2196f3;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background-color: #f5f7fb;
+            color: #333;
+            overflow-x: hidden;
+        }
+
+        /* Стили для боковой панели */
+        .sidebar {
+            background: linear-gradient(180deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: white;
+            min-height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 280px;
+            z-index: 100;
+            box-shadow: 3px 0 15px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .sidebar-brand {
+            padding: 1.5rem 1.5rem 2rem;
+            font-weight: 700;
+            font-size: 1.5rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .sidebar-brand i {
+            color: var(--accent-color);
+            margin-right: 10px;
+        }
+
+        .sidebar-nav {
+            padding: 1rem 0;
+        }
+
+        .nav-item {
+            margin-bottom: 5px;
+        }
+
+        .nav-link {
+            color: rgba(255, 255, 255, 0.8);
+            padding: 0.75rem 1.5rem;
+            border-left: 3px solid transparent;
+            transition: all 0.2s;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            color: white;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-left-color: var(--accent-color);
+        }
+
+        .nav-link i {
+            width: 24px;
+            text-align: center;
+            margin-right: 10px;
+        }
+
+        /* Основное содержимое */
+        .main-content {
+            margin-left: 280px;
+            padding: 2rem;
+            min-height: 100vh;
+        }
+
+        @media (max-width: 992px) {
+            .sidebar {
+                width: 70px;
+                overflow: hidden;
+            }
+
+            .sidebar:hover {
+                width: 280px;
+            }
+
+            .sidebar-brand span, .nav-link span {
+                opacity: 0;
+                transition: opacity 0.3s;
+            }
+
+            .sidebar:hover .sidebar-brand span,
+            .sidebar:hover .nav-link span {
+                opacity: 1;
+            }
+
+            .main-content {
+                margin-left: 70px;
+            }
+
+            .sidebar:hover ~ .main-content {
+                margin-left: 280px;
+            }
+        }
+
+        /* Стили для заголовка */
+        .page-header {
+            margin-bottom: 2rem;
+        }
+
+        .page-header h1 {
+            color: var(--secondary-color);
+        }
+
+        /* Панель поиска тендеров */
+        .search-panel {
+            background-color: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: var(--card-shadow);
+            margin-bottom: 2rem;
+            background: linear-gradient(135deg, #ffffff 0%, #f8fdf9 100%);
+            border: 1px solid #e0f2e1;
+        }
+
+        .search-section-title {
+            color: var(--primary-color);
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .search-section-title i {
+            color: var(--accent-color);
+        }
+
+        .form-control, .form-select {
+            border-radius: 8px;
+            border: 1px solid #d0e7d2;
+            padding: 0.75rem 1rem;
+            transition: all 0.3s;
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.2);
+        }
+
+        .date-input-group {
+            position: relative;
+        }
+
+        .date-input-group i {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--primary-color);
+            pointer-events: none;
+        }
+
+        .search-btn {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            border: none;
+            color: white;
+            padding: 12px 30px;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            width: 100%;
+            margin-top: 1.5rem;
+        }
+
+        .search-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(42, 110, 63, 0.3);
+        }
+
+        .reset-btn {
+            background: transparent;
+            border: 2px solid var(--primary-color);
+            color: var(--primary-color);
+            padding: 10px 25px;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.3s;
+            width: 100%;
+            margin-top: 1rem;
+        }
+
+        .reset-btn:hover {
+            background-color: rgba(42, 110, 63, 0.1);
+        }
+
+        /* Быстрые фильтры */
+        .quick-filters {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 1.5rem;
+        }
+
+        .filter-chip {
+            background-color: #e8f5e9;
+            border: 1px solid #c8e6c9;
+            color: var(--primary-color);
+            padding: 8px 16px;
+            border-radius: 50px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .filter-chip:hover {
+            background-color: #c8e6c9;
+            transform: translateY(-2px);
+        }
+
+        .filter-chip.active {
+            background-color: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+
+        /* Результаты поиска */
+        .results-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .results-count {
+            color: var(--primary-color);
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .sort-select {
+            width: auto;
+            min-width: 200px;
+        }
+
+        /* Карточки тендеров */
+        .tender-card {
+            border: none;
+            border-radius: 12px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            height: 100%;
+            box-shadow: var(--card-shadow);
+            background-color: white;
+            margin-bottom: 1.5rem;
+            border-left: 4px solid var(--accent-color);
+        }
+
+        .tender-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
+        }
+
+        .tender-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .tender-title {
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: var(--dark-bg);
+            font-size: 1.25rem;
+        }
+
+        .tender-id {
+            color: var(--primary-color);
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .tender-body {
+            padding: 1.5rem;
+        }
+
+        .tender-info-row {
+            display: flex;
+            margin-bottom: 1rem;
+            align-items: flex-start;
+        }
+
+        .info-label {
+            min-width: 160px;
+            color: #666;
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+
+        .info-value {
+            color: #333;
+            font-weight: 500;
+            flex: 1;
+        }
+
+        .budget-value {
+            color: var(--primary-color);
+            font-weight: 700;
+            font-size: 1.2rem;
+        }
+
+        .deadline-value {
+            color: var(--danger-color);
+            font-weight: 600;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-right: 8px;
+        }
+
+        .status-active {
+            background-color: #e8f5e9;
+            color: var(--primary-color);
+        }
+
+        .status-urgent {
+            background-color: #ffebee;
+            color: var(--danger-color);
+        }
+
+        .status-upcoming {
+            background-color: #fff3e0;
+            color: var(--warning-color);
+        }
+
+        .tender-footer {
+            padding: 1rem 1.5rem;
+            background-color: #f8f9fa;
+            border-top: 1px solid #f0f0f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .action-btn {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            border: none;
+            color: white;
+            padding: 8px 20px;
+            border-radius: 6px;
+            font-weight: 600;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(42, 110, 63, 0.3);
+            color: white;
+        }
+
+        .action-btn-outline {
+            background: transparent;
+            border: 2px solid var(--primary-color);
+            color: var(--primary-color);
+        }
+
+        .action-btn-outline:hover {
+            background-color: rgba(42, 110, 63, 0.1);
+        }
+
+        /* Анимации */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease forwards;
+        }
+
+        /* Кастомный скроллбар */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary-color);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--secondary-color);
+        }
+
+        /* Пагинация */
+        .pagination-container {
+            display: flex;
+            justify-content: center;
+            margin-top: 2rem;
+        }
+
+        .pagination-btn {
+            background-color: white;
+            border: 1px solid #d0e7d2;
+            color: var(--primary-color);
+            padding: 8px 16px;
+            margin: 0 4px;
+            border-radius: 6px;
+            transition: all 0.3s;
+        }
+
+        .pagination-btn:hover {
+            background-color: #e8f5e9;
+        }
+
+        .pagination-btn.active {
+            background-color: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+
+        /* Адаптивность */
+        @media (max-width: 768px) {
+            .tender-info-row {
+                flex-direction: column;
+                margin-bottom: 1.5rem;
+            }
+
+            .info-label {
+                min-width: auto;
+                margin-bottom: 5px;
+            }
+
+            .tender-footer {
+                flex-direction: column;
+                gap: 10px;
+                align-items: stretch;
+            }
+
+            .quick-filters {
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Боковая панель навигации -->
+    <nav class="sidebar">
+        <div class="sidebar-brand">
+            <i class="bi bi-building"></i>
+            <span>ТендерПро</span>
+        </div>
+
+        <ul class="nav flex-column sidebar-nav">
+            <li class="nav-item">
+                <a class="nav-link active" href="#">
+                    <i class="bi bi-search"></i>
+                    <span>Поиск тендеров</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#">
+                    <i class="bi bi-star-fill"></i>
+                    <span>Избранное</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#">
+                    <i class="bi bi-bell-fill"></i>
+                    <span>Уведомления</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#">
+                    <i class="bi bi-graph-up"></i>
+                    <span>Аналитика</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#">
+                    <i class="bi bi-person-circle"></i>
+                    <span>Профиль</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#">
+                    <i class="bi bi-gear-fill"></i>
+                    <span>Настройки</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+
+    <!-- Основное содержимое -->
+    <main class="main-content">
+        <!-- Заголовок страницы -->
+        <header class="page-header">
+            <h1 class="display-5 fw-bold">Поиск тендеров</h1>
+            <p class="lead">Найдите подходящие государственные и коммерческие закупки</p>
+        </header>
+
+        <!-- Быстрые фильтры -->
+        <div class="quick-filters">
+            <div class="filter-chip active" onclick="setQuickFilter('all')">Все тендеры</div>
+            <div class="filter-chip" onclick="setQuickFilter('active')">Активные</div>
+            <div class="filter-chip" onclick="setQuickFilter('urgent')">Срочные</div>
+            <div class="filter-chip" onclick="setQuickFilter('construction')">Строительство</div>
+            <div class="filter-chip" onclick="setQuickFilter('it')">IT-услуги</div>
+            <div class="filter-chip" onclick="setQuickFilter('supply')">Поставки</div>
+            <div class="filter-chip" onclick="setQuickFilter('today')">Сегодня</div>
+        </div>
+
+        <!-- Панель поиска тендеров -->
+        <div class="search-panel">
+            <div class="row">
+                <div class="col-lg-8">
+                    <div class="search-section-title">
+                        <i class="bi bi-search"></i>
+                        Критерии поиска
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-12 mb-3">
+                            <label for="searchQuery" class="form-label">Ключевые слова</label>
+                            <input type="text" id="searchQuery" class="form-control" placeholder="Введите ключевые слова, название тендера или организатора...">
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label for="tenderType" class="form-label">Тип тендера</label>
+                            <select id="tenderType" class="form-select">
+                                <option value="all">Все типы</option>
+                                <option value="electronic">Электронный аукцион</option>
+                                <option value="contest">Конкурс</option>
+                                <option value="request">Запрос предложений</option>
+                                <option value="quote">Запрос котировок</option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label for="region" class="form-label">Регион</label>
+                            <select id="region" class="form-select">
+                                <option value="all">Все регионы</option>
+                                <option value="moscow">Москва</option>
+                                <option value="spb">Санкт-Петербург</option>
+                                <option value="central">Центральный ФО</option>
+                                <option value="northwest">Северо-Западный ФО</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="search-section-title">
+                        <i class="bi bi-cash-stack"></i>
+                        Бюджет
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-6 mb-3">
+                            <label for="minPrice" class="form-label">Минимальная цена, руб.</label>
+                            <input type="number" id="minPrice" class="form-control" placeholder="0">
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label for="maxPrice" class="form-label">Максимальная цена, руб.</label>
+                            <input type="number" id="maxPrice" class="form-control" placeholder="10 000 000">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-4">
+                    <div class="search-section-title">
+                        <i class="bi bi-calendar-event"></i>
+                        Сроки
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-12 mb-3">
+                            <label for="publishDate" class="form-label">Дата публикации</label>
+                            <div class="date-input-group">
+                                <input type="date" id="publishDate" class="form-control">
+                                <i class="bi bi-calendar"></i>
+                            </div>
+                        </div>
+
+                        <div class="col-12 mb-3">
+                            <label for="deadlineDate" class="form-label">Срок подачи заявок до</label>
+                            <div class="date-input-group">
+                                <input type="date" id="deadlineDate" class="form-control">
+                                <i class="bi bi-calendar-check"></i>
+                            </div>
+                        </div>
+
+                        <div class="col-12 mb-3">
+                            <label for="statusFilter" class="form-label">Статус тендера</label>
+                            <select id="statusFilter" class="form-select">
+                                <option value="all">Все статусы</option>
+                                <option value="active">Прием заявок</option>
+                                <option value="evaluation">Рассмотрение</option>
+                                <option value="completed">Завершен</option>
+                                <option value="canceled">Отменен</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <button class="search-btn" onclick="searchTenders()">
+                        <i class="bi bi-search"></i> Найти тендеры
+                    </button>
+
+                    <button class="reset-btn" onclick="resetSearch()">
+                        <i class="bi bi-arrow-clockwise"></i> Сбросить фильтры
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Результаты поиска -->
+        <div class="results-header">
+            <div class="results-count">
+                Найдено: <span id="resultsCount">8</span> тендеров
+            </div>
+
+            <div>
+                <select id="sortSelect" class="form-select sort-select" onchange="sortTenders()">
+                    <option value="deadline">Сначала ближайшие сроки</option>
+                    <option value="price_high">Сначала дорогие</option>
+                    <option value="price_low">Сначала дешевые</option>
+                    <option value="new">Сначала новые</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Список тендеров -->
+        <div id="tendersList">
+            <!-- Тендеры будут загружены с помощью JavaScript -->
+        </div>
+
+        <!-- Пагинация -->
+        <div class="pagination-container">
+            <button class="pagination-btn"><i class="bi bi-chevron-left"></i></button>
+            <button class="pagination-btn active">1</button>
+            <button class="pagination-btn">2</button>
+            <button class="pagination-btn">3</button>
+            <button class="pagination-btn">4</button>
+            <button class="pagination-btn">5</button>
+            <button class="pagination-btn"><i class="bi bi-chevron-right"></i></button>
+        </div>
+    </main>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        // Данные о тендерах
+        const tenders = [
+            {
+                id: 1,
+                tenderId: "02345000145230001",
+                title: "Ремонт кровли административного здания",
+                description: "Капитальный ремонт кровли с заменой гидроизоляционного покрытия",
+                type: "electronic",
+                region: "moscow",
+                budget: 2850000,
+                publishDate: "2024-01-15",
+                deadline: "2024-02-15",
+                status: "active",
+                category: "construction",
+                customer: "Департамент имущества г. Москвы",
+                isUrgent: false,
+                isFavorite: false
+            },
+            {
+                id: 2,
+                tenderId: "02345000145230002",
+                title: "Поставка компьютерной техники для школы",
+                description: "Закупка ноутбуков, проекторов и интерактивных досок",
+                type: "quote",
+                region: "spb",
+                budget: 1250000,
+                publishDate: "2024-01-18",
+                deadline: "2024-01-25",
+                status: "active",
+                category: "supply",
+                customer: "ГБОУ Школа №123",
+                isUrgent: true,
+                isFavorite: true
+            },
+            {
+                id: 3,
+                tenderId: "02345000145230003",
+                title: "Разработка системы электронного документооборота",
+                description: "Создание и внедрение СЭД для государственного учреждения",
+                type: "contest",
+                region: "central",
+                budget: 7500000,
+                publishDate: "2024-01-10",
+                deadline: "2024-02-28",
+                status: "active",
+                category: "it",
+                customer: "Министерство цифрового развития",
+                isUrgent: false,
+                isFavorite: false
+            },
+            {
+                id: 4,
+                tenderId: "02345000145230004",
+                title: "Благоустройство городского парка",
+                description: "Установка малых архитектурных форм, освещения, озеленение",
+                type: "electronic",
+                region: "moscow",
+                budget: 5200000,
+                publishDate: "2024-01-20",
+                deadline: "2024-02-05",
+                status: "active",
+                category: "construction",
+                customer: "Комитет по благоустройству",
+                isUrgent: true,
+                isFavorite: false
+            },
+            {
+                id: 5,
+                tenderId: "02345000145230005",
+                title: "Техническое обслуживание медицинского оборудования",
+                description: "Годовое обслуживание аппаратов МРТ и КТ",
+                type: "request",
+                region: "northwest",
+                budget: 3100000,
+                publishDate: "2024-01-12",
+                deadline: "2024-01-30",
+                status: "evaluation",
+                category: "supply",
+                customer: "Городская больница №1",
+                isUrgent: false,
+                isFavorite: true
+            },
+            {
+                id: 6,
+                tenderId: "02345000145230006",
+                title: "Поставка оргтехники и расходных материалов",
+                description: "Принтеры, сканеры, МФУ и расходные материалы к ним",
+                type: "quote",
+                region: "central",
+                budget: 890000,
+                publishDate: "2024-01-22",
+                deadline: "2024-02-10",
+                status: "active",
+                category: "supply",
+                customer: "Администрация области",
+                isUrgent: false,
+                isFavorite: false
+            },
+            {
+                id: 7,
+                tenderId: "02345000145230007",
+                title: "Разработка мобильного приложения для туристов",
+                description: "Создание кроссплатформенного приложения с навигацией",
+                type: "contest",
+                region: "spb",
+                budget: 4300000,
+                publishDate: "2024-01-05",
+                deadline: "2024-02-20",
+                status: "active",
+                category: "it",
+                customer: "Комитет по туризму",
+                isUrgent: false,
+                isFavorite: false
+            },
+            {
+                id: 8,
+                tenderId: "02345000145230008",
+                title: "Строительство детской площадки",
+                description: "Возведение игрового комплекса с безопасным покрытием",
+                type: "electronic",
+                region: "moscow",
+                budget: 1950000,
+                publishDate: "2024-01-25",
+                deadline: "2024-02-12",
+                status: "active",
+                category: "construction",
+                customer: "Управление ЖКХ",
+                isUrgent: false,
+                isFavorite: false
+            }
+        ];
+
+        // Функция для отображения тендеров
+        function displayTenders(tendersToShow) {
+            const tendersList = document.getElementById('tendersList');
+            tendersList.innerHTML = '';
+
+            if (tendersToShow.length === 0) {
+                tendersList.innerHTML = `
+                    <div class="text-center py-5">
+                        <i class="bi bi-search" style="font-size: 3rem; color: #ccc; margin-bottom: 1rem;"></i>
+                        <h4 class="text-muted">Тендеры не найдены</h4>
+                        <p class="text-muted">Попробуйте изменить критерии поиска</p>
+                    </div>
+                `;
+                return;
+            }
+
+            tendersToShow.forEach((tender, index) => {
+                const tenderCard = document.createElement('div');
+                tenderCard.className = 'tender-card fade-in';
+                tenderCard.style.animationDelay = `${index * 0.05}s`;
+
+                // Форматирование дат
+                const publishDateFormatted = formatDate(tender.publishDate);
+                const deadlineDateFormatted = formatDate(tender.deadline);
+                const daysLeft = calculateDaysLeft(tender.deadline);
+
+                // Форматирование бюджета
+                const budgetFormatted = formatBudget(tender.budget);
+
+                // Получение типа тендера
+                const tenderType = getTenderType(tender.type);
+
+                // Получение региона
+                const regionName = getRegionName(tender.region);
+
+                // Определение класса статуса
+                const statusClass = tender.isUrgent ? 'status-urgent' : 'status-active';
+                const statusText = tender.isUrgent ? 'Срочно!' : 'Прием заявок';
+
+                tenderCard.innerHTML = `
+                    <div class="tender-header">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div>
+                                <div class="tender-id">№ ${tender.tenderId}</div>
+                                <h3 class="tender-title">${tender.title}</h3>
+                            </div>
+                            <div>
+                                <span class="status-badge ${statusClass}">${statusText}</span>
+                                <button class="btn btn-link p-0" onclick="toggleFavorite(${tender.id})">
+                                    <i class="bi ${tender.isFavorite ? 'bi-star-fill text-warning' : 'bi-star'}"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tender-body">
+                        <p class="mb-3">${tender.description}</p>
+
+                        <div class="tender-info-row">
+                            <div class="info-label">Заказчик:</div>
+                            <div class="info-value">${tender.customer}</div>
+                        </div>
+
+                        <div class="tender-info-row">
+                            <div class="info-label">Регион:</div>
+                            <div class="info-value">${regionName}</div>
+                        </div>
+
+                        <div class="tender-info-row">
+                            <div class="info-label">Тип процедуры:</div>
+                            <div class="info-value">${tenderType}</div>
+                        </div>
+
+                        <div class="tender-info-row">
+                            <div class="info-label">Начальная цена:</div>
+                            <div class="info-value budget-value">${budgetFormatted} ₽</div>
+                        </div>
+
+                        <div class="tender-info-row">
+                            <div class="info-label">Опубликован:</div>
+                            <div class="info-value">${publishDateFormatted}</div>
+                        </div>
+
+                        <div class="tender-info-row">
+                            <div class="info-label">Срок подачи заявок:</div>
+                            <div class="info-value deadline-value">${deadlineDateFormatted} (осталось ${daysLeft} дн.)</div>
+                        </div>
+                    </div>
+
+                    <div class="tender-footer">
+                        <div>
+                            <button class="action-btn-outline btn-sm" onclick="viewTenderDetails(${tender.id})">
+                                <i class="bi bi-eye"></i> Просмотр
+                            </button>
+                            <button class="action-btn-outline btn-sm ms-2" onclick="downloadDocuments(${tender.id})">
+                                <i class="bi bi-download"></i> Документы
+                            </button>
+                        </div>
+                        <button class="action-btn btn-sm" onclick="participateInTender(${tender.id})">
+                            <i class="bi bi-pencil-square"></i> Подать заявку
+                        </button>
+                    </div>
+                `;
+
+                tendersList.appendChild(tenderCard);
+            });
+
+            // Обновление счетчика результатов
+            document.getElementById('resultsCount').textContent = tendersToShow.length;
+        }
+
+        // Функция для поиска тендеров
+        function searchTenders() {
+            const searchQuery = document.getElementById('searchQuery').value.toLowerCase();
+            const tenderType = document.getElementById('tenderType').value;
+            const region = document.getElementById('region').value;
+            const minPrice = parseInt(document.getElementById('minPrice').value) || 0;
+            const maxPrice = parseInt(document.getElementById('maxPrice').value) || Infinity;
+            const publishDate = document.getElementById('publishDate').value;
+            const deadlineDate = document.getElementById('deadlineDate').value;
+            const statusFilter = document.getElementById('statusFilter').value;
+
+            let filteredTenders = tenders.filter(tender => {
+                // Поиск по запросу
+                const matchesSearch = searchQuery === '' ||
+                    tender.title.toLowerCase().includes(searchQuery) ||
+                    tender.description.toLowerCase().includes(searchQuery) ||
+                    tender.customer.toLowerCase().includes(searchQuery);
+
+                // Фильтрация по типу
+                const matchesType = tenderType === 'all' || tender.type === tenderType;
+
+                // Фильтрация по региону
+                const matchesRegion = region === 'all' || tender.region === region;
+
+                // Фильтрация по бюджету
+                const matchesBudget = tender.budget >= minPrice && tender.budget <= maxPrice;
+
+                // Фильтрация по дате публикации
+                const matchesPublishDate = publishDate === '' || tender.publishDate >= publishDate;
+
+                // Фильтрация по сроку подачи
+                const matchesDeadline = deadlineDate === '' || tender.deadline <= deadlineDate;
+
+                // Фильтрация по статусу
+                const matchesStatus = statusFilter === 'all' || tender.status === statusFilter;
+
+                return matchesSearch && matchesType && matchesRegion && matchesBudget &&
+                       matchesPublishDate && matchesDeadline && matchesStatus;
+            });
+
+            // Применение сортировки
+            sortTendersList(filteredTenders, document.getElementById('sortSelect').value);
+        }
+
+        // Функция для сортировки тендеров
+        function sortTenders() {
+            const sortBy = document.getElementById('sortSelect').value;
+            const currentTenders = Array.from(document.querySelectorAll('.tender-card'))
+                .map(card => {
+                    const id = parseInt(card.querySelector('.tender-id').textContent.split(' ')[1].substring(0, 1));
+                    return tenders.find(t => t.id === id);
+                })
+                .filter(t => t);
+
+            sortTendersList(currentTenders, sortBy);
+        }
+
+        function sortTendersList(tendersList, sortBy) {
+            let sortedTenders = [...tendersList];
+
+            switch(sortBy) {
+                case 'deadline':
+                    sortedTenders.sort((a, b) => new Date(a.deadline) - new Date(b.deadline));
+                    break;
+                case 'price_high':
+                    sortedTenders.sort((a, b) => b.budget - a.budget);
+                    break;
+                case 'price_low':
+                    sortedTenders.sort((a, b) => a.budget - b.budget);
+                    break;
+                case 'new':
+                    sortedTenders.sort((a, b) => new Date(b.publishDate) - new Date(a.publishDate));
+                    break;
+            }
+
+            displayTenders(sortedTenders);
+        }
+
+        // Функция для сброса поиска
+        function resetSearch() {
+            document.getElementById('searchQuery').value = '';
+            document.getElementById('tenderType').value = 'all';
+            document.getElementById('region').value = 'all';
+            document.getElementById('minPrice').value = '';
+            document.getElementById('maxPrice').value = '';
+            document.getElementById('publishDate').value = '';
+            document.getElementById('deadlineDate').value = '';
+            document.getElementById('statusFilter').value = 'all';
+
+            // Сброс быстрых фильтров
+            document.querySelectorAll('.filter-chip').forEach(chip => {
+                chip.classList.remove('active');
+            });
+            document.querySelectorAll('.filter-chip')[0].classList.add('active');
+
+            // Показать все тендеры
+            sortTendersList(tenders, 'deadline');
+        }
+
+        // Функция для быстрых фильтров
+        function setQuickFilter(filterType) {
+            // Обновление активного чипа
+            document.querySelectorAll('.filter-chip').forEach(chip => {
+                chip.classList.remove('active');
+            });
+            event.target.classList.add('active');
+
+            let filteredTenders = [...tenders];
+
+            switch(filterType) {
+                case 'active':
+                    filteredTenders = filteredTenders.filter(t => t.status === 'active');
+                    break;
+                case 'urgent':
+                    filteredTenders = filteredTenders.filter(t => t.isUrgent);
+                    break;
+                case 'construction':
+                    filteredTenders = filteredTenders.filter(t => t.category === 'construction');
+                    break;
+                case 'it':
+                    filteredTenders = filteredTenders.filter(t => t.category === 'it');
+                    break;
+                case 'supply':
+                    filteredTenders = filteredTenders.filter(t => t.category === 'supply');
+                    break;
+                case 'today':
+                    const today = new Date().toISOString().split('T')[0];
+                    filteredTenders = filteredTenders.filter(t => t.publishDate === today);
+                    break;
+                // 'all' - ничего не фильтруем
+            }
+
+            displayTenders(filteredTenders);
+        }
+
+        // Вспомогательные функции
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleDateString('ru-RU', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric'
+            });
+        }
+
+        function calculateDaysLeft(deadlineString) {
+            const deadline = new Date(deadlineString);
+            const today = new Date();
+            const diffTime = deadline - today;
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+            return diffDays > 0 ? diffDays : 0;
+        }
+
+        function formatBudget(budget) {
+            return budget.toLocaleString('ru-RU');
+        }
+
+        function getTenderType(typeKey) {
+            const types = {
+                'electronic': 'Электронный аукцион',
+                'contest': 'Конкурс',
+                'request': 'Запрос предложений',
+                'quote': 'Запрос котировок'
+            };
+            return types[typeKey] || typeKey;
+        }
+
+        function getRegionName(regionKey) {
+            const regions = {
+                'moscow': 'Москва',
+                'spb': 'Санкт-Петербург',
+                'central': 'Центральный ФО',
+                'northwest': 'Северо-Западный ФО'
+            };
+            return regions[regionKey] || regionKey;
+        }
+
+        // Функции для взаимодействия с тендерами
+        function toggleFavorite(tenderId) {
+            const tender = tenders.find(t => t.id === tenderId);
+            if (tender) {
+                tender.isFavorite = !tender.isFavorite;
+                searchTenders(); // Перерисовываем список
+            }
+        }
+
+        function viewTenderDetails(tenderId) {
+            const tender = tenders.find(t => t.id === tenderId);
+            if (tender) {
+                alert(`Подробная информация о тендере:\n\n${tender.title}\n\nЗаказчик: ${tender.customer}\nБюджет: ${formatBudget(tender.budget)} руб.\nСрок подачи: ${formatDate(tender.deadline)}`);
+            }
+        }
+
+        function downloadDocuments(tenderId) {
+            const tender = tenders.find(t => t.id === tenderId);
+            if (tender) {
+                alert(`Начинается загрузка документов для тендера:\n"${tender.title}"\n\nДокументы будут сохранены в папку "Загрузки".`);
+            }
+        }
+
+        function participateInTender(tenderId) {
+            const tender = tenders.find(t => t.id === tenderId);
+            if (tender) {
+                alert(`Вы начинаете процедуру подачи заявки на участие в тендере:\n\n"${tender.title}"\n\nДля продолжения будет открыта форма заполнения заявки.`);
+            }
+        }
+
+        // Инициализация при загрузке страницы
+        document.addEventListener('DOMContentLoaded', function() {
+            // Установка сегодняшней даты по умолчанию в поле публикации
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('publishDate').value = today;
+
+            // Инициализация отображения тендеров
+            sortTendersList(tenders, 'deadline');
+
+            // Активация пункта меню "Поиск тендеров"
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.addEventListener('click', function() {
+                    document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+                    this.classList.add('active');
+                });
+            });
+
+            // Обработчики событий для полей поиска
+            document.getElementById('searchQuery').addEventListener('keyup', function(event) {
+                if (event.key === 'Enter') {
+                    searchTenders();
+                }
+            });
+
+            // Обработчики для остальных полей
+            const filterInputs = ['tenderType', 'region', 'minPrice', 'maxPrice', 'publishDate', 'deadlineDate', 'statusFilter'];
+            filterInputs.forEach(inputId => {
+                document.getElementById(inputId).addEventListener('change', searchTenders);
+            });
+        });
+    </script>
+</body>
+</html>
