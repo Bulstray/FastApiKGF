@@ -1,0 +1,939 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Поиск тендеров - TenderSoft</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
+    <style>
+        :root {
+            --primary-color: #4361ee;
+            --secondary-color: #3a0ca3;
+            --accent-color: #4cc9f0;
+            --success-color: #4CAF50;
+            --warning-color: #FF9800;
+            --rosneft-color: #0033a0;
+            --gazprom-color: #008542;
+            --light-bg: #f8f9fa;
+            --dark-bg: #212529;
+            --card-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background-color: #f5f7fb;
+            color: #333;
+            overflow-x: hidden;
+        }
+
+        /* Стили для боковой панели */
+        .sidebar {
+            background: linear-gradient(180deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: white;
+            min-height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 280px;
+            z-index: 100;
+            box-shadow: 3px 0 15px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .sidebar-brand {
+            padding: 1.5rem 1.5rem 2rem;
+            font-weight: 700;
+            font-size: 1.5rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .sidebar-brand i {
+            color: var(--accent-color);
+            margin-right: 10px;
+        }
+
+        .sidebar-nav {
+            padding: 1rem 0;
+        }
+
+        .nav-item {
+            margin-bottom: 5px;
+        }
+
+        .nav-link {
+            color: rgba(255, 255, 255, 0.8);
+            padding: 0.75rem 1.5rem;
+            border-left: 3px solid transparent;
+            transition: all 0.2s;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            color: white;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-left-color: var(--accent-color);
+        }
+
+        .nav-link i {
+            width: 24px;
+            text-align: center;
+            margin-right: 10px;
+        }
+
+        /* Основное содержимое */
+        .main-content {
+            margin-left: 280px;
+            padding: 2rem;
+            min-height: 100vh;
+        }
+
+        @media (max-width: 992px) {
+            .sidebar {
+                width: 70px;
+                overflow: hidden;
+            }
+
+            .sidebar:hover {
+                width: 280px;
+            }
+
+            .sidebar-brand span, .nav-link span {
+                opacity: 0;
+                transition: opacity 0.3s;
+            }
+
+            .sidebar:hover .sidebar-brand span,
+            .sidebar:hover .nav-link span {
+                opacity: 1;
+            }
+
+            .main-content {
+                margin-left: 70px;
+            }
+
+            .sidebar:hover ~ .main-content {
+                margin-left: 280px;
+            }
+        }
+
+        /* Поисковая панель */
+        .search-hero {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            border-radius: 20px;
+            padding: 3rem;
+            color: white;
+            margin-bottom: 3rem;
+            box-shadow: var(--card-shadow);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .search-hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="none"><path fill="rgba(255,255,255,0.1)" d="M0,0 L100,0 L100,100 Z"/></svg>');
+            background-size: cover;
+        }
+
+        .search-hero h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+        }
+
+        .search-hero p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            margin-bottom: 2rem;
+        }
+
+        .search-box {
+            background: white;
+            border-radius: 15px;
+            padding: 1.5rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        .search-input-group {
+            position: relative;
+        }
+
+        .search-input {
+            border: none;
+            border-radius: 10px;
+            padding: 15px 20px 15px 50px;
+            font-size: 1.1rem;
+            width: 100%;
+            background-color: #f8f9fa;
+            transition: all 0.3s;
+        }
+
+        .search-input:focus {
+            outline: none;
+            background-color: white;
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #666;
+            font-size: 1.2rem;
+        }
+
+        .search-btn {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            border: none;
+            color: white;
+            padding: 15px 30px;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            transition: all 0.3s;
+            white-space: nowrap;
+        }
+
+        .search-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(67, 97, 238, 0.3);
+        }
+
+        /* Площадки поиска */
+        .platforms-section {
+            margin-bottom: 3rem;
+        }
+
+        .platform-card {
+            border: none;
+            border-radius: 15px;
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            box-shadow: var(--card-shadow);
+            background-color: white;
+            height: 100%;
+        }
+
+        .platform-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .platform-logo {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+            color: white;
+            font-size: 2rem;
+            font-weight: bold;
+        }
+
+        .platform-rosneft {
+            background: linear-gradient(135deg, var(--rosneft-color) 0%, #0047bb 100%);
+        }
+
+        .platform-gazprom {
+            background: linear-gradient(135deg, var(--gazprom-color) 0%, #00a651 100%);
+        }
+
+        .platform-name {
+            font-weight: 700;
+            font-size: 1.3rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .platform-stats {
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        /* Результаты поиска */
+        .results-section {
+            margin-top: 3rem;
+        }
+
+        .results-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .section-title {
+            font-weight: 700;
+            margin: 0;
+            color: var(--dark-bg);
+            position: relative;
+            padding-bottom: 10px;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 4px;
+            background: linear-gradient(to right, var(--primary-color), var(--accent-color));
+            border-radius: 2px;
+        }
+
+        .results-count {
+            color: #666;
+            font-weight: 500;
+        }
+
+        .tender-card {
+            border-left: 4px solid var(--primary-color);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            background-color: white;
+            box-shadow: var(--card-shadow);
+            transition: all 0.3s ease;
+        }
+
+        .tender-card:hover {
+            transform: translateX(5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .tender-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+        }
+
+        .tender-title {
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: var(--dark-bg);
+            font-size: 1.2rem;
+            flex: 1;
+        }
+
+        .tender-platform {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: white;
+            margin-left: 1rem;
+        }
+
+        .platform-rosneft-badge {
+            background-color: var(--rosneft-color);
+        }
+
+        .platform-gazprom-badge {
+            background-color: var(--gazprom-color);
+        }
+
+        .tender-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+            font-size: 0.95rem;
+            color: #666;
+            margin-bottom: 1rem;
+        }
+
+        .tender-meta-item {
+            display: flex;
+            align-items: center;
+        }
+
+        .tender-meta-item i {
+            margin-right: 8px;
+            color: var(--primary-color);
+        }
+
+        .tender-price {
+            font-weight: 700;
+            color: var(--success-color);
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+        }
+
+        .tender-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 1rem;
+        }
+
+        .btn-outline-primary {
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+        }
+
+        .btn-outline-primary:hover {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .btn-outline-success {
+            border-color: var(--success-color);
+            color: var(--success-color);
+        }
+
+        .btn-outline-success:hover {
+            background-color: var(--success-color);
+            color: white;
+        }
+
+        /* Состояние загрузки */
+        .loading-spinner {
+            display: none;
+            text-align: center;
+            padding: 3rem;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid var(--primary-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Состояние "нет результатов" */
+        .no-results {
+            text-align: center;
+            padding: 4rem;
+            display: none;
+        }
+
+        .no-results-icon {
+            font-size: 4rem;
+            color: #ddd;
+            margin-bottom: 1rem;
+        }
+
+        /* Анимации */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease forwards;
+        }
+
+        /* Кастомный скроллбар */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary-color);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--secondary-color);
+        }
+    </style>
+</head>
+<body>
+    <!-- Боковая панель навигации -->
+    <nav class="sidebar">
+        <div class="sidebar-brand">
+            <i class="bi bi-search"></i>
+            <span>TenderSoft</span>
+        </div>
+
+        <ul class="nav flex-column sidebar-nav">
+            <li class="nav-item">
+                <a class="nav-link" href="index.html">
+                    <i class="bi bi-house-door-fill"></i>
+                    <span>Главная</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="programs.html">
+                    <i class="bi bi-download"></i>
+                    <span>Программы</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link active" href="#">
+                    <i class="bi bi-search"></i>
+                    <span>Поиск тендеров</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#">
+                    <i class="bi bi-bar-chart-fill"></i>
+                    <span>Аналитика</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#">
+                    <i class="bi bi-gear-fill"></i>
+                    <span>Настройки</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+
+    <!-- Основное содержимое -->
+    <main class="main-content">
+        <!-- Поисковая панель -->
+        <section class="search-hero">
+            <h1>Поиск тендеров</h1>
+            <p>Ищите тендеры на сайтах Роснефти и Газпрома по ключевым словам. Быстро, просто, эффективно.</p>
+
+            <div class="search-box">
+                <div class="row g-3">
+                    <div class="col-lg-9">
+                        <div class="search-input-group">
+                            <i class="bi bi-search search-icon"></i>
+                            <input type="text" id="searchInput" class="search-input" placeholder="Введите ключевые слова для поиска (например: оборудование, строительство, поставка)...">
+                        </div>
+                    </div>
+                    <div class="col-lg-3">
+                        <button id="searchButton" class="search-btn w-100 h-100">
+                            <i class="bi bi-search"></i> Найти тендеры
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Площадки поиска -->
+        <section class="platforms-section">
+            <h2 class="section-title mb-4">Площадки для поиска</h2>
+            <div class="row">
+                <div class="col-md-6 mb-4">
+                    <div class="platform-card">
+                        <div class="platform-logo platform-rosneft">
+                            РН
+                        </div>
+                        <h3 class="platform-name">Роснефть</h3>
+                        <p class="mb-3">Крупнейшая нефтяная компания России. Ежегодно проводит тысячи тендеров на поставку оборудования и услуг.</p>
+                        <div class="platform-stats">
+                            <i class="bi bi-graph-up"></i> Активных тендеров: ~850
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 mb-4">
+                    <div class="platform-card">
+                        <div class="platform-logo platform-gazprom">
+                            ГП
+                        </div>
+                        <h3 class="platform-name">Газпром</h3>
+                        <p class="mb-3">Ведущая газовая компания мира. Регулярные закупки для газодобывающей и транспортной инфраструктуры.</p>
+                        <div class="platform-stats">
+                            <i class="bi bi-graph-up"></i> Активных тендеров: ~720
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Результаты поиска -->
+        <section class="results-section" id="resultsSection">
+            <div class="results-header">
+                <h2 class="section-title">Результаты поиска</h2>
+                <div class="results-count" id="resultsCount">Введите запрос для поиска</div>
+            </div>
+
+            <!-- Индикатор загрузки -->
+            <div class="loading-spinner" id="loadingSpinner">
+                <div class="spinner"></div>
+                <p>Ищем тендеры по вашему запросу...</p>
+            </div>
+
+            <!-- Сообщение "нет результатов" -->
+            <div class="no-results" id="noResults">
+                <div class="no-results-icon">
+                    <i class="bi bi-search"></i>
+                </div>
+                <h3>Тендеры не найдены</h3>
+                <p>Попробуйте изменить ключевые слова или использовать более общие термины</p>
+            </div>
+
+            <!-- Контейнер для результатов -->
+            <div id="tendersResults">
+                <!-- Здесь будут отображаться результаты поиска -->
+                <div class="text-center text-muted py-5">
+                    <i class="bi bi-search display-4 mb-3"></i>
+                    <p>Введите ключевые слова в поисковую строку выше, чтобы найти тендеры</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        // Данные о тендерах (имитация базы данных)
+        const tendersDatabase = [
+            // Роснефть
+            {
+                id: 1,
+                title: "Поставка насосного оборудования для нефтедобывающего участка",
+                platform: "rosneft",
+                price: "8 450 000 ₽",
+                date: "15.06.2023",
+                endDate: "30.06.2023",
+                customer: "ПАО «Роснефть»",
+                location: "Ханты-Мансийск",
+                category: "Оборудование",
+                description: "Поставка насосного оборудования для нужд нефтедобывающего участка. Требуется гарантия 24 месяца."
+            },
+            {
+                id: 2,
+                title: "Ремонт административного здания управления",
+                platform: "rosneft",
+                price: "12 750 000 ₽",
+                date: "18.06.2023",
+                endDate: "05.07.2023",
+                customer: "ПАО «Роснефть»",
+                location: "Москва",
+                category: "Строительство",
+                description: "Капитальный ремонт административного здания управляющего офиса."
+            },
+            {
+                id: 3,
+                title: "Закупка труб для магистрального нефтепровода",
+                platform: "rosneft",
+                price: "45 320 000 ₽",
+                date: "20.06.2023",
+                endDate: "10.07.2023",
+                customer: "ПАО «Роснефть»",
+                location: "Тюмень",
+                category: "Трубы",
+                description: "Поставка стальных труб диаметром 820 мм для ремонта магистрального нефтепровода."
+            },
+            {
+                id: 4,
+                title: "ИТ-обслуживание и поддержка рабочих станций",
+                platform: "rosneft",
+                price: "3 150 000 ₽",
+                date: "22.06.2023",
+                endDate: "15.07.2023",
+                customer: "ПАО «Роснефть»",
+                location: "Краснодар",
+                category: "ИТ-услуги",
+                description: "Техническая поддержка и обслуживание компьютерной техники в региональном офисе."
+            },
+            {
+                id: 5,
+                title: "Поставка спецодежды для работников нефтяных вышек",
+                platform: "rosneft",
+                price: "2 850 000 ₽",
+                date: "25.06.2023",
+                endDate: "12.07.2023",
+                customer: "ПАО «Роснефть»",
+                location: "Сургут",
+                category: "Спецодежда",
+                description: "Комплекты спецодежды для работников нефтедобывающих вышек (500 комплектов)."
+            },
+            // Газпром
+            {
+                id: 6,
+                title: "Строительство газораспределительной станции",
+                platform: "gazprom",
+                price: "85 750 000 ₽",
+                date: "16.06.2023",
+                endDate: "01.08.2023",
+                customer: "ПАО «Газпром»",
+                location: "Оренбург",
+                category: "Строительство",
+                description: "Строительство газораспределительной станции с полным комплектом оборудования."
+            },
+            {
+                id: 7,
+                title: "Поставка запорной арматуры для газопроводов",
+                platform: "gazprom",
+                price: "18 450 000 ₽",
+                date: "19.06.2023",
+                endDate: "08.07.2023",
+                customer: "ПАО «Газпром»",
+                location: "Ямало-Ненецкий АО",
+                category: "Оборудование",
+                description: "Запорная арматура высокого давления для магистральных газопроводов."
+            },
+            {
+                id: 8,
+                title: "Обслуживание компрессорных станций",
+                platform: "gazprom",
+                price: "32 500 000 ₽",
+                date: "21.06.2023",
+                endDate: "20.07.2023",
+                customer: "ПАО «Газпром»",
+                location: "Астрахань",
+                category: "Техобслуживание",
+                description: "Техническое обслуживание и ремонт компрессорных станций газопровода."
+            },
+            {
+                id: 9,
+                title: "Закупка труб большого диаметра",
+                platform: "gazprom",
+                price: "62 800 000 ₽",
+                date: "24.06.2023",
+                endDate: "25.07.2023",
+                customer: "ПАО «Газпром»",
+                location: "Санкт-Петербург",
+                category: "Трубы",
+                description: "Трубы диаметром 1420 мм для строительства нового участка газопровода."
+            },
+            {
+                id: 10,
+                title: "Разработка программного обеспечения для учета",
+                platform: "gazprom",
+                price: "9 850 000 ₽",
+                date: "26.06.2023",
+                endDate: "30.07.2023",
+                customer: "ПАО «Газпром»",
+                location: "Москва",
+                category: "ИТ-услуги",
+                description: "Разработка специализированного ПО для учета газодобычи и транспортировки."
+            },
+            {
+                id: 11,
+                title: "Экологический мониторинг газовых месторождений",
+                platform: "gazprom",
+                price: "7 350 000 ₽",
+                date: "28.06.2023",
+                endDate: "05.08.2023",
+                customer: "ПАО «Газпром»",
+                location: "Надым",
+                category: "Экология",
+                description: "Проведение экологического мониторинга на газовых месторождениях."
+            },
+            {
+                id: 12,
+                title: "Транспортные услуги для перевозки оборудования",
+                platform: "gazprom",
+                price: "5 250 000 ₽",
+                date: "30.06.2023",
+                endDate: "10.08.2023",
+                customer: "ПАО «Газпром»",
+                location: "Новый Уренгой",
+                category: "Логистика",
+                description: "Организация перевозки тяжелого оборудования к местам строительства."
+            }
+        ];
+
+        // Ключевые слова для поиска (для более точного соответствия)
+        const searchKeywords = {
+            "оборудование": ["оборудование", "оборудования", "техника", "механизмы"],
+            "строительство": ["строительство", "строительных", "ремонт", "реконструкция"],
+            "трубы": ["трубы", "труб", "трубопровод", "трубная"],
+            "нефть": ["нефть", "нефтяной", "нефтедобыча", "нефтепровод"],
+            "газ": ["газ", "газовый", "газопровод", "газодобыча"],
+            "ит": ["ит", "программное", "софт", "компьютер", "информационные"],
+            "поставка": ["поставка", "закупка", "приобретение", "заказ"],
+            "услуги": ["услуги", "обслуживание", "поддержка", "работы"],
+            "транспорт": ["транспорт", "перевозка", "логистика", "доставка"]
+        };
+
+        // Элементы DOM
+        const searchInput = document.getElementById('searchInput');
+        const searchButton = document.getElementById('searchButton');
+        const resultsSection = document.getElementById('resultsSection');
+        const resultsCount = document.getElementById('resultsCount');
+        const tendersResults = document.getElementById('tendersResults');
+        const loadingSpinner = document.getElementById('loadingSpinner');
+        const noResults = document.getElementById('noResults');
+
+        // Функция для поиска тендеров
+        function searchTenders() {
+            const query = searchInput.value.trim().toLowerCase();
+
+            if (!query) {
+                showNotification('Введите ключевые слова для поиска', 'warning');
+                return;
+            }
+
+            // Показать индикатор загрузки
+            loadingSpinner.style.display = 'block';
+            noResults.style.display = 'none';
+            tendersResults.innerHTML = '';
+            resultsCount.textContent = 'Поиск...';
+
+            // Имитация задержки поиска (в реальном приложении здесь был бы запрос к API)
+            setTimeout(() => {
+                performSearch(query);
+            }, 800);
+        }
+
+        // Функция выполнения поиска
+        function performSearch(query) {
+            // Разбиваем запрос на слова
+            const queryWords = query.split(' ').filter(word => word.length > 2);
+
+            // Ищем совпадения
+            const results = tendersDatabase.filter(tender => {
+                // Проверяем совпадение в названии
+                const titleMatch = queryWords.some(word =>
+                    tender.title.toLowerCase().includes(word)
+                );
+
+                // Проверяем совпадение в описании
+                const descMatch = queryWords.some(word =>
+                    tender.description.toLowerCase().includes(word)
+                );
+
+                // Проверяем совпадение в категории
+                const categoryMatch = queryWords.some(word =>
+                    tender.category.toLowerCase().includes(word)
+                );
+
+                return titleMatch || descMatch || categoryMatch;
+            });
+
+            // Скрываем индикатор загрузки
+            loadingSpinner.style.display = 'none';
+
+            // Обновляем счетчик результатов
+            resultsCount.textContent = `Найдено: ${results.length} тендеров`;
+
+            // Отображаем результаты или сообщение об их отсутствии
+            if (results.length > 0) {
+                displayResults(results);
+            } else {
+                noResults.style.display = 'block';
+            }
+        }
+
+        // Функция для отображения результатов
+        function displayResults(results) {
+            tendersResults.innerHTML = '';
+
+            results.forEach((tender, index) => {
+                const tenderCard = document.createElement('div');
+                tenderCard.className = 'tender-card fade-in';
+                tenderCard.style.animationDelay = `${index * 0.05}s`;
+
+                const platformName = tender.platform === 'rosneft' ? 'Роснефть' : 'Газпром';
+                const platformClass = tender.platform === 'rosneft' ? 'platform-rosneft-badge' : 'platform-gazprom-badge';
+
+                tenderCard.innerHTML = `
+                    <div class="tender-header">
+                        <h3 class="tender-title">${tender.title}</h3>
+                        <span class="tender-platform ${platformClass}">${platformName}</span>
+                    </div>
+
+                    <div class="tender-meta">
+                        <div class="tender-meta-item">
+                            <i class="bi bi-calendar"></i>
+                            <span>Опубликован: ${tender.date}</span>
+                        </div>
+                        <div class="tender-meta-item">
+                            <i class="bi bi-calendar-check"></i>
+                            <span>Прием заявок до: ${tender.endDate}</span>
+                        </div>
+
+                    </div>
+
+                    <div class="tender-actions mt-5">
+                        <button class="btn btn-outline-primary" onclick="viewTenderDetails(${tender.id})">
+                            <i class="bi bi-eye"></i> Подробнее
+                        </button>
+                    </div>
+                `;
+
+                tendersResults.appendChild(tenderCard);
+            });
+        }
+
+        // Функция для просмотра деталей тендера
+        function viewTenderDetails(tenderId) {
+            const tender = tendersDatabase.find(t => t.id === tenderId);
+            if (tender) {
+                const platformName = tender.platform === 'rosneft' ? 'Роснефть' : 'Газпром';
+                showNotification(`Открывается страница тендера "${tender.title}" (${platformName})`, 'info');
+                // В реальном приложении здесь был бы переход на страницу тендера
+            }
+        }
+
+        // Функция для сохранения тендера
+        function saveTender(tenderId) {
+            const tender = tendersDatabase.find(t => t.id === tenderId);
+            if (tender) {
+                showNotification(`Тендер "${tender.title}" добавлен в сохраненные`, 'success');
+            }
+        }
+
+        // Функция для показа уведомлений
+        function showNotification(message, type) {
+            // Создаем элемент уведомления
+            const notification = document.createElement('div');
+            notification.className = `position-fixed top-0 end-0 m-4 p-3 rounded shadow-lg border-0 text-white ${type === 'success' ? 'bg-success' : type === 'warning' ? 'bg-warning' : 'bg-primary'}`;
+            notification.style.zIndex = '9999';
+            notification.style.minWidth = '300px';
+            notification.innerHTML = `
+                <div class="d-flex justify-content-between align-items-start">
+                    <div>
+                        <i class="bi ${type === 'success' ? 'bi-check-circle-fill' : type === 'warning' ? 'bi-exclamation-triangle-fill' : 'bi-info-circle-fill'} me-2"></i>
+                        ${message}
+                    </div>
+                    <button class="btn-close btn-close-white" onclick="this.parentElement.parentElement.remove()"></button>
+                </div>
+            `;
+
+            document.body.appendChild(notification);
+
+            // Автоматическое удаление через 5 секунд
+            setTimeout(() => {
+                if (notification.parentElement) {
+                    notification.remove();
+                }
+            }, 5000);
+        }
+
+        // Инициализация при загрузке страницы
+        document.addEventListener('DOMContentLoaded', function() {
+            // Обработчик для кнопки поиска
+            searchButton.addEventListener('click', searchTenders);
+
+            // Обработчик для нажатия Enter в поле поиска
+            searchInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    searchTenders();
+                }
+            });
+
+            // Пример поиска при загрузке (по умолчанию)
+            searchInput.value = 'оборудование';
+            searchTenders();
+
+            // Активация пункта меню "Поиск тендеров"
+            document.querySelectorAll('.nav-link').forEach(link => {
+                if (link.querySelector('span') && link.querySelector('span').textContent === 'Поиск тендеров') {
+                    link.classList.add('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
