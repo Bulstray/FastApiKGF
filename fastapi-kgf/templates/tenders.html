@@ -1,0 +1,396 @@
+{% extends "base.html" %}
+
+{% block style %}
+  <style>
+
+    :root {
+      --primary-color: #4361ee;
+      --secondary-color: #3a0ca3;
+      --accent-color: #4cc9f0;
+      --success-color: #4CAF50;
+      --warning-color: #FF9800;
+      --rosneft-color: #0033a0;
+      --gazprom-color: #008542;
+      --light-bg: #f8f9fa;
+      --dark-bg: #212529;
+      --card-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+    }
+
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background-color: #f5f7fb;
+      color: #333;
+      overflow-x: hidden;
+    }
+
+    /* Основное содержимое */
+    .main-content {
+      margin-left: 280px;
+      padding: 2rem;
+      min-height: 100vh;
+    }
+
+    /* Поисковая панель */
+    .search-hero {
+      background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+      border-radius: 20px;
+      padding: 3rem;
+      color: white;
+      margin-bottom: 3rem;
+      box-shadow: var(--card-shadow);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .search-hero::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 300px;
+      height: 300px;
+      background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="none"><path fill="rgba(255,255,255,0.1)" d="M0,0 L100,0 L100,100 Z"/></svg>');
+      background-size: cover;
+    }
+
+    .search-hero h1 {
+      font-size: 2.5rem;
+      font-weight: 800;
+      margin-bottom: 1rem;
+    }
+
+    .search-hero p {
+      font-size: 1.1rem;
+      opacity: 0.9;
+      margin-bottom: 2rem;
+    }
+
+    .search-box {
+      background: white;
+      border-radius: 15px;
+      padding: 1.5rem;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+    }
+
+    .search-input-group {
+      position: relative;
+    }
+
+    .search-input {
+      border: none;
+      border-radius: 10px;
+      padding: 15px 20px 15px 50px;
+      font-size: 1.1rem;
+      width: 100%;
+      background-color: #f8f9fa;
+      transition: all 0.3s;
+    }
+
+    .search-input:focus {
+      outline: none;
+      background-color: white;
+      box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 20px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #666;
+      font-size: 1.2rem;
+    }
+
+    .search-btn {
+      background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%) !important;
+      border: none !important;
+      color: white !important;
+      padding: 15px 30px !important;
+      border-radius: 10px !important;
+      font-weight: 700 !important;
+      font-size: 1.1rem !important;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+      white-space: nowrap !important;
+      position: relative !important;
+      z-index: 1 !important;
+      cursor: pointer !important;
+      height: 100% !important;
+      min-height: 54px; /* Высота как у input */
+    }
+
+    /* Убираем стандартные стили Bootstrap */
+    .search-btn:focus,
+    .search-btn:active,
+    .search-btn:hover {
+      outline: none !important;
+      box-shadow: none !important;
+      border: none !important;
+    }
+
+    /* Ховер эффект */
+    .search-btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, var(--secondary-color) 0%, #2a0a8a 100%);
+      border-radius: 10px;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      z-index: -1;
+    }
+
+    .search-btn:hover::before {
+      opacity: 1;
+    }
+
+    .search-btn:hover {
+      transform: translateY(-2px) scale(1.02) !important;
+      box-shadow: 0 10px 25px rgba(67, 97, 238, 0.4) !important;
+    }
+
+    .search-btn:active {
+      transform: translateY(0) scale(0.98) !important;
+      box-shadow: 0 5px 15px rgba(67, 97, 238, 0.3) !important;
+      transition: transform 0.1s ease !important;
+    }
+
+    /* Площадки поиска */
+    .platforms-section {
+      margin-bottom: 3rem;
+    }
+
+    .platform-card {
+      border: none;
+      border-radius: 15px;
+      padding: 2rem;
+      text-align: center;
+      transition: all 0.3s ease;
+      box-shadow: var(--card-shadow);
+      background-color: white;
+      height: 100%;
+    }
+
+    .platform-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+    }
+
+    .platform-logo {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1.5rem;
+      font-size: 2rem;
+      font-weight: bold;
+      background-size: cover; /* ← ОБЯЗАТЕЛЬНО! */
+      background-position: center; /* ← Центрируем изображение */
+      background-repeat: no-repeat; /* ← Запрещаем повторение */
+      border: none; /* ← Граница для видимости */
+    }
+
+    .platform-rosneft {
+      background-image: url("https://static.insales-cdn.com/images/products/1/7034/730798970/large_Роснефть.png");
+      background-color: #fff; /* Белый фон на случай прозрачного изображения */
+      background-size: 190%;
+    }
+
+
+    .platform-gazprom {
+      background: url("https://catalogmineralov.ru/pic/2023/21057/b_b_607dc0a36f2c5433138fff5af67dd64f.png"); /* ← ОБЯЗАТЕЛЬНО! */
+      background-position: center; /* ← Центрируем изображение */
+      background-repeat: no-repeat; /* ← Запрещаем повторение */
+      background-size: 155%
+    }
+
+    .platform-name {
+      font-weight: 700;
+      font-size: 1.3rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .section-title {
+      font-weight: 700;
+      margin: 0;
+      color: var(--dark-bg);
+      position: relative;
+      padding-bottom: 10px;
+    }
+
+    .section-title::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 60px;
+      height: 4px;
+      background: linear-gradient(to right, var(--primary-color), var(--accent-color));
+      border-radius: 2px;
+    }
+
+    .tender-card {
+      border-left: 4px solid var(--primary-color);
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin-bottom: 1rem;
+      background-color: white;
+      box-shadow: var(--card-shadow);
+      transition: all 0.3s ease;
+    }
+
+    .tender-card:hover {
+      transform: translateX(5px);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .tender-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 1rem;
+    }
+
+    .tender-title {
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      color: var(--dark-bg);
+      font-size: 1.2rem;
+      flex: 1;
+    }
+
+    .tender-platform {
+      display: inline-block;
+      padding: 5px 12px;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: white;
+      margin-left: 1rem;
+    }
+
+
+    .tender-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+      font-size: 0.95rem;
+      color: #666;
+      margin-bottom: 1rem;
+    }
+
+    .tender-meta-item {
+      display: flex;
+      align-items: center;
+    }
+
+    .tender-meta-item i {
+      margin-right: 8px;
+      color: var(--primary-color);
+    }
+
+    .tender-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 1rem;
+    }
+
+  </style>
+{% endblock %}
+
+
+{% block main %}
+  <main class="main-content">
+    <!-- Поисковая панель -->
+    <section class="search-hero">
+      <h1>Поиск тендеров</h1>
+      <p>Ищите тендеры на сайтах Роснефти и Газпрома по ключевым словам. Быстро, просто, эффективно.</p>
+
+      <form method="get" action="{{ url_for('tenders:search') }}">
+        <div class="search-box">
+          <div class="row g-3">
+            <div class="col-lg-9">
+              <div class="search-input-group">
+                <i class="bi bi-search search-icon"></i>
+                <input
+                  type="text"
+                  name="search"
+                  class="search-input"
+                  placeholder="Введите ключевые слова для поиска (например: геофизика, геохимия)..."
+                  value="{{ search_query or '' }}"
+                  required
+                >
+              </div>
+            </div>
+            <div class="col-lg-3">
+              <button type="submit" class="search-btn w-100 h-100">
+                <i class="bi bi-search"></i> Найти тендеры
+              </button>
+            </div>
+          </div>
+        </div>
+      </form>
+    </section>
+
+    <section class="platforms-section">
+      <h2 class="section-title mb-4">Площадки для поиска</h2>
+      <div class="row">
+        <div class="col-md-6 mb-4">
+          <div class="platform-card">
+            <div class="platform-logo platform-rosneft">
+            </div>
+            <h3 class="platform-name">Роснефть</h3>
+            <p class="mb-3">Крупнейшая нефтяная компания России. Ежегодно проводит тысячи тендеров на поставку
+              оборудования и услуг.</p>
+          </div>
+        </div>
+        <div class="col-md-6 mb-4">
+          <div class="platform-card">
+            <div class="platform-logo platform-gazprom">
+            </div>
+            <h3 class="platform-name">Газпром</h3>
+            <p class="mb-3">Ведущая газовая компания мира. Регулярные закупки для газодобывающей и транспортной
+              инфраструктуры.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    {% for tender in tenders %}
+
+    <div class="tender-card fade-in">
+
+      <div class="tender-header">
+        <h3 class="tender-title">{{ tender["name"] }}</h3>
+        <span class="tender-platform">{{ tender['platform'] }}</span>
+      </div>
+
+      <div class="tender-meta">
+        <div class="tender-meta-item">
+          <i class="bi bi-calendar"></i>
+          <span>{% if tender['platform'] == "GAZP" %}
+            Опубликовано: {{ tender['date'] }}
+            {% else %}
+            Прием заявок до: {{ tender["date"] }}
+            {% endif %}
+          </span>
+        </div>
+
+      </div>
+
+      <div class="tender-actions mt-5">
+        <button class="btn btn-outline-primary">
+          <i class="bi bi-eye"></i> Подробнее
+        </button>
+      </div>
+
+    </div>
+  {% endfor %}
+
+
+  </main>
+{% endblock %}
