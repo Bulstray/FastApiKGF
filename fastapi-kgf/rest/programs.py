@@ -4,7 +4,7 @@ from typing import Annotated
 from fastapi import APIRouter, Depends, HTTPException
 from starlette import status
 from starlette.requests import Request
-from starlette.responses import HTMLResponse, FileResponse
+from starlette.responses import FileResponse, HTMLResponse
 
 from core.schemas import ProgramRead
 from dependencies.auth import validate_basic_auth
@@ -27,7 +27,12 @@ def programs_page(
 
     programs = program_service.get_all_programs()
 
-    programs_schemas = [ProgramRead.model_validate(program) for program in programs]
+    programs_schemas = [
+        ProgramRead.model_validate(
+            program,
+        )
+        for program in programs
+    ]
 
     return templates.TemplateResponse(
         request=request,
