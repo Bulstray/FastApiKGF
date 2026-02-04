@@ -1,12 +1,11 @@
 from typing import Annotated
 
-from fastapi import Query, APIRouter
+from fastapi import APIRouter, Query
 from starlette.requests import Request
 from starlette.responses import HTMLResponse
 
 from parsers.core import TenderParseCore
 from templating.jinja_template import templates
-
 
 router = APIRouter(
     prefix="/tenders",
@@ -25,7 +24,7 @@ def tenders_page(
     )
 
 
-@router.get("/search", name="tenders:search")
+@router.get("/tenders_search", name="tenders:search")
 def tenders_search(
     request: Request,
     search: Annotated[str, Query()],
