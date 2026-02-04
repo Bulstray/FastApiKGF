@@ -1,22 +1,22 @@
-from .platforms import TekTorgPlatform, EtpgpbParser
+from core.models import Tender
+
+from .platforms import EtpgpbParser, TekTorgPlatform
+from core.enums import Platform
 
 
 class TenderParseCore:
-    def __init__(self) -> None:
+    def __init__(self, key_word: str) -> None:
         self.parsers = {
-            "tek_torg": TekTorgPlatform(),
-            "etp_gpb": EtpgpbParser(),
+            (TekTorgPlatform(key_word=key_word), Platform.rosh),
+            (EtpgpbParser(key_word=key_word), Platform.gazp),
         }
 
-    def search_all_platforms(self, key_word: str):
+    def search_all_platforms(self) -> list[Tender]:
         """Поиск по всем платформам"""
 
         results = []
 
-        for platform_name, parse_class in self.parsers.items():
-            results.extend(parse_class.search_tenders(key_word=key_word))
+        for parse_class, platform in self.parsers:
+            results.extend(parse_class.search_tenders(platform=platform))
 
         return results
-
-
-tender_parse_core = TenderParseCore()
