@@ -1,7 +1,7 @@
+from core.enums import Platform
 from core.models import Tender
 
 from .platforms import EtpgpbParser, TekTorgPlatform
-from core.enums import Platform
 
 
 class TenderParseCore:
