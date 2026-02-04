@@ -10,6 +10,7 @@ def authenticate_user(
     username: str,
     password: str,
 ) -> User | None:
+    """Checking that the user exists and that the password matches"""
     user = user_crud.get_user_by_username(
         session=session,
         username=username,

@@ -21,7 +21,7 @@ def get_all_users(
         Depends(get_user_service),
     ],
 ) -> list[User]:
-
+    """Endpoint for getting all users"""
     return user_service.get_all_users()
 
 
@@ -37,6 +37,7 @@ def create_user(
     ],
     user_create: UserCreate,
 ) -> User | None:
+    """Endpoint for creating a new user"""
     return user_service.create_user(
         user_data=user_create,
     )
@@ -50,6 +51,7 @@ def delete_user(
     user_service: Annotated[UserService, Depends(get_user_service)],
     username: Annotated[str, Form()],
 ) -> None:
+    """Endpoint for deleting a user"""
     return user_service.delete_user(
         username=username,
     )

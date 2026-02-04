@@ -26,6 +26,7 @@ def get_programs(
         Depends(get_program_service),
     ],
 ) -> list[Program]:
+    """Endpoint for getting a list of programs"""
     return program_service.get_all_programs()
 
 
@@ -43,6 +44,7 @@ def add_program(
     description: Annotated[str, Form()],
     author: Annotated[str, Form()],
 ) -> dict[str, str]:
+    """Endpoint for creating programs"""
     program_data = ProgramCreate(
         name=name,
         description=description,
@@ -79,6 +81,7 @@ def delete_program(
     ],
     program_name: str,
 ) -> None:
+    """Endpoint for deleting a program"""
     try:
         program_service.delete_program(program_name)
     except ProgramNameDoesNotExistError as e:

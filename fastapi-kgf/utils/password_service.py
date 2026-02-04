@@ -4,7 +4,7 @@ CANNOT_BE_EMPTY = "Password cannot be empty"
 
 
 def hash_password(password: str) -> bytes:
-    """Хеширует пароль"""
+    """Password Hashing"""
     if not password:
         raise ValueError(CANNOT_BE_EMPTY)
 

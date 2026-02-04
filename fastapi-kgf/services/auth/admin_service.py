@@ -11,7 +11,7 @@ def validate_admin(
     username: str,
     password: str,
 ) -> bool:
-
+    """Verifying that the user is an admin"""
     user = authenticate_user(
         session=session,
         username=username,
