@@ -94,11 +94,10 @@ select = [
 	"FURB" # refurb (FURB)
 ]
 
+ignore = ["RUF002"]
+
 [lint.per-file-ignores]
-"fastapi-kgf/core/schemas/programs.py" = ['RUF002']
 "fastapi-kgf/app_lifespan.py" = ["ARG001", "PGH003"]
-"fastapi-kgf/core/schemas/user.py" = ["RUF002"]
 "fastapi-kgf/core/models/user.py" = ["ARG002"]
 "fastapi-kgf/rest/main_views.py" = ["E501"]
-"fastapi-kgf/parsers/platforms/tek_torg/parser.py" = ["RUF002"]
-
+"fastapi-kgf/core/config.py" = ["PGH003"]
