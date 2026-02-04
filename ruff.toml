@@ -100,4 +100,5 @@ select = [
 "fastapi-kgf/core/schemas/user.py" = ["RUF002"]
 "fastapi-kgf/core/models/user.py" = ["ARG002"]
 "fastapi-kgf/rest/main_views.py" = ["E501"]
+"fastapi-kgf/parsers/platforms/tek_torg/parser.py" = ["RUF002"]
 
