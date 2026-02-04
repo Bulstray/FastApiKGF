@@ -1,12 +1,11 @@
 from abc import ABC, abstractmethod
-
-from bs4.element import Tag
-
-from core.models import Tender
+from xml.etree.ElementTree import Element
 
 import requests
+from bs4.element import ResultSet, Tag
 
 from core.enums import Platform
+from core.models import Tender
 
 
 class BaseTenderPlatform(ABC):
@@ -17,7 +16,7 @@ class BaseTenderPlatform(ABC):
     def __init__(
         self,
         base_url: str,
-        params: dict,
+        params: dict[str, str | int],
     ) -> None:
         self.base_url = base_url
         self.response = requests.get(
@@ -28,21 +27,21 @@ class BaseTenderPlatform(ABC):
 
     @staticmethod
     @abstractmethod
-    def get_params(key_word: str) -> dict:
+    def get_params(key_word: str) -> dict[str, str | int]:
         """Возвращает параметры запроса"""
 
     @abstractmethod
-    def get_cards_data(self) -> dict[str, str | int | list[str]]:
+    def get_cards_data(self) -> list[Element] | ResultSet[Tag]:
         """Получение блока с тендерами"""
 
     @staticmethod
     @abstractmethod
-    def is_tender_name_taken(card: Tag) -> str:
+    def is_tender_name_taken(card: Tag | Element) -> str:
         """Метод для проверки имени тендера"""
 
     @staticmethod
     @abstractmethod
-    def is_tender_pub_date_taken(card: Tag) -> str:
+    def is_tender_pub_date_taken(card: Tag | Element) -> str:
         """Метод для проверки и преобразовании даты публикации"""
 
     def search_tenders(self, platform: Platform) -> list[Tender]:
