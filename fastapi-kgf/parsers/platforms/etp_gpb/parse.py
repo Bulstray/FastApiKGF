@@ -1,4 +1,5 @@
 from datetime import datetime
+from xml.etree.ElementTree import Element
 
 from bs4 import Tag
 from defusedxml import ElementTree
@@ -21,17 +22,20 @@ class EtpgpbParser(BaseTenderPlatform):
         return {"search": key_word}
 
     @staticmethod
-    def is_tender_name_taken(card: Tag) -> str:
+    def is_tender_name_taken(card: Element | Tag) -> str:
         name_tag = card.find("title")
         if name_tag is None:
             return "Имя не найдено"
-        return name_tag.text
+        return f"{name_tag.text}"
 
     @staticmethod
-    def is_tender_pub_date_taken(card: Tag) -> str:
+    def is_tender_pub_date_taken(card: Element | Tag) -> str:
         pub_date_tag = card.find("pubDate")
 
         if pub_date_tag is None:
+            return "Дата не найдена"
+
+        if not pub_date_tag.text:
             return "Дата не найдена"
 
         pub_date_str = datetime.strptime(
@@ -41,6 +45,6 @@ class EtpgpbParser(BaseTenderPlatform):
 
         return pub_date_str.strftime("%Y-%m-%d")
 
-    def get_cards_data(self):
+    def get_cards_data(self) -> list[Element]:
         root = ElementTree.fromstring(self.response.text)
         return root.findall(".//item")
