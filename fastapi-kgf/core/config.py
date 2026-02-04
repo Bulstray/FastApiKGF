@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from pydantic import BaseModel, HttpUrl
+from pydantic import BaseModel
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 from .enums import UserRole
@@ -9,11 +9,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 
 class TenderPlatformConfig(BaseModel):
-    etp_gpb: HttpUrl = (
-        "https://new.etpgpb.ru/procedures.rss?page=1&per=100&procedure%5Bstage%5D%5B0%5D=accepting&sort=by_relevance&search="
-    )
+    etp_gpb: str = "https://new.etpgpb.ru/procedures.rss"
 
-    tek_torg: HttpUrl = "https://www.tektorg.ru/procedures?name="
+    tek_torg: str = "https://www.tektorg.ru/procedures"
 
 
 class AdminConfig(BaseModel):
