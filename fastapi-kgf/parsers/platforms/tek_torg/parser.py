@@ -1,51 +1,56 @@
+from datetime import datetime
+
+import requests
 from bs4 import BeautifulSoup
 from bs4.element import Tag
 
-from datetime import datetime, date
-
-from parsers.platforms.base_platform import BaseTenderPlatform
-import requests
 from core.config import settings
+from core.enums import Platform
+from core.models import Tender
+from parsers.platforms.base_platform import BaseTenderPlatform
 
 
 class TekTorgPlatform(BaseTenderPlatform):
     """Парсер площадки ТЕК-Торг"""
 
-    def __init__(self):
-        super().__init__(base_url=settings.tender_platform.tek_torg)
-
-    def search_tenders(self, key_word: str):
-        """Поиск тендеров на ТЕК-Торг"""
-        response = requests.get(f"{self.base_url}{key_word}")
-
-        soup = BeautifulSoup(response.text, "html.parser")
-
-        tender_cards = soup.find_all("div", class_="sc-6c01eeae-0 jtfzxc")
-
-        date_now = datetime.now().date()
-
-        tenders = []
-        for card in tender_cards:
-            deadline = self.get_deadline(card=card)
-
-            if date_now > deadline:
-                continue
-
-            tenders.append(
-                {
-                    "platform": "ROSH",
-                    "name": card.find("a").text,
-                    "date": deadline.strftime("%Y-%m-%d"),
-                }
-            )
-        return tenders
-
-    @staticmethod
-    def get_deadline(card: Tag) -> date:
-        deadline = (
-            card.find("time", class_="sc-7909e12c-2 fIvbdF")
-            .find("span", class_="sc-7909e12c-0 glSvLE")
-            .text
+    def __init__(self, key_word: str) -> None:
+        super().__init__(
+            base_url=f"{settings.tender_platform.tek_torg}",
+            params=self.get_params(key_word=key_word),
         )
 
-        return datetime.strptime(deadline, "%d.%m.%Y").date()
+    @staticmethod
+    def is_tender_name_taken(card: Tag) -> str:
+        name_tag = card.find("a")
+
+        if name_tag is None:
+            return "Имя не найдено"
+
+        return name_tag.text
+
+    @staticmethod
+    def is_tender_pub_date_taken(card: Tag) -> str:
+        pub_date_tag = card.find(
+            "span",
+            class_="sc-7909e12c-0 glSvLE",
+        )
+        if pub_date_tag is None:
+            return "Дата не найдена"
+
+        pub_date = datetime.strptime(
+            pub_date_tag.text,
+            "%d.%m.%Y",
+        )
+
+        return pub_date.strftime("%Y-%m-%d")
+
+    @staticmethod
+    def get_params(key_word: str) -> dict[str, str | list[str]]:
+        return {
+            "status[]": ["Приём заявок"],
+            "name": key_word,
+        }
+
+    def get_cards_data(self):
+        soup = BeautifulSoup(self.response.text, "html.parser")
+        return soup.find_all("div", class_="sc-6c01eeae-0 jtfzxc")

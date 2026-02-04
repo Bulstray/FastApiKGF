@@ -1,32 +1,46 @@
 from datetime import datetime
 
-from parsers.platforms.base_platform import BaseTenderPlatform
+from bs4 import Tag
+from defusedxml import ElementTree
 
 from core.config import settings
-import requests
-
-from xml.etree import ElementTree
+from parsers.platforms.base_platform import BaseTenderPlatform
 
 
 class EtpgpbParser(BaseTenderPlatform):
-    def __init__(self):
-        super().__init__(base_url=settings.tender_platform.etp_gpb)
+    """Parser for ETP GPB tender platform."""
 
-    def search_tenders(self, key_word: str):
-        response = requests.get(f"{settings.tender_platform.etp_gpb}{key_word}")
-        root = ElementTree.fromstring(response.content)
+    def __init__(self, key_word: str) -> None:
+        super().__init__(
+            base_url=f"{settings.tender_platform.etp_gpb}",
+            params=self.get_params(key_word=key_word),
+        )
 
-        tenders = []
+    @staticmethod
+    def get_params(key_word: str) -> dict[str, str | int]:
+        return {"search": key_word}
 
-        for tender in root.findall(".//item"):
-            str_date = tender.find("pubDate").text
-            date_datetime = datetime.strptime(str_date, "%a, %d %b %Y %H:%M:%S %z")
+    @staticmethod
+    def is_tender_name_taken(card: Tag) -> str:
+        name_tag = card.find("title")
+        if name_tag is None:
+            return "Имя не найдено"
+        return name_tag.text
 
-            tenders.append(
-                {
-                    "platform": "GAZP",
-                    "name": tender.find("title").text,
-                    "date": date_datetime.strftime("%Y-%m-%d"),
-                }
-            )
-        return tenders
+    @staticmethod
+    def is_tender_pub_date_taken(card: Tag) -> str:
+        pub_date_tag = card.find("pubDate")
+
+        if pub_date_tag is None:
+            return "Дата не найдена"
+
+        pub_date_str = datetime.strptime(
+            pub_date_tag.text,
+            "%a, %d %b %Y %H:%M:%S %z",
+        )
+
+        return pub_date_str.strftime("%Y-%m-%d")
+
+    def get_cards_data(self):
+        root = ElementTree.fromstring(self.response.text)
+        return root.findall(".//item")
