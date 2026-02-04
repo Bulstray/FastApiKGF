@@ -1,6 +1,6 @@
 __all__ = (
-    "TekTorgPlatform",
     "EtpgpbParser",
+    "TekTorgPlatform",
 )
 
 from .etp_gpb.parse import EtpgpbParser
