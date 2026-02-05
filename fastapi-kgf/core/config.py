@@ -3,15 +3,10 @@ from pathlib import Path
 from pydantic import BaseModel
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
+from core.config.platforms import TenderPlatformConfig
 from .enums import UserRole
 
 BASE_DIR = Path(__file__).resolve().parent.parent
-
-
-class TenderPlatformConfig(BaseModel):
-    etp_gpb: str = "https://new.etpgpb.ru/procedures.rss"
-
-    tek_torg: str = "https://www.tektorg.ru/procedures"
 
 
 class AdminConfig(BaseModel):
