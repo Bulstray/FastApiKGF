@@ -8,6 +8,7 @@ dependencies = [
     "bcrypt>=5.0.0",
     "beautifulsoup4>=4.14.3",
     "defusedxml>=0.7.1",
+    "fastapi-users[sqlalchemy]>=15.0.4",
     "fastapi[standard]>=0.128.0",
     "requests>=2.32.5",
     "sqlalchemy>=2.0.46",
