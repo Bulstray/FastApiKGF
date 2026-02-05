@@ -497,7 +497,7 @@ dependencies = [
     { name = "fastapi", extra = ["standard"] },
     { name = "fastapi-users", extra = ["sqlalchemy"] },
     { name = "requests" },
-    { name = "sqlalchemy" },
+    { name = "sqlalchemy", extra = ["asyncio"] },
     { name = "types-defusedxml" },
     { name = "types-requests" },
 ]
@@ -518,7 +518,7 @@ requires-dist = [
     { name = "fastapi", extras = ["standard"], specifier = ">=0.128.0" },
     { name = "fastapi-users", extras = ["sqlalchemy"], specifier = ">=15.0.4" },
     { name = "requests", specifier = ">=2.32.5" },
-    { name = "sqlalchemy", specifier = ">=2.0.46" },
+    { name = "sqlalchemy", extras = ["asyncio"], specifier = ">=2.0.46" },
     { name = "types-defusedxml", specifier = ">=0.7.0.20250822" },
     { name = "types-requests", specifier = ">=2.32.4.20260107" },
 ]
