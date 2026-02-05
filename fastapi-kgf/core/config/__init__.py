@@ -1,3 +1,6 @@
-__all__ = ("Settings",)
+__all__ = (
+    "BASE_DIR",
+    "settings",
+)
 
-from .settings import Settings
+from .settings import BASE_DIR, settings

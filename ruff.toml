@@ -91,7 +91,8 @@ select = [
 	"G", # flake8-logging-format (G)
 	"C90", # mccabe (C90)
 	"PERF", # Perflint (PERF)
-	"FURB" # refurb (FURB)
+	"FURB", # refurb (FURB)
+	"FAST" # fastapi
 ]
 
 ignore = ["RUF002"]
