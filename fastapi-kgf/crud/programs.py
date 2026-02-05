@@ -1,33 +1,36 @@
-
 from sqlalchemy import delete, func, select
 from sqlalchemy.orm import Session
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from core.models import Program
 
 
-def get_all_programs(session: Session) -> list[Program]:
+async def get_all_programs(session: AsyncSession) -> list[Program]:
     """Возвращает все программы как объекты Program."""
     stmt = select(Program).order_by(Program.id)
-    return list(session.scalars(stmt).all())
+    result = await session.scalars(stmt)
+    return list(result.all())
 
 
-def get_program_by_name(session: Session, name: str) -> Program | None:
+async def get_program_by_name(session: AsyncSession, name: str) -> Program | None:
     stmt = select(Program).where(
-        func.lower(Program.name) == name.lower(),
+        name.lower() == func.lower(Program.name),
     )
-    return session.scalars(stmt).first()
+    result = await session.scalars(stmt)
+    return result.first()
 
 
-def create_program_in_db(
-    session: Session,
+async def create_program_in_db(
+    session: AsyncSession,
     program: Program,
 ) -> Program:
     session.add(program)
-    session.commit()
+    await session.commit()
+    await session.refresh(program)
     return program
 
 
-def delete_program_from_db(session: Session, name: str) -> None:
-    stmt = delete(Program).where(func.lower(Program.name) == name.lower())
-    session.execute(stmt)
-    session.commit()
+async def delete_program_from_db(session: AsyncSession, name: str) -> None:
+    stmt = delete(Program).where(name.lower() == func.lower(Program.name))
+    await session.execute(stmt)
+    await session.commit()

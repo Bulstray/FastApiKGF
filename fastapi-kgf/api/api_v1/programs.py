@@ -20,21 +20,21 @@ router = APIRouter(tags=["Programs"])
     response_model=list[ProgramRead],
     status_code=status.HTTP_200_OK,
 )
-def get_programs(
+async def get_programs(
     program_service: Annotated[
         ProgramService,
         Depends(get_program_service),
     ],
 ) -> list[Program]:
     """Endpoint for getting a list of programs"""
-    return program_service.get_all_programs()
+    return await program_service.get_all_programs()
 
 
 @router.post(
     "",
     status_code=status.HTTP_201_CREATED,
 )
-def add_program(
+async def add_program(
     program_service: Annotated[
         ProgramService,
         Depends(get_program_service),
@@ -52,7 +52,7 @@ def add_program(
     )
 
     try:
-        program = program_service.create_program(
+        program = await program_service.create_program(
             program_data,
             file,
         )
@@ -74,7 +74,7 @@ def add_program(
     "",
     status_code=status.HTTP_204_NO_CONTENT,
 )
-def delete_program(
+async def delete_program(
     program_service: Annotated[
         ProgramService,
         Depends(get_program_service),
@@ -83,7 +83,7 @@ def delete_program(
 ) -> None:
     """Endpoint for deleting a program"""
     try:
-        program_service.delete_program(program_name)
+        await program_service.delete_program(program_name)
     except ProgramNameDoesNotExistError as e:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,

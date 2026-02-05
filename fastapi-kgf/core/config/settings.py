@@ -1,4 +1,5 @@
 from pathlib import Path
+from aiopath import AsyncPath
 
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
@@ -23,7 +24,7 @@ class Settings(BaseSettings):
 
     tender_platform: PlatformConfig = PlatformConfig()
 
-    uploads_program_dir: Path = Path("uploads/programs")
+    uploads_program_dir: AsyncPath = AsyncPath("uploads/programs")
 
 
 settings = Settings()  # type: ignore[call-arg]
