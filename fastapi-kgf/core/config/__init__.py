@@ -1,3 +1,3 @@
-__all__ = ("TenderPlatformConfig",)
+__all__ = ("Settings",)
 
-from .platforms import TenderPlatformConfig
+from .settings import Settings
