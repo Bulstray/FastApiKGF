@@ -7,7 +7,7 @@ from .api import ApiConfig
 from .database import DatabaseConfig
 from .platforms import PlatformConfig
 
-BASE_DIR = Path(__file__).resolve().parent.parent
+BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
 
 class Settings(BaseSettings):
