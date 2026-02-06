@@ -5,7 +5,6 @@ from fastapi import FastAPI
 
 from core.config import settings
 from core.models import Base, User, db_helper
-from crud import user as user_crud
 from utils.password_service import hash_password
 
 
