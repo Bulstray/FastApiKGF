@@ -13,7 +13,7 @@ from .base import Base
 class AccessToken(SQLAlchemyBaseAccessTokenTable[UserIdType], Base):
     user_id: Mapped[UserIdType] = mapped_column(
         Integer,
-        ForeignKey("users.id", ondelete="cascade"),
+        ForeignKey("user.id", ondelete="cascade"),
         nullable=False,
     )
 
