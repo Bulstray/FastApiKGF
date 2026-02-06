@@ -7,7 +7,6 @@ from starlette.requests import Request
 from starlette.responses import FileResponse, HTMLResponse
 
 from core.schemas import ProgramRead
-from dependencies.auth import validate_basic_auth
 from dependencies.providers import get_program_service
 from services.programs import ProgramService
 from templating.jinja_template import templates
@@ -44,7 +43,7 @@ def programs_page(
 @router.get(
     "/program/{name}/download",
     name="program:download",
-    dependencies=[Depends(validate_basic_auth)],
+    # dependencies=[Depends(validate_basic_auth)],
 )
 def programs_download(
     program_service: Annotated[
