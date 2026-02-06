@@ -5,6 +5,7 @@ class ApiV1Config(BaseModel):
     prefix: str = "/v1"
     programs: str = "/programs"
     users: str = "/users"
+    auth: str = "/auth"
 
 
 class ApiConfig(BaseModel):
