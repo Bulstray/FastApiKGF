@@ -1,31 +1,14 @@
-from typing import Annotated
-
-from pydantic import BaseModel, BeforeValidator
-
-from core.enums import UserRole
+from fastapi_users import schemas
+from core.types import UserIdType
 
 
-def to_lowercase(value: str) -> str:
-    return value.lower()
+class UserRead(schemas.BaseUser[UserIdType]):
+    pass
 
 
-class UserBase(BaseModel):
-    username: str
-    password: str
-    role: Annotated[
-        UserRole,
-        BeforeValidator(to_lowercase),
-    ]
+class UserCreate(schemas.BaseUserCreate):
+    pass
 
 
-class User(UserBase):
-    """Модель для хранения данных о пользователей"""
-
-
-class UserCreate(UserBase):
-    """Модель для создания данных о пользователей"""
-
-
-class UserRead(BaseModel):
-    username: str
-    role: str
+class UserUpdate(schemas.BaseUserUpdate):
+    pass
