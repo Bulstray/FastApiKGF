@@ -3,7 +3,7 @@ from aiopath import AsyncPath
 
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
-from .admin import AdminConfig
+from .superuser import SuperUserConfig
 from .api import ApiConfig
 from .database import DatabaseConfig
 from .platforms import PlatformConfig
@@ -19,7 +19,7 @@ class Settings(BaseSettings):
         env_nested_delimiter="__",
         env_prefix="APP_CONFIG__",
     )
-    admin: AdminConfig
+    superuser: SuperUserConfig
     db: DatabaseConfig = DatabaseConfig()
     api: ApiConfig = ApiConfig()
 
