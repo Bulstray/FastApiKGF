@@ -7,9 +7,10 @@ from sqlalchemy import Integer, ForeignKey
 
 from core.types import UserIdType
 from sqlalchemy.ext.asyncio import AsyncSession
+from .base import Base
 
 
-class AccessToken(SQLAlchemyBaseAccessTokenTable[UserIdType]):
+class AccessToken(SQLAlchemyBaseAccessTokenTable[UserIdType], Base):
     user_id: Mapped[UserIdType] = mapped_column(
         Integer,
         ForeignKey("users.id", ondelete="cascade"),
@@ -17,5 +18,5 @@ class AccessToken(SQLAlchemyBaseAccessTokenTable[UserIdType]):
     )
 
     @classmethod
-    def get_db(cls, session: "AsyncSession"):
+    def get_db(cls, session: AsyncSession):
         return SQLAlchemyAccessTokenDatabase(session, cls)
