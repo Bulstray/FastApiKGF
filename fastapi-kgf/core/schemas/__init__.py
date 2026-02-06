@@ -4,7 +4,9 @@ __all__ = (
     "User",
     "UserCreate",
     "UserRead",
+    "Tender",
 )
 
 from .programs import ProgramCreate, ProgramRead
 from .user import User, UserCreate, UserRead
+from .tenders import Tender
