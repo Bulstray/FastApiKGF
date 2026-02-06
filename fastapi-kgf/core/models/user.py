@@ -3,9 +3,10 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from .base import Base
 from core.types import UserIdType
+from .mixin import IdIntPkMixin
 
 
-class User(SQLAlchemyBaseUserTable[UserIdType], Base):
+class User(Base, IdIntPkMixin, SQLAlchemyBaseUserTable[UserIdType]):
     pass
 
     @classmethod
