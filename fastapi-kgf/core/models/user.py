@@ -1,12 +1,13 @@
-from sqlalchemy import Enum, String
-from sqlalchemy.orm import Mapped, mapped_column
-
-from fastapi_users.db import SQLAlchemyBaseUserTable
-
-from core.enums import UserRole
+from fastapi_users.db import SQLAlchemyBaseUserTable, SQLAlchemyUserDatabase
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from .base import Base
+from core.types import UserIdType
 
 
-class User(SQLAlchemyBaseUserTable[int], Base):
+class User(SQLAlchemyBaseUserTable[UserIdType], Base):
     pass
+
+    @classmethod
+    def get_db(cls, session: AsyncSession):
+        return SQLAlchemyUserDatabase(session, cls)
