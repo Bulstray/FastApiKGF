@@ -24,7 +24,7 @@ class Settings(BaseSettings):
     api: ApiConfig = ApiConfig()
 
     tender_platform: PlatformConfig = PlatformConfig()
-    access_token: AccessToken = AccessToken()
+    access_token: AccessToken
 
     uploads_program_dir: AsyncPath = AsyncPath("uploads/programs")
 
