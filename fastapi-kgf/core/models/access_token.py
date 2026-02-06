@@ -10,7 +10,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from .base import Base
 
 
-class AccessToken(SQLAlchemyBaseAccessTokenTable[UserIdType], Base):
+class AccessToken(Base, SQLAlchemyBaseAccessTokenTable[UserIdType]):
     user_id: Mapped[UserIdType] = mapped_column(
         Integer,
         ForeignKey("user.id", ondelete="cascade"),
