@@ -1,5 +1,6 @@
 import shutil
 from pathlib import Path
+from aiopath import AsyncPath
 
 from fastapi import UploadFile
 
@@ -9,9 +10,9 @@ from utils.file_size import get_file_size
 
 class ProgramFilesService:
     def __init__(self) -> None:
-        self.upload_path = settings.uploads_program_dir
+        self.upload_path: AsyncPath = settings.uploads_program_dir
 
-    def save_program_file(self, file: UploadFile) -> Path:
+    async def save_program_file(self, file: UploadFile) -> AsyncPath:
 
         if not file.filename:
             msg = "File must have a filename"
@@ -19,20 +20,21 @@ class ProgramFilesService:
 
         file_path = self.upload_path / file.filename
 
-        if file_path.exists():
+        if await file_path.exists():
             msg = f"File {file.filename} already exists"
             raise FileExistsError(msg)
 
-        with file_path.open("wb") as buffer:
-            shutil.copyfileobj(file.file, buffer)
+        async with file_path.open("wb") as buffer:
+            content = await file.read()
+            await buffer.write(content)
 
         return file_path
 
     @staticmethod
-    def delete_program_file(file: Path) -> None:
-        if file.exists():
-            file.unlink()
+    async def delete_program_file(file: AsyncPath) -> None:
+        if await file.exists():
+            await file.unlink()
 
     @staticmethod
-    def get_file_size_kb(file_path: Path) -> str:
-        return get_file_size(file_path)
+    async def get_file_size_kb(file_path: AsyncPath) -> str:
+        return await get_file_size(file_path)

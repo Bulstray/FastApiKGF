@@ -1,27 +1,30 @@
-from collections.abc import Generator
+from typing import AsyncGenerator
 
-from sqlalchemy import create_engine
-from sqlalchemy.orm import Session, sessionmaker
+from sqlalchemy.ext.asyncio import (
+    AsyncSession,
+    create_async_engine,
+    async_sessionmaker,
+)
 
 from core.config import settings
 
 
 class DatabaseHelper:
     def __init__(self, url: str) -> None:
-        self.engine = create_engine(
+        self.engine = create_async_engine(
             url,
             echo=settings.db.echo,
         )
 
-        self.session_factory = sessionmaker(
+        self.session_factory = async_sessionmaker(
             bind=self.engine,
         )
 
-    def dispose(self) -> None:
-        self.engine.dispose()
+    async def dispose(self) -> None:
+        await self.engine.dispose()
 
-    def session_getter(self) -> Generator[Session]:
-        with self.session_factory() as session:
+    async def session_getter(self) -> AsyncGenerator[AsyncSession]:
+        async with self.session_factory() as session:
             yield session
 
 

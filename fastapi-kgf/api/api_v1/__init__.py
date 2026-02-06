@@ -9,7 +9,7 @@ from .users import router as users_router
 router = APIRouter(
     prefix=settings.api.v1.prefix,
     dependencies=[
-        Depends(admin_auth_dependency),
+        # Depends(admin_auth_dependency),
     ],
 )
 
@@ -18,7 +18,7 @@ router.include_router(
     prefix=settings.api.v1.programs,
 )
 
-router.include_router(
-    users_router,
-    prefix=settings.api.v1.users,
-)
+# router.include_router(
+#     users_router,
+#     prefix=settings.api.v1.users,
+# )

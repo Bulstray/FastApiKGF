@@ -1,9 +1,9 @@
-from pathlib import Path
+from aiopath import AsyncPath
 
 KB = 1024
 
 
-def get_file_size(file_path: Path) -> str:
+async def get_file_size(file_path: AsyncPath) -> str:
     """
     Получить размер файла в удобном формате.
 
@@ -13,7 +13,8 @@ def get_file_size(file_path: Path) -> str:
     Returns:
         str: размер
     """
-    size_bytes = file_path.stat().st_size
+    file_stats = await file_path.stat()
+    size_bytes = file_stats.st_size
 
     units = ["B", "KB", "MB", "GB", "TB"]
 
