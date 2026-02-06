@@ -8,5 +8,5 @@ from core.enums import UserRole
 from .base import Base
 
 
-class User(Base, SQLAlchemyBaseUserTable[int], Base):
+class User(SQLAlchemyBaseUserTable[int], Base):
     pass
