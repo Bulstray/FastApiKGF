@@ -1,6 +1,6 @@
 from pathlib import Path
-from aiopath import AsyncPath
 
+from aiopath import AsyncPath
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 from .api import ApiConfig
