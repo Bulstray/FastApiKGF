@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 
-from core.enums import Platform
+from core.types.platform import Platform
 
 
 class BaseTender(BaseModel):
