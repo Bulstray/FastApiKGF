@@ -4,8 +4,8 @@ from xml.etree.ElementTree import Element
 import requests
 from bs4.element import ResultSet, Tag
 
-from core.enums import Platform
-from core.models import Tender
+from core.schemas import Tender
+from core.types.platform import Platform
 
 
 class BaseTenderPlatform(ABC):

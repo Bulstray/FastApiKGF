@@ -1,5 +1,5 @@
-from core.enums import Platform
-from core.models import Tender
+from core.schemas import Tender
+from core.types.platform import Platform
 
 from .platforms import EtpgpbParser, TekTorgPlatform
 
