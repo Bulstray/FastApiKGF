@@ -1,6 +1,6 @@
-from pathlib import Path
 from typing import Annotated
 
+from aiopath import AsyncPath
 from fastapi import APIRouter, Depends, HTTPException
 from starlette import status
 from starlette.requests import Request
@@ -10,8 +10,6 @@ from core.schemas import ProgramRead
 from dependencies.providers import get_program_service
 from services.programs import ProgramService
 from templating.jinja_template import templates
-
-from aiopath import AsyncPath
 
 router = APIRouter(prefix="/programs")
 
