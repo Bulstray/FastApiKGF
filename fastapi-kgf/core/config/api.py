@@ -4,6 +4,7 @@ from pydantic import BaseModel
 class ApiV1Config(BaseModel):
     prefix: str = "/v1"
     programs: str = "/programs"
+    users: str = "/users"
 
 
 class ApiConfig(BaseModel):
