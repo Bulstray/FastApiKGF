@@ -1,7 +1,4 @@
-import shutil
-from pathlib import Path
 from aiopath import AsyncPath
-
 from fastapi import UploadFile
 
 from core.config import settings

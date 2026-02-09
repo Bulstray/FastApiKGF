@@ -1,5 +1,4 @@
 from aiopath import AsyncPath
-
 from fastapi import UploadFile
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -48,7 +47,7 @@ class ProgramService:
 
         try:
             file_path = await self.file_service.save_program_file(
-                file
+                file,
             )  # Закинуть в background task
         except FileExistsError as exc:
             raise ProgramFileNameAlreadyExistsError(file.filename) from exc
