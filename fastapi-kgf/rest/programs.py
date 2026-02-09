@@ -11,11 +11,13 @@ from dependencies.providers import get_program_service
 from services.programs import ProgramService
 from templating.jinja_template import templates
 
+from aiopath import AsyncPath
+
 router = APIRouter(prefix="/programs")
 
 
 @router.get("/programs", name="programs:page")
-def programs_page(
+async def programs_page(
     request: Request,
     program_service: Annotated[
         ProgramService,
@@ -24,7 +26,7 @@ def programs_page(
 ) -> HTMLResponse:
     """Render programs listing page."""
 
-    programs = program_service.get_all_programs()
+    programs = await program_service.get_all_programs()
 
     programs_schemas = [
         ProgramRead.model_validate(
@@ -45,14 +47,14 @@ def programs_page(
     name="program:download",
     # dependencies=[Depends(validate_basic_auth)],
 )
-def programs_download(
+async def programs_download(
     program_service: Annotated[
         ProgramService,
         Depends(get_program_service),
     ],
     name: str,
 ) -> FileResponse:
-    program = program_service.get_program_by_name(program_name=name)
+    program = await program_service.get_program_by_name(program_name=name)
 
     if not program:
         raise HTTPException(
@@ -60,9 +62,9 @@ def programs_download(
             detail=f"Program {name} not found",
         )
 
-    file_path = Path(program.folder_path)
+    file_path = AsyncPath(program.folder_path)
 
-    if not file_path.exists():
+    if not await file_path.exists():
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="File not found in server",
