@@ -1,8 +1,13 @@
+{% from "macro/navbar.html" import navbar with context %}
+{% from "macro/navbar.html" import style_navbar with context %}
+
 {% extends "base.html" %}
 
 
 {% block style %}
+    {{ style_navbar() }}
     <style>
+
         :root {
             --primary-color: #4361ee;
             --secondary-color: #3a0ca3;
@@ -195,6 +200,7 @@
 {% block main %}
     <!-- Основное содержимое -->
     <main class="main-content">
+        {{ navbar() }}
         <header class="page-header">
             <h1 class="display-5 fw-bold">Каталог программ</h1>
             <p class="lead">Скачивайте программы разработанные в KGF</p>
@@ -229,7 +235,8 @@
                                 <div>
                                 <span><i class="bi bi-download"
                                          style="margin-right: 7px"></i>{{ program.file_size }}</span>
-                                    <span class="ms-3"><i class="bi bi-person" style="margin-right: 5px"></i>{{ program.author }}</span>
+                                    <span class="ms-3"><i class="bi bi-person"
+                                                          style="margin-right: 5px"></i>{{ program.author }}</span>
                                 </div>
                             </div>
                             <div class="d-grid mt-3">

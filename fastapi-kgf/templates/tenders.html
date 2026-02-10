@@ -1,7 +1,12 @@
+{% from "macro/navbar.html" import navbar with context %}
+{% from "macro/navbar.html" import style_navbar with context %}
+
 {% extends "base.html" %}
 
 {% block style %}
+    {{ style_navbar() }}
     <style>
+
 
         :root {
             --primary-color: #4361ee;
@@ -305,6 +310,7 @@
 
 {% block main %}
     <main class="main-content">
+        {{ navbar() }}
         <!-- Поисковая панель -->
         <section class="search-hero">
             <h1>Поиск тендеров</h1>

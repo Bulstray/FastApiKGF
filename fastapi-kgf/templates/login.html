@@ -264,14 +264,15 @@
 
             <!-- Тело формы -->
             <div class="card-body">
-                <form id="loginForm">
+                <!-- Исправьте action: либо просто "/login", либо используйте url_for из контекста -->
+                <form id="loginForm" action="/login" method="post">
                     <!-- Поле имени пользователя -->
                     <div class="form-group">
                         <label for="username" class="form-label">
                             <i class="fas fa-user"></i> Имя пользователя
                         </label>
                         <input type="text" class="form-control" id="username"
-                               placeholder="Введите ваше имя пользователя" required>
+                               name="username">
                         <div class="input-icon">
                             <i class="fas fa-user-circle"></i>
                         </div>
@@ -283,11 +284,18 @@
                             <i class="fas fa-lock"></i> Пароль
                         </label>
                         <input type="password" class="form-control" id="password"
-                               placeholder="Введите ваш пароль" required>
+                               name="password">
                         <div class="input-icon">
                             <i class="fas fa-eye-slash toggle-password" style="cursor: pointer;"></i>
                         </div>
                     </div>
+
+                    <!-- Отображение ошибки, если есть -->
+                    {% if error %}
+                    <div class="alert alert-danger mt-3">
+                        {{ error }}
+                    </div>
+                    {% endif %}
 
                     <!-- Кнопка входа -->
                     <button type="submit" class="btn btn-login">
