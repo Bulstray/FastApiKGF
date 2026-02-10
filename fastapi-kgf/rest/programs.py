@@ -11,6 +11,8 @@ from dependencies.providers import get_program_service
 from services.programs import ProgramService
 from templating.jinja_template import templates
 
+from dependencies.session import get_session
+
 router = APIRouter(prefix="/programs")
 
 
@@ -50,8 +52,15 @@ async def programs_download(
         ProgramService,
         Depends(get_program_service),
     ],
+    request: Request,
     name: str,
 ) -> FileResponse:
+
+    if not get_session(request=request):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+        )
+
     program = await program_service.get_program_by_name(program_name=name)
 
     if not program:
