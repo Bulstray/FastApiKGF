@@ -4,12 +4,12 @@ from fastapi import APIRouter, Depends, Form, HTTPException, UploadFile, status
 
 from core.models import Program
 from core.schemas import ProgramCreate, ProgramRead
-from crud.program_exceptions import (
+from dependencies.providers import get_program_service
+from services.programs.exceptions import (
     ProgramFileNameAlreadyExistsError,
     ProgramNameAlreadyExistsError,
     ProgramNameDoesNotExistError,
 )
-from dependencies.providers import get_program_service
 from services.programs.service import ProgramService
 
 router = APIRouter(tags=["Programs"])
