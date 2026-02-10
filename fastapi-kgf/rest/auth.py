@@ -14,7 +14,6 @@ from fastapi import (
 from fastapi.responses import RedirectResponse
 from typing import Annotated
 
-from httpx import Cookies
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from dependencies.auth_user import validate_basic_auth_user
@@ -23,8 +22,7 @@ from templating.jinja_template import templates
 from core.models import db_helper
 
 from time import time
-
-from typing import Any
+from core.config.settings import COOKIES, COOKIES_SESSION_ID_KEY
 
 router = APIRouter(
     prefix="/login",
@@ -39,8 +37,15 @@ def login_page(request: Request):
     )
 
 
-COOKIES: dict[str, dict[str, Any]] = {}
-COOKIES_SESSION_ID_KEY = "web-app-session-id"
+@router.get("/logout", name="login:logout")
+def logout_page(request: Request, return_url: str | None = None):
+    redirect = RedirectResponse(
+        url=return_url or "/",
+        status_code=status.HTTP_303_SEE_OTHER,
+    )
+
+    redirect.delete_cookie(COOKIES_SESSION_ID_KEY)
+    return redirect
 
 
 def get_session_data(
@@ -58,7 +63,6 @@ def get_session_data(
 
 @router.post("/", name="login:post")
 async def login_submit(
-    response: Response,
     request: Request,
     username: Annotated[str, Form(...)],
     password: Annotated[str, Form(...)],
