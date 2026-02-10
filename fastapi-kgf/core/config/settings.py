@@ -6,6 +6,7 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 from .api import ApiConfig
 from .database import DatabaseConfig
 from .platforms import PlatformConfig
+from .superuser import SuperUserConfig
 
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
@@ -20,8 +21,8 @@ class Settings(BaseSettings):
 
     db: DatabaseConfig = DatabaseConfig()
     api: ApiConfig = ApiConfig()
-
     tender_platform: PlatformConfig = PlatformConfig()
+    superuser: SuperUserConfig
 
     uploads_program_dir: AsyncPath = AsyncPath("uploads/programs")
 
