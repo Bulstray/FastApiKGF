@@ -32,7 +32,7 @@ class AdminHelper:
             return False
 
         return await self.check_password_match(
-            hashed_password=db_user.hashed_password,
+            hashed_password=db_user.hashed_password.encode("utf-8"),
             password=password.encode("utf-8"),
         )
 
