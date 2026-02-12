@@ -26,10 +26,10 @@ class Settings(BaseSettings):
     )
 
     db: DatabaseConfig = DatabaseConfig()
-    # redis: RedisConfig = RedisConfig()
+    redis: RedisConfig = RedisConfig()
     api: ApiConfig = ApiConfig()
     tender_platform: PlatformConfig = PlatformConfig()
-    # session: SessionConfig = SessionConfig()
+    session: SessionConfig = SessionConfig()
     superuser: SuperUserConfig
 
     uploads_program_dir: AsyncPath = AsyncPath("uploads/programs")
