@@ -1,28 +1,22 @@
-import uuid
+from typing import Annotated
 
 from fastapi import (
     APIRouter,
-    Request,
-    Form,
-    Depends,
-    status,
-    Response,
     Cookie,
-    HTTPException,
+    Depends,
+    Form,
+    Request,
+    status,
 )
-
 from fastapi.responses import RedirectResponse
-from typing import Annotated
-
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from dependencies.auth_user import validate_basic_auth_user
-
-from templating.jinja_template import templates
+from core.config.settings import SESSION_COOKIE_NAME
 from core.models import db_helper
-
-from time import time
-from core.config.settings import COOKIES, COOKIES_SESSION_ID_KEY
+from dependencies.auth_user import validate_basic_auth_user
+from dependencies.session_auth import require_auth, redirect_if_authenticated
+from services.auth.session_manager import SessionManager
+from templating.jinja_template import templates
 
 router = APIRouter(
     prefix="/login",
@@ -30,38 +24,44 @@ router = APIRouter(
 
 
 @router.get("/", name="login:get")
-def login_page(request: Request):
+async def login_page(
+    request: Request,
+    user: Annotated[
+        dict,
+        Depends(redirect_if_authenticated),
+    ],
+):
     return templates.TemplateResponse(
         name="login.html",
         request=request,
     )
 
 
-@router.get("/logout", name="login:logout")
-def logout_page(request: Request, return_url: str | None = None):
+@router.get("/logout", name="auth:logout")
+async def logout_page(
+    request: Request,
+    user: Annotated[dict, Depends(require_auth)],
+    return_url: str | None = None,
+    session_id: str | None = Cookie(alias=SESSION_COOKIE_NAME),
+):
+
+    if session_id:
+        session_service = SessionManager()
+        session_service.delete_session(session_id, request=request)
+
     redirect = RedirectResponse(
         url=return_url or "/",
         status_code=status.HTTP_303_SEE_OTHER,
     )
 
-    redirect.delete_cookie(COOKIES_SESSION_ID_KEY)
+    redirect.delete_cookie(SESSION_COOKIE_NAME)
     return redirect
 
 
-def get_session_data(
-    session_id: str = Cookie(
-        alias=COOKIES_SESSION_ID_KEY,
-    ),
-) -> dict:
-    if session_id not in COOKIES:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Invalid session id",
-        )
-    return COOKIES[session_id]
-
-
-@router.post("/", name="login:post")
+@router.post(
+    "/",
+    name="login:post",
+)
 async def login_submit(
     request: Request,
     username: Annotated[str, Form(...)],
@@ -76,6 +76,9 @@ async def login_submit(
         password=password,
         session=session,
     )
+
+    session_id = SessionManager.create_session(user=user)
+
     if not user:
         return templates.TemplateResponse(
             name="login.html",
@@ -85,17 +88,10 @@ async def login_submit(
         )
 
     redirect = RedirectResponse(
-        url=request.url_for("home"),
+        url="/",
         status_code=status.HTTP_303_SEE_OTHER,
     )
 
-    session_id = uuid.uuid4().hex
-
-    COOKIES[session_id] = {
-        "username": user.username,
-        "loging_at": int(time()),
-    }
-
-    redirect.set_cookie(key=COOKIES_SESSION_ID_KEY, value=session_id)
+    redirect.set_cookie(key=SESSION_COOKIE_NAME, value=session_id)
 
     return redirect

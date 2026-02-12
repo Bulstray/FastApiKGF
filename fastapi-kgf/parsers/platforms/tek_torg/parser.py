@@ -49,8 +49,8 @@ class TekTorgPlatform(BaseTenderPlatform):
     @staticmethod
     def get_params(key_word: str) -> dict[str, str | int]:
         return {
-            "status[]": "[Приём заявок]",
             "name": key_word,
+            "status[]": "Приём заявок",
         }
 
     def get_cards_data(self) -> ResultSet[Tag]:

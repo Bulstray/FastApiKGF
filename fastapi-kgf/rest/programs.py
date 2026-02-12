@@ -1,22 +1,19 @@
 from typing import Annotated
 
 from aiopath import AsyncPath
-from fastapi import APIRouter, Depends, HTTPException
-from starlette import status
-from starlette.requests import Request
-from starlette.responses import FileResponse, HTMLResponse
+from fastapi import APIRouter, Depends, HTTPException, status, Request
+from fastapi.responses import FileResponse, HTMLResponse, RedirectResponse
 
 from core.schemas import ProgramRead
 from dependencies.providers import get_program_service
+from dependencies.session_auth import get_authenticated_user, require_auth
 from services.programs import ProgramService
 from templating.jinja_template import templates
-
-from dependencies.session import get_session
 
 router = APIRouter(prefix="/programs")
 
 
-@router.get("/programs", name="programs:page")
+@router.get("/", name="programs:page")
 async def programs_page(
     request: Request,
     program_service: Annotated[
@@ -43,23 +40,18 @@ async def programs_page(
 
 
 @router.get(
-    "/program/{name}/download",
+    "/{name}/download",
     name="program:download",
-    # dependencies=[Depends(validate_basic_auth)],
+    response_model=None,
 )
-async def programs_download(
+async def download_program(
     program_service: Annotated[
         ProgramService,
         Depends(get_program_service),
     ],
-    request: Request,
+    user: Annotated[dict, Depends(require_auth)],
     name: str,
-) -> FileResponse:
-
-    if not get_session(request=request):
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-        )
+) -> RedirectResponse | FileResponse:
 
     program = await program_service.get_program_by_name(program_name=name)
 
@@ -73,7 +65,7 @@ async def programs_download(
 
     if not await file_path.exists():
         raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            status_code=status.HTTP_404_NOT_FOUND,
             detail="File not found in server",
         )
 

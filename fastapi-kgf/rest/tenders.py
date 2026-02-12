@@ -1,9 +1,9 @@
 from typing import Annotated
 
-from fastapi import APIRouter, Query
-from starlette.requests import Request
-from starlette.responses import HTMLResponse
+from fastapi import APIRouter, Query, Request, Depends
+from fastapi.responses import HTMLResponse, RedirectResponse
 
+from dependencies.session_auth import require_auth
 from parsers.core import TenderParseCore
 from templating.jinja_template import templates
 
@@ -24,11 +24,17 @@ def tenders_page(
     )
 
 
-@router.get("/tenders_search", name="tenders:search")
+@router.get(
+    "/tenders_search",
+    name="tenders:search",
+    response_model=None,
+)
 def tenders_search(
     request: Request,
     search: Annotated[str, Query()],
-) -> HTMLResponse:
+    user: Annotated[dict, Depends(require_auth)],
+) -> HTMLResponse | RedirectResponse:
+
     tender_data = TenderParseCore(key_word=search)
     context = {
         "tenders": tender_data.search_all_platforms(),

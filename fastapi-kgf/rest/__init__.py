@@ -1,11 +1,11 @@
 from fastapi import APIRouter
 
 from .auth import router as auth_router
-from .main_views import router as main_router
+from .home_router import router as main_router
 from .programs import router as programs_router
 from .tenders import router as tenders_router
 
-router = APIRouter()
+router = APIRouter(include_in_schema=False)
 
 router.include_router(main_router)
 router.include_router(programs_router)
