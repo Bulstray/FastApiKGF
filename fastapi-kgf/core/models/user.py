@@ -15,3 +15,6 @@ class User(Base):
         Enum(UserRole),
         default=UserRole.user,
     )
+    name: Mapped[str] = mapped_column(nullable=False)
+    surname: Mapped[str] = mapped_column(nullable=False)
+    email: Mapped[str] = mapped_column(nullable=False)
