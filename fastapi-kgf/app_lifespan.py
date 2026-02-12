@@ -5,7 +5,7 @@ from fastapi import FastAPI
 
 from core.config import settings
 from core.models import Base, User, db_helper
-from crud import user
+from storage import crud_user
 
 
 @asynccontextmanager
@@ -15,7 +15,7 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
 
     async with db_helper.session_factory() as session:
 
-        check_user = await user.get_user_by_username(
+        check_user = await crud_user.get_user_by_username(
             session=session,
             username=settings.superuser.username,
         )
@@ -29,7 +29,7 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
                 email=settings.superuser.email,
                 surname=settings.superuser.surname,
             )
-            await user.create_user(
+            await crud_user.create_user(
                 session=session,
                 user=admin,
             )
