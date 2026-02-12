@@ -47,7 +47,7 @@ async def logout_page(
 
     if session_id:
         session_service = SessionManager()
-        session_service.delete_session(session_id, request=request)
+        session_service.delete_session(session_id)
 
     redirect = RedirectResponse(
         url=return_url or "/",
