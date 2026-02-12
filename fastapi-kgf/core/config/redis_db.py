@@ -2,8 +2,8 @@ from pydantic import BaseModel
 
 
 class RedisConnectionConfig(BaseModel):
-    host: str
-    port: int
+    host: str = "localhost"
+    port: int = 6378
 
 
 class RedisDatabaseConfig(BaseModel):
@@ -11,6 +11,11 @@ class RedisDatabaseConfig(BaseModel):
     sessions: int = 1
 
 
+class RedisCollectionConfig(BaseModel):
+    sessions_hash: str = "sessions"
+
+
 class RedisConfig(BaseModel):
-    # connection: RedisConnectionConfig = RedisConnectionConfig()
+    connection: RedisConnectionConfig = RedisConnectionConfig()
     database: RedisDatabaseConfig = RedisDatabaseConfig()
+    collections_name: RedisCollectionConfig = RedisCollectionConfig()
