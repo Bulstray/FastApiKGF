@@ -2,7 +2,6 @@ from sqlalchemy import delete, func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from core.models import Program
-from typing import cast
 
 
 async def get_all_programs(session: AsyncSession) -> list[Program]:
