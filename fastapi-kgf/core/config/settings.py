@@ -7,7 +7,9 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 from .api import ApiConfig
 from .database import DatabaseConfig
 from .platforms import PlatformConfig
+from .redis_db import RedisConfig
 from .superuser import SuperUserConfig
+from .session import SessionConfig
 
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
@@ -24,8 +26,10 @@ class Settings(BaseSettings):
     )
 
     db: DatabaseConfig = DatabaseConfig()
+    # redis: RedisConfig = RedisConfig()
     api: ApiConfig = ApiConfig()
     tender_platform: PlatformConfig = PlatformConfig()
+    # session: SessionConfig = SessionConfig()
     superuser: SuperUserConfig
 
     uploads_program_dir: AsyncPath = AsyncPath("uploads/programs")
