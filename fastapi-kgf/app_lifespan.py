@@ -16,7 +16,8 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
     async with db_helper.session_factory() as session:
 
         check_user = await user.get_user_by_username(
-            session=session, username=settings.superuser.username,
+            session=session,
+            username=settings.superuser.username,
         )
 
         if check_user is None:
@@ -24,6 +25,9 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
                 username=settings.superuser.username,
                 hashed_password=settings.superuser.hashed_password,
                 role=settings.superuser.role,
+                name=settings.superuser.name,
+                email=settings.superuser.email,
+                surname=settings.superuser.surname,
             )
             await user.create_user(
                 session=session,
