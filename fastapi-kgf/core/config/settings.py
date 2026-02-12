@@ -1,4 +1,5 @@
 from pathlib import Path
+from typing import Any
 
 from aiopath import AsyncPath
 from pydantic_settings import BaseSettings, SettingsConfigDict
@@ -8,12 +9,10 @@ from .database import DatabaseConfig
 from .platforms import PlatformConfig
 from .superuser import SuperUserConfig
 
-from typing import Any
-
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
-COOKIES: dict[str, dict[str, Any]] = {}
-COOKIES_SESSION_ID_KEY = "web-app-session-id"
+ACTIVE_SESSION: dict[str, dict[str, Any]] = {}
+SESSION_COOKIE_NAME = "web-app-session-id"
 
 
 class Settings(BaseSettings):
