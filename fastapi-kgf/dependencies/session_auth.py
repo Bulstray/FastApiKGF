@@ -1,8 +1,10 @@
 from fastapi import Request, Depends, HTTPException, status
 
-from core.config.settings import ACTIVE_SESSION, SESSION_COOKIE_NAME
+from core.config.settings import SESSION_COOKIE_NAME
 
 from typing import Annotated
+
+from storage.session.session import SessionStorage
 
 
 def get_authenticated_user(
@@ -10,13 +12,16 @@ def get_authenticated_user(
 ) -> None | dict[str, str]:
     session_id = request.cookies.get(SESSION_COOKIE_NAME)
 
-    if session_id in ACTIVE_SESSION:
-        return ACTIVE_SESSION[session_id]
+    if session_id is None:
+        return None
+
+    if (answer := SessionStorage.get_by_session_id(session_id)) is not None:
+        return answer
 
     return None
 
 
-async def require_auth(
+def require_auth(
     request: Request,
     user: Annotated[dict | None, Depends(get_authenticated_user)],
 ) -> dict:
@@ -29,7 +34,7 @@ async def require_auth(
     return user
 
 
-async def redirect_if_authenticated(
+def redirect_if_authenticated(
     request: Request,
     user: Annotated[dict | None, Depends(get_authenticated_user)],
 ) -> dict:
