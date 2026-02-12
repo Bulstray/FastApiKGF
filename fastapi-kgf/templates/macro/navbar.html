@@ -21,8 +21,9 @@
         </a>
       </li>
     </ul>
+    {% set auth = get_authenticated_user(request) %}
 
-    {% if is_authenticated(request) %}
+    {% if auth %}
 
     <!-- Авторизованный пользователь -->
     <div class="sidebar-auth">
@@ -31,8 +32,8 @@
           <i class="bi bi-person-check-fill"></i>
         </div>
         <div class="user-info">
-          <span class="user-name">Иван Иванов</span>
-          <span class="user-role">Администратор</span>
+          <span class="user-name">{{ auth.name }} {{ auth.surname }}</span>
+          <span class="user-role">{{ auth.role }}</span>
         </div>
 
         <!-- Выпадающее меню пользователя -->
@@ -45,8 +46,7 @@
             <i class="bi bi-gear"></i>
             <span>Настройки</span>
           </a>
-          <div class="dropdown-divider"></div>
-          <a href="{{ url_for('login:logout') }}?return_url={{ request.url.path }}" class="dropdown-item logout">
+          <a href="{{ url_for('auth:logout') }}?return_url={{ request.url.path }}" class="dropdown-item logout">
             <i class="bi bi-box-arrow-right"></i>
             <span>Выйти</span>
           </a>
