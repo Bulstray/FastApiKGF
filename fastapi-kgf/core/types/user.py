@@ -4,5 +4,5 @@ UserIdType = int
 
 
 class UserRole(StrEnum):
-    user = "user"
-    admin = "admin"
+    user = "Пользователь"
+    admin = "Администратор"
