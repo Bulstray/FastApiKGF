@@ -1,8 +1,8 @@
-from crud import user
-from sqlalchemy.ext.asyncio import AsyncSession
-from core.models import User
-
 import bcrypt
+from sqlalchemy.ext.asyncio import AsyncSession
+
+from core.models import User
+from crud import user
 
 
 async def validate_basic_auth_user(
