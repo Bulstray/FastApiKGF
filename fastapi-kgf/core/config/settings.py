@@ -8,8 +8,8 @@ from .api import ApiConfig
 from .database import DatabaseConfig
 from .platforms import PlatformConfig
 from .redis_db import RedisConfig
-from .superuser import SuperUserConfig
 from .session import SessionConfig
+from .superuser import SuperUserConfig
 
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
