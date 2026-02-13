@@ -2,10 +2,12 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from core.models.user import User
 from core.schemas.user import UserCreate
-from storage.crud_user import create_user as crud_create_user
-from storage.crud_user import delete_user as crud_delete_user
-from storage.crud_user import get_all_users as crud_get_all_users
-from storage.crud_user import get_user_by_username as crud_get_user_by_username
+from storage.db.crud_user import create_user as crud_create_user
+from storage.db.crud_user import delete_user as crud_delete_user
+from storage.db.crud_user import get_all_users as crud_get_all_users
+from storage.db.crud_user import (
+    get_user_by_username as crud_get_user_by_username,
+)
 
 from .exception import UserAlreadyExistsErorr
 
