@@ -1,15 +1,16 @@
-from fastapi import Request, Depends, HTTPException, status
-
-from core.config.settings import SESSION_COOKIE_NAME
-
 from typing import Annotated
 
-from storage.session.session import SessionStorage
+from fastapi import Depends, HTTPException, Request, status
+from fastapi.responses import HTMLResponse
+
+from core.config.settings import SESSION_COOKIE_NAME
+from core.schemas.user import UserRead
+from storage.redis.session import SessionStorage
 
 
 def get_authenticated_user(
     request: Request,
-) -> None | dict[str, str]:
+) -> UserRead | None:
     session_id = request.cookies.get(SESSION_COOKIE_NAME)
 
     if session_id is None:
@@ -22,9 +23,8 @@ def get_authenticated_user(
 
 
 def require_auth(
-    request: Request,
-    user: Annotated[dict | None, Depends(get_authenticated_user)],
-) -> dict:
+    user: Annotated[UserRead | None, Depends(get_authenticated_user)],
+) -> UserRead | HTMLResponse:
     if not user:
         raise HTTPException(
             status_code=status.HTTP_303_SEE_OTHER,
@@ -35,9 +35,8 @@ def require_auth(
 
 
 def redirect_if_authenticated(
-    request: Request,
-    user: Annotated[dict | None, Depends(get_authenticated_user)],
-) -> dict:
+    user: Annotated[UserRead | None, Depends(get_authenticated_user)],
+) -> UserRead | None:
     if user:
         raise HTTPException(
             status_code=status.HTTP_303_SEE_OTHER,
