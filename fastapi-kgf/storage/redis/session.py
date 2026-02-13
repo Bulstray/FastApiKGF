@@ -1,6 +1,6 @@
-from core.config import settings
-
 from redis import Redis
+
+from core.config import settings
 from core.schemas.user import UserRead
 
 redis = Redis(
@@ -14,7 +14,7 @@ redis = Redis(
 class SessionStorage:
 
     @staticmethod
-    def save_session(session_id: str, user: UserRead):
+    def save_session(session_id: str, user: UserRead) -> None:
         redis.hset(
             name=settings.redis.collections_name.sessions_hash,
             key=session_id,
@@ -22,7 +22,7 @@ class SessionStorage:
         )
 
     @staticmethod
-    def delete_by_session_id(session_id: str):
+    def delete_by_session_id(session_id: str) -> None:
         redis.hdel(
             settings.redis.collections_name.sessions_hash,
             session_id,
