@@ -5,7 +5,7 @@ from fastapi import FastAPI
 
 from core.config import settings
 from core.models import Base, User, db_helper
-from storage import crud_user
+from storage.db import crud_user
 
 
 @asynccontextmanager
