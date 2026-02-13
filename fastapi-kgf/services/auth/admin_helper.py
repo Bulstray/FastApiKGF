@@ -2,7 +2,7 @@ import bcrypt
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from core.types import UserRole
-from storage.crud_user import get_user_by_username
+from storage.db.crud_user import get_user_by_username
 
 
 class AdminHelper:
