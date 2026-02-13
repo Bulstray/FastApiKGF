@@ -8,13 +8,14 @@ from fastapi import (
     Request,
     status,
 )
-from fastapi.responses import RedirectResponse
+from fastapi.responses import HTMLResponse, RedirectResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from core.config.settings import SESSION_COOKIE_NAME
 from core.models import db_helper
+from core.schemas.user import UserRead
 from dependencies.auth_user import validate_basic_auth_user
-from dependencies.session_auth import require_auth, redirect_if_authenticated
+from dependencies.session_auth import redirect_if_authenticated, require_auth
 from services.auth.session_manager import SessionManager
 from templating.jinja_template import templates
 
@@ -27,23 +28,28 @@ router = APIRouter(
 async def login_page(
     request: Request,
     user: Annotated[
-        dict,
+        UserRead,
         Depends(redirect_if_authenticated),
     ],
-):
+) -> HTMLResponse:
     return templates.TemplateResponse(
         name="login.html",
         request=request,
     )
 
 
-@router.get("/logout", name="auth:logout")
+@router.get(
+    "/logout",
+    name="auth:logout",
+    response_model=None,
+)
 async def logout_page(
     request: Request,
-    user: Annotated[dict, Depends(require_auth)],
+    user: Annotated[UserRead, Depends(require_auth)],
     return_url: str | None = None,
-    session_id: str | None = Cookie(alias=SESSION_COOKIE_NAME),
-):
+) -> HTMLResponse | RedirectResponse:
+
+    session_id = request.cookies.get(SESSION_COOKIE_NAME)
 
     if session_id:
         session_service = SessionManager()
@@ -61,6 +67,7 @@ async def logout_page(
 @router.post(
     "/",
     name="login:post",
+    response_model=None,
 )
 async def login_submit(
     request: Request,
@@ -70,22 +77,22 @@ async def login_submit(
         AsyncSession,
         Depends(db_helper.session_getter),
     ],
-):
+) -> HTMLResponse | RedirectResponse:
     user = await validate_basic_auth_user(
         username=username,
         password=password,
         session=session,
     )
 
-    session_id = SessionManager.create_session(user=user)
-
-    if not user:
+    if user is None:
         return templates.TemplateResponse(
             name="login.html",
             request=request,
             context={"error": "Неверный логин или пароль"},
             status_code=status.HTTP_401_UNAUTHORIZED,
         )
+
+    session_id = SessionManager.create_session(user=user)
 
     redirect = RedirectResponse(
         url="/",
