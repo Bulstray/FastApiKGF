@@ -1,12 +1,13 @@
 from typing import Annotated
 
 from aiopath import AsyncPath
-from fastapi import APIRouter, Depends, HTTPException, status, Request
+from fastapi import APIRouter, Depends, HTTPException, Request, status
 from fastapi.responses import FileResponse, HTMLResponse, RedirectResponse
 
 from core.schemas import ProgramRead
+from core.schemas.user import UserRead
 from dependencies.providers import get_program_service
-from dependencies.session_auth import get_authenticated_user, require_auth
+from dependencies.session_auth import require_auth
 from services.programs import ProgramService
 from templating.jinja_template import templates
 
@@ -49,7 +50,7 @@ async def download_program(
         ProgramService,
         Depends(get_program_service),
     ],
-    user: Annotated[dict, Depends(require_auth)],
+    user: Annotated[UserRead, Depends(require_auth)],
     name: str,
 ) -> RedirectResponse | FileResponse:
 
