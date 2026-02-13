@@ -1,10 +1,11 @@
 from typing import Annotated
 
-from fastapi import APIRouter, Query, Request, Depends
+from fastapi import APIRouter, Depends, Query, Request
 from fastapi.responses import HTMLResponse, RedirectResponse
 
+from core.schemas.user import UserRead
 from dependencies.session_auth import require_auth
-from parsers.core import TenderParseCore
+from services.tenders import service as tenders_service
 from templating.jinja_template import templates
 
 router = APIRouter(
@@ -32,12 +33,13 @@ def tenders_page(
 def tenders_search(
     request: Request,
     search: Annotated[str, Query()],
-    user: Annotated[dict, Depends(require_auth)],
+    user: Annotated[UserRead, Depends(require_auth)],
 ) -> HTMLResponse | RedirectResponse:
 
-    tender_data = TenderParseCore(key_word=search)
     context = {
-        "tenders": tender_data.search_all_platforms(),
+        "tenders": tenders_service.get_tenders_by_keyword(
+            keyword=search,
+        ),
     }
     return templates.TemplateResponse(
         request=request,
