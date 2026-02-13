@@ -9,10 +9,12 @@ class RedisConnectionConfig(BaseModel):
 class RedisDatabaseConfig(BaseModel):
     default: int = 0
     sessions: int = 1
+    tenders: int = 2
 
 
 class RedisCollectionConfig(BaseModel):
     sessions_hash: str = "sessions"
+    tenders_hash: str = "tenders"
 
 
 class RedisConfig(BaseModel):
