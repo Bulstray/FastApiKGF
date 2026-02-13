@@ -1,6 +1,12 @@
 from typing import Annotated
 
-from pydantic import AfterValidator, BaseModel, field_validator, EmailStr, ConfigDict
+from pydantic import (
+    AfterValidator,
+    BaseModel,
+    ConfigDict,
+    EmailStr,
+    field_validator,
+)
 
 from core.types import UserRole
 from utils import hash_password
