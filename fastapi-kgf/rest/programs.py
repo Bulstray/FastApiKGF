@@ -50,7 +50,7 @@ async def download_program(
         ProgramService,
         Depends(get_program_service),
     ],
-    user: Annotated[UserRead, Depends(require_auth)],
+    is_auth: Annotated[UserRead, Depends(require_auth)],
     name: str,
 ) -> RedirectResponse | FileResponse:
 

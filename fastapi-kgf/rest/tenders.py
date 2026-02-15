@@ -33,7 +33,7 @@ def tenders_page(
 def tenders_search(
     request: Request,
     search: Annotated[str, Query()],
-    user: Annotated[UserRead, Depends(require_auth)],
+    is_auth: Annotated[UserRead, Depends(require_auth)],
 ) -> HTMLResponse | RedirectResponse:
 
     context = {
