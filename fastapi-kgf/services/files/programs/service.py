@@ -13,22 +13,22 @@ from storage.db.crud_programs import (
     get_program_by_name as crud_get_program_by_name,
 )
 
-from .exceptions import (
+from services.files.programs.exceptions import (
     ProgramFileNameAlreadyExistsError,
     ProgramNameAlreadyExistsError,
     ProgramNameDoesNotExistError,
 )
-from .files import ProgramFilesService
+from services.files.files import FilesService
 
 
 class ProgramService:
     def __init__(
         self,
         session: AsyncSession,
-        file_service: ProgramFilesService,
+        uploads_path: AsyncPath,
     ) -> None:
         self.session = session
-        self.file_service = file_service
+        self.file_service = FilesService(uploads_path=uploads_path)
 
     async def get_all_programs(self) -> list[Program]:
         return await crud_get_all_programs(self.session)
