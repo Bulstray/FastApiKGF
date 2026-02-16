@@ -1,19 +1,14 @@
 from pydantic import BaseModel
 
-from datetime import datetime
 
-
-class BaseTask(BaseModel):
+class TaskBase(BaseModel):
     title: str
     description: str
-    completed: datetime
-    user_id: int
-    created_at: int
+    deadline: str
+    executor: str
+    customer: str
+    file: str | None = None
 
 
-class TaskRead(BaseTask):
-    """Модель для чтения задач"""
-
-
-class TaskCreate(BaseTask):
-    """Модель для создания задач"""
+class TaskCreate(TaskBase):
+    """Модель для создания задания"""

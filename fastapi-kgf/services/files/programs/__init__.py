@@ -1,8 +1,8 @@
 __all__ = (
-    "ProgramFilesService",
+    "FilesService",
     "ProgramService",
 )
 
 
-from .files import ProgramFilesService
+from services.files.files import FilesService
 from .service import ProgramService

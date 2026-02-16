@@ -36,6 +36,7 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
 
     # Создаем папки
     await settings.uploads_program_dir.mkdir(exist_ok=True, parents=True)
+    await settings.uploads_file_task_dir.mkdir(exist_ok=True, parents=True)
 
     yield None
 

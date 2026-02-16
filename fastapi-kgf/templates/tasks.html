@@ -1,284 +1,411 @@
 {% from "macro/navbar.html" import navbar with context %}
 {% from "macro/navbar.html" import style_navbar with context %}
+{% from "macro/modal_task.html" import func_tasks with context %}
+{% from "macro/modal_task.html" import tasks_style with context %}
 
 {% extends "base.html" %}
 
 
 {% block style %}
-  {{ style_navbar() }}
-  <style>
+    {{ style_navbar() }}
+    {{ tasks_style() }}
+    <style>
 
-    .main-content {
-      margin-left: 280px;
-      padding: 2rem;
-    }
+        .main-content {
+            margin-left: 280px;
+            padding: 2rem;
+        }
 
-    /* Контейнер задач */
-    .tasks-container {
-      max-width: 1400px;
-      margin: 0 auto;
-    }
+        /* Контейнер задач */
+        .tasks-container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
 
-    /* Хедер */
-    .tasks-header {
-      background: white;
-      border-radius: 24px;
-      padding: 2rem;
-      margin-bottom: 2rem;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
+        /* Хедер */
+        .tasks-header {
+            background: white;
+            border-radius: 24px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
 
-    .tasks-title {
-      font-size: 2rem;
-      font-weight: 700;
-      color: var(--primary-dark);
-      margin: 0;
-    }
+        .tasks-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary-dark);
+            margin: 0;
+        }
 
-    .tasks-title i {
-      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      margin-right: 12px;
-    }
+        .tasks-title i {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-right: 12px;
+        }
 
-    .create-task-btn {
-      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-      border: none;
-      padding: 0.875rem 2rem;
-      font-weight: 600;
-      border-radius: 16px;
-      color: white;
-      transition: all 0.2s;
-      box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      cursor: pointer;
-    }
+        .create-task-btn {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            border: none;
+            padding: 0.875rem 2rem;
+            font-weight: 600;
+            border-radius: 16px;
+            color: white;
+            transition: all 0.2s;
+            box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+        }
 
-    .create-task-btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 20px rgba(139, 92, 246, 0.4);
-    }
+        .create-task-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(139, 92, 246, 0.4);
+        }
 
-    /* Модальное окно */
-    .modal {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.5);
-      z-index: 1000;
-      align-items: center;
-      justify-content: center;
-    }
+        /* Сетка задач */
+        .tasks-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+            gap: 1.5rem;
+        }
 
-    .modal.show {
-      display: flex;
-    }
+        /* Карточка задачи */
+        .task-card {
+            background-color: #ffffff;
+            border-radius: 24px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+            transition: all 0.2s;
+            border: 1px solid #8e8e8e;
+        }
 
-    .modal-content {
-      background: white;
-      border-radius: 24px;
-      width: 500px;
-      max-width: 90%;
-      animation: modalSlide 0.3s ease;
-    }
+        .task-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.08);
+        }
 
-    @keyframes modalSlide {
-      from {
-        transform: translateY(-50px);
-        opacity: 0;
-      }
-      to {
-        transform: translateY(0);
-        opacity: 1;
-      }
-    }
+        .task-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+        }
 
-    .modal-header {
-      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-      color: white;
-      border-radius: 24px 24px 0 0;
-      padding: 1.5rem;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
+        .task-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--primary-dark);
+            margin: 0;
+        }
 
-    .modal-header h5 {
-      margin: 0;
-      font-weight: 700;
-    }
+        .task-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 2px solid #eef2f6;
+        }
 
-    .modal-header i {
-      font-size: 1.5rem;
-      margin-right: 8px;
-    }
+        .assignee {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--primary-dark);
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
 
-    .close-btn {
-      background: none;
-      border: none;
-      color: white;
-      font-size: 1.5rem;
-      cursor: pointer;
-      opacity: 0.8;
-    }
+        .assignee i {
+            color: var(--accent-purple);
+        }
 
-    .close-btn:hover {
-      opacity: 1;
-    }
+        .task-actions {
+            display: flex;
+            gap: 8px;
+        }
 
-    .modal-body {
-      padding: 2rem;
-    }
+        .task-actions button {
+            background: none;
+            border: none;
+            color: #94a3b8;
+            font-size: 1.1rem;
+            padding: 4px 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
 
-    .rar-upload {
-      border: 2px dashed #eef2f6;
-      border-radius: 16px;
-      padding: 2rem;
-      text-align: center;
-      background: #fafbff;
-      cursor: pointer;
-    }
+        .task-actions button:hover {
+            color: var(--accent-purple);
+            transform: scale(1.1);
+        }
 
-    .rar-upload i {
-      font-size: 3rem;
-      color: var(--accent-purple);
-      margin-bottom: 1rem;
-    }
+        /* Дедлайн */
+        .deadline-badge {
+            padding: 0.35rem 0.75rem;
+            border-radius: 30px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
 
-    .rar-upload p {
-      margin: 0;
-      color: var(--primary-dark);
-      font-weight: 500;
-    }
+        .deadline-urgent {
+            background: #fee2e2;
+            color: #ef4444;
+        }
 
-    .rar-upload small {
-      color: var(--text-light);
-    }
+        .deadline-warning {
+            background: #fef3c7;
+            color: #f59e0b;
+        }
 
-    .rar-badge {
-      display: inline-block;
-      background: linear-gradient(135deg, var(--accent-purple), var(--accent-pink));
-      color: white;
-      padding: 0.25rem 1rem;
-      border-radius: 30px;
-      font-size: 0.8rem;
-      margin-top: 1rem;
-    }
+        .deadline-normal {
+            background: #dcfce7;
+            color: #10b981;
+        }
 
-    .modal-footer {
-      padding: 1.5rem;
-      border-top: 2px solid #eef2f6;
-      display: flex;
-      justify-content: flex-end;
-      gap: 1rem;
-    }
+        .deadline-passed {
+            background: #f1f5f9;
+            color: #64748b;
+        }
+
+        .task-description {
+            color: #64748b;
+            margin-bottom: 1.5rem;
+            line-height: 1.5;
+        }
+
+        .task-meta {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #64748b;
+            font-size: 0.9rem;
+        }
+
+        .meta-item i {
+            color: var(--accent-purple);
+            width: 20px;
+        }
+
+        /* RAR блок */
+        .task-rar {
+            background: linear-gradient(135deg, #fafbff, #ffffff);
+            border: 2px solid #eef2f6;
+            border-radius: 16px;
+            padding: 1rem;
+            margin: 1rem 0;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .rar-icon {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+        }
+
+        .rar-info {
+            flex: 1;
+        }
+
+        .rar-name {
+            font-weight: 600;
+            color: var(--primary-dark);
+            font-size: 0.95rem;
+        }
+
+        .rar-size {
+            font-size: 0.8rem;
+            color: var(--text-light);
+        }
+
+        .download-rar {
+            color: var(--accent-purple);
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 8px;
+        }
 
 
-  </style>
+    </style>
 {% endblock %}
 
+<!-- Весь код до модалки остается тем же -->
 {% block main %}
-  <main class="main-content">
-    {{ navbar() }}
-    <div class="tasks-container">
-      <!-- Хедер -->
-      <div class="tasks-header">
-        <h1 class="tasks-title">
-          <i class="bi bi-check-circle"></i>
-          Задачи
-        </h1>
-        <button class="create-task-btn" onclick="openModal()">
-          <i class="bi bi-plus-lg"></i>
-          Новая задача
-        </button>
-      </div>
-    </div>
-  </main>
-  <div class="modal" id="taskModal">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5>
-          <i class="bi bi-plus-circle"></i>
-          Новая задача
-        </h5>
-        <button class="close-btn" onclick="closeModal()">&times;</button>
-      </div>
-      <div class="modal-body">
-        <div class="mb-3">
-          <label class="form-label">Название</label>
-          <input type="text" class="form-control" placeholder="Введите название задачи">
-        </div>
-        <div class="mb-3">
-          <label class="form-label">Описание</label>
-          <textarea class="form-control" rows="2" placeholder="Опишите задачу"></textarea>
-        </div>
-        <div class="row mb-3">
-          <div class="col-md-6">
-            <label class="form-label">Срок</label>
-            <input type="date" class="form-control">
-          </div>
-          <div class="col-md-6">
-            <label class="form-label">Исполнитель</label>
-            <select class="form-select">
-              <option>Алексей Петров</option>
-              <option>Мария Иванова</option>
-              <option>Дмитрий Сидоров</option>
-            </select>
-          </div>
-        </div>
+    <main class="main-content">
+        {{ navbar() }}
+        <div class="tasks-container">
+            <!-- Хедер -->
+            <div class="tasks-header">
+                <h1 class="tasks-title">
+                    <i class="bi bi-check-circle"></i>
+                    Задачи
+                </h1>
+                <button class="create-task-btn" onclick="openModal()">
+                    <i class="bi bi-plus-lg"></i>
+                    Новая задача
+                </button>
+            </div>
 
-        <div class="mb-3">
-          <label class="form-label">Постановщик</label>
-          <select class="form-select">
-            <option>Иван Петров (Team Lead)</option>
-            <option>Елена Соколова (PM)</option>
-            <option>Михаил Орлов (CTO)</option>
-          </select>
-        </div>
 
-        <div class="mb-3">
-          <label class="form-label">RAR архив</label>
-          <div class="rar-upload" onclick="alert('Выбор файла (демо)')">
-            <i class="bi bi-file-zip"></i>
-            <p>Выберите RAR архив</p>
-            <small>.rar только</small>
-            <div class="rar-badge">MAX 50MB</div>
-          </div>
+            <div class="tasks-grid">
+
+                {% for task in tasks %}
+                <!-- Карточка 1 -->
+                <div class="task-card">
+                    <div class="task-header">
+                        <h3 class="task-title">{{ task.title }}</h3>
+                        <span class="deadline-badge deadline-urgent">
+                            <i class="bi bi-clock"></i> 2д
+                        </span>
+                    </div>
+                    <p class="task-description">{{ task.description }}</p>
+
+                    <div class="task-meta">
+                        <div class="meta-item">
+                            <i class="bi bi-calendar"></i>
+                            <span>Срок: {{ task.deadline }}</span>
+                        </div>
+                        <div class="meta-item">
+                            <i class="bi bi-person-up"></i>
+                            <span>Постановщик: <strong>{{ task.customer }}</strong></span>
+                        </div>
+                    </div>
+
+                    {% if task.file %}
+
+                    <div class="task-rar">
+                        <div class="rar-icon">
+                            <i class="bi bi-file-zip"></i>
+                        </div>
+                        <div class="rar-info">
+                            <div class="rar-name">{{ task.file }}</div>
+                            <div class="rar-size">14.5 MB</div>
+                        </div>
+                        <a class="download-rar" href="{{ url_for("task:download", name=task.file) }}">
+                            <i class="bi bi-download"></i>
+                        </a>
+                    </div>
+                    {% endif %}
+
+                    <div class="task-footer">
+                        <div class="assignee">
+                            <i class="bi bi-person-circle"></i>
+                            <span>{{ task.executor }}</span>
+                        </div>
+                        <a class="task-actions">
+                            <button onclick="if(confirm('Удалить задачу?')) window.location.href='{{ url_for("task:delete", title=task.title) }}'"
+                                    title="Удалить">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </a>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
         </div>
-      </div>
-      <div class="modal-footer">
-        <button class="btn btn-light" onclick="closeModal()">Отмена</button>
-        <button class="btn btn-primary" onclick="alert('Задача создана (демо)'); closeModal()">Создать</button>
-      </div>
-    </div>
-  </div>
+    </main>
+    {{ func_tasks(workers, user) }}
+
+
 {% endblock %}
 
 {% block script %}
-  <script>
-      function openModal() {
-          document.getElementById('taskModal').classList.add('show');
-      }
+    <script>
+        // Функция обновления имени файла
+        function updateFileName(input) {
+            const file = input.files[0];
+            const uploadText = document.getElementById('uploadText');
+            const selectedFileBlock = document.getElementById('selectedFileBlock');
+            const fileNameDisplay = document.getElementById('fileNameDisplay');
 
-      function closeModal() {
-          document.getElementById('taskModal').classList.remove('show');
-      }
+            if (file) {
+                // Меняем текст в области загрузки
+                uploadText.textContent = 'Файл выбран';
 
-      // Закрытие по клику вне модалки
-      window.onclick = function (event) {
-          let modal = document.getElementById('taskModal');
-          if (event.target === modal) {
-              closeModal();
-          }
-      }
-  </script>
+                // Показываем блок с именем файла
+                fileNameDisplay.textContent = file.name;
+                selectedFileBlock.style.display = 'block';
+            }
+        }
+
+        // Функция удаления файла
+        function removeFile() {
+            const fileInput = document.getElementById('rarFile');
+            const uploadText = document.getElementById('uploadText');
+            const selectedFileBlock = document.getElementById('selectedFileBlock');
+
+            // Очищаем input
+            fileInput.value = '';
+
+            // Возвращаем текст обратно
+            uploadText.textContent = 'Выберите RAR архив';
+
+            // Прячем блок с файлом
+            selectedFileBlock.style.display = 'none';
+        }
+
+        // Функция создания задачи
+        function createTask() {
+            const fileInput = document.getElementById('rarFile');
+            const file = fileInput.files[0];
+
+            let message = 'Задача создана (демо)';
+            if (file) {
+                message += `\nФайл: ${file.name}`;
+            }
+
+            alert(message);
+            closeModal();
+        }
+
+        // Функция закрытия модалки
+        function closeModal() {
+            document.getElementById('taskModal').style.display = 'none';
+            // Очищаем все поля
+            document.getElementById('taskTitle').value = '';
+            document.getElementById('taskDescription').value = '';
+            document.getElementById('taskDeadline').value = '';
+            document.getElementById('taskExecutor').selectedIndex = 0;
+
+            // Очищаем файл
+            removeFile();
+        }
+
+        // Функция открытия модалки
+        function openModal() {
+            document.getElementById('taskModal').style.display = 'flex';
+        }
+
+        // Закрытие по клику на фон
+        window.onclick = function (event) {
+            const modal = document.getElementById('taskModal');
+            if (event.target == modal) {
+                closeModal();
+            }
+        }
+    </script>
 {% endblock %}

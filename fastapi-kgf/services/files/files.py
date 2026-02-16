@@ -5,9 +5,9 @@ from core.config import settings
 from utils.file_size import get_file_size
 
 
-class ProgramFilesService:
-    def __init__(self) -> None:
-        self.upload_path: AsyncPath = settings.uploads_program_dir
+class FilesService:
+    def __init__(self, uploads_path: AsyncPath) -> None:
+        self.upload_path: AsyncPath = uploads_path
 
     async def save_program_file(self, file: UploadFile) -> AsyncPath:
 

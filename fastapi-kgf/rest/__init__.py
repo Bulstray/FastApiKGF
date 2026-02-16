@@ -11,6 +11,5 @@ router = APIRouter(include_in_schema=False)
 router.include_router(main_router)
 router.include_router(programs_router)
 router.include_router(tenders_router)
-
 router.include_router(auth_router)
 router.include_router(tasks_router)

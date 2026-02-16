@@ -33,6 +33,7 @@ class Settings(BaseSettings):
     superuser: SuperUserConfig
 
     uploads_program_dir: AsyncPath = AsyncPath("uploads/programs")
+    uploads_file_task_dir: AsyncPath = AsyncPath("uploads/file_tasks")
 
 
 settings = Settings()  # type: ignore[call-arg]
