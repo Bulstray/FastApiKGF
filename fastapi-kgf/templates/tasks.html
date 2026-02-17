@@ -34,12 +34,13 @@
             align-items: center;
         }
 
-        .tasks-title {
-            font-size: 2rem;
+        .task-title {
+            font-size: 1.2rem;
             font-weight: 700;
             color: var(--primary-dark);
             margin: 0;
         }
+
 
         .tasks-title i {
             background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
@@ -249,6 +250,69 @@
             padding: 8px;
         }
 
+        .status-chip-mini {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px; /* увеличили gap */
+            padding: 0.3rem 1.2rem 0.3rem 1rem; /* увеличили паддинги */
+            border-radius: 40px; /* чуть больше скругление */
+            font-size: 0.9rem; /* УВЕЛИЧИЛИ ТЕКСТ с 0.75rem до 0.9rem */
+            font-weight: 600;
+            background: #f8fafc;
+            border: 1.5px solid #e2e8f0; /* чуть толще рамка */
+            cursor: default;
+        }
+
+        .status-text-mini {
+            line-height: 1.2; /* немного увеличили межстрочник */
+        }
+
+
+        /* Цветные точки для статуса */
+        .status-dot {
+            display: inline-block;
+            width: 12px; /* УВЕЛИЧИЛИ с 8px до 12px */
+            height: 12px; /* УВЕЛИЧИЛИ с 8px до 12px */
+            border-radius: 50%;
+        }
+
+        /* Не в работе */
+        .status-not-started {
+            background: #94a3b8;
+        }
+
+        /* В работе */
+        .status-in-progress {
+            background: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2); /* увеличили тень */
+        }
+
+        /* Завершена */
+        .status-completed {
+            background: #10b981;
+        }
+
+        /* Текст статуса */
+        .status-not-started + .status-text-mini {
+            color: #475569;
+        }
+
+        .status-in-progress + .status-text-mini {
+            color: #1e40af;
+            font-weight: 700;
+        }
+
+        .status-completed + .status-text-mini {
+            color: #065f46;
+        }
+
+        .task-title-group {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
 
     </style>
 {% endblock %}
@@ -274,56 +338,79 @@
             <div class="tasks-grid">
 
                 {% for task in tasks %}
-                <!-- Карточка 1 -->
-                <div class="task-card">
-                    <div class="task-header">
-                        <h3 class="task-title">{{ task.title }}</h3>
-                        <span class="deadline-badge deadline-urgent">
-                            <i class="bi bi-clock"></i> 2д
-                        </span>
-                    </div>
-                    <p class="task-description">{{ task.description }}</p>
+                    <!-- Карточка 1 -->
+                    <div class="task-card">
+                        <div class="task-header">
+                            <div class="task-title-group">
+                                <h3 class="task-title">{{ task.title }}</h3>
+                                <!-- Статус рядом с заголовком -->
+                                <div class="status-chip-mini" data-task-id="{{ loop.index }}">
+                                    {% if task.status == "STARTED" %}
+                                        <span class="status-dot status-in-progress"></span>
+                                        <span class="status-text-mini">В работе</span>
+                                    {% elif task.status == "COMPLETED" %}
+                                        <span class="status-dot status-completed"></span>
+                                        <span class="status-text-mini">Завершена</span>
+                                    {% else %}
+                                        <span class="status-dot status-not-started"></span>
+                                        <span class="status-text-mini">Не в работе</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <span class="deadline-badge deadline-urgent"><i class="bi bi-clock"></i> 2д</span>
+                        </div>
+                        <p class="task-description">{{ task.description }}</p>
 
-                    <div class="task-meta">
-                        <div class="meta-item">
-                            <i class="bi bi-calendar"></i>
-                            <span>Срок: {{ task.deadline }}</span>
+                        <div class="task-meta">
+                            <div class="meta-item">
+                                <i class="bi bi-calendar"></i>
+                                <span>Срок: {{ task.deadline }}</span>
+                            </div>
+                            <div class="meta-item">
+                                <i class="bi bi-person-up"></i>
+                                <span>Постановщик: <strong>{{ task.customer }}</strong></span>
+                            </div>
                         </div>
-                        <div class="meta-item">
-                            <i class="bi bi-person-up"></i>
-                            <span>Постановщик: <strong>{{ task.customer }}</strong></span>
+
+                        {% if task.file %}
+
+                            <div class="task-rar">
+                                <div class="rar-icon">
+                                    <i class="bi bi-file-zip"></i>
+                                </div>
+                                <div class="rar-info">
+                                    <div class="rar-name">{{ task.file }}</div>
+                                    <div class="rar-size">14.5 MB</div>
+                                </div>
+                                <a class="download-rar" href="{{ url_for("task:download", name=task.file) }}">
+                                    <i class="bi bi-download"></i>
+                                </a>
+                            </div>
+                        {% endif %}
+
+                        <div class="task-footer">
+                            <div class="assignee">
+                                <i class="bi bi-person-circle"></i>
+                                <span>{{ task.executor }}</span>
+                            </div>
+                            <div class="task-actions">
+
+                                <button onclick="toggleTaskStatus(this, {{ loop.index }});" title="Изменить статус">
+                                    {% if task.status == "STARTED" %}
+                                        <i class="bi bi-pause"></i>
+                                    {% elif task.status == "COMPLETED" %}
+                                        <i class="bi bi-arrow-repeat"></i>
+                                    {% else %}
+                                        <i class="bi bi-play"></i>
+                                    {% endif %}
+                                </button>
+                                <button onclick="if(confirm('Удалить задачу?')) window.location.href='{{ url_for("task:delete", title=task.title) }}'"
+                                        title="Удалить">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </div>
                         </div>
                     </div>
-
-                    {% if task.file %}
-
-                    <div class="task-rar">
-                        <div class="rar-icon">
-                            <i class="bi bi-file-zip"></i>
-                        </div>
-                        <div class="rar-info">
-                            <div class="rar-name">{{ task.file }}</div>
-                            <div class="rar-size">14.5 MB</div>
-                        </div>
-                        <a class="download-rar" href="{{ url_for("task:download", name=task.file) }}">
-                            <i class="bi bi-download"></i>
-                        </a>
-                    </div>
-                    {% endif %}
-
-                    <div class="task-footer">
-                        <div class="assignee">
-                            <i class="bi bi-person-circle"></i>
-                            <span>{{ task.executor }}</span>
-                        </div>
-                        <a class="task-actions">
-                            <button onclick="if(confirm('Удалить задачу?')) window.location.href='{{ url_for("task:delete", title=task.title) }}'"
-                                    title="Удалить">
-                                <i class="bi bi-trash"></i>
-                            </button>
-                        </a>
-                    </div>
-                </div>
                 {% endfor %}
             </div>
         </div>
@@ -406,6 +493,59 @@
             if (event.target == modal) {
                 closeModal();
             }
+        }
+
+        function toggleTaskStatus(button, taskId) {
+            const taskCard = button.closest('.task-card'); // был пробел в '.task- card'
+            const statusChip = taskCard.querySelector('.status-chip-mini');
+            const statusDot = statusChip.querySelector('.status-dot');
+            const statusText = statusChip.querySelector('.status-text-mini');
+            const taskTitle = taskCard.querySelector('.task-title').textContent;
+
+            let newStatus = '';
+
+            // Меняем классы для точки
+            if (statusDot.classList.contains('status-not-started')) {
+                // Не в работе -> В работе
+                statusDot.className = 'status-dot status-in-progress';
+                statusText.textContent = 'В работе';
+                button.innerHTML = '<i class="bi bi-pause"></i>';
+                newStatus = 'STARTED';
+            } else if (statusDot.classList.contains('status-in-progress')) {
+                // В работе -> Завершена
+                statusDot.className = 'status-dot status-completed';
+                statusText.textContent = 'Завершена';
+                button.innerHTML = '<i class="bi bi-arrow-repeat"></i>';
+                newStatus = 'COMPLETED';;
+            } else {
+                // Завершена -> Не в работе
+                statusDot.className = 'status-dot status-not-started';
+                statusText.textContent = 'Не в работе';
+                button.innerHTML = '<i class="bi bi-play"></i>';
+                newStatus = 'NOT_STARTED';
+            }
+
+            // Кодируем спецсимволы в названии задачи
+            const encodedTitle = encodeURIComponent(taskTitle);
+
+            fetch(`/tasks/update/${encodedTitle}/${newStatus}`, {
+                method: "POST",
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        console.error('Ошибка при обновлении статуса');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log('Статус обновлен:', data);
+                })
+                .catch(error => {
+                    console.error('Ошибка:', error);
+                });
         }
     </script>
 {% endblock %}
