@@ -1,7 +1,8 @@
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select, delete
+from sqlalchemy import select, delete, update
 
 from core.models import Task
+from core.types.tasks import TaskStatus
 
 
 async def get_all_tasks(session: AsyncSession):
@@ -28,5 +29,11 @@ async def create_file_in_db(
 
 async def delete_tasks_in_db(session: AsyncSession, title):
     stmt = delete(Task).where(Task.title == title)
+    await session.execute(stmt)
+    await session.commit()
+
+
+async def update_status_task(session: AsyncSession, title: str, status: str):
+    stmt = update(Task).where(Task.title == title).values(status=status)
     await session.execute(stmt)
     await session.commit()
