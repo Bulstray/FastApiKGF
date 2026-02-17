@@ -1,5 +1,7 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 from aiopath import AsyncPath
+
+from core.types.tasks import TaskStatus
 from services.files.files import FilesService
 from fastapi import UploadFile
 
@@ -53,4 +55,11 @@ class TasksFilesService:
         await crud_tasks.delete_tasks_in_db(
             session=self.session,
             title=title,
+        )
+
+    async def update_status_in_db(self, title: str, status: str):
+        await crud_tasks.update_status_task(
+            session=self.session,
+            title=title,
+            status=status,
         )
