@@ -101,3 +101,15 @@ async def download_file(
         rf"{settings.uploads_file_task_dir}/{name}",
         filename=name,
     )
+
+
+@router.post("/update/{title}/{status_task}", name="task:update:status")
+async def update_status_task(
+    title: str,
+    status_task: str,
+    service: Annotated[TasksFilesService, Depends(get_tasks_service)],
+):
+    await service.update_status_in_db(
+        title=title,
+        status=status_task,
+    )
