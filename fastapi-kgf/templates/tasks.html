@@ -84,6 +84,8 @@
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
             transition: all 0.2s;
             border: 1px solid #8e8e8e;
+            display: flex;
+            flex-direction: column;
         }
 
         .task-card:hover {
@@ -253,26 +255,25 @@
         .status-chip-mini {
             display: inline-flex;
             align-items: center;
-            gap: 8px; /* увеличили gap */
-            padding: 0.3rem 1.2rem 0.3rem 1rem; /* увеличили паддинги */
-            border-radius: 40px; /* чуть больше скругление */
-            font-size: 0.9rem; /* УВЕЛИЧИЛИ ТЕКСТ с 0.75rem до 0.9rem */
+            gap: 8px;
+            padding: 0.3rem 1.2rem 0.3rem 1rem;
+            border-radius: 40px;
+            font-size: 0.9rem;
             font-weight: 600;
             background: #f8fafc;
-            border: 1.5px solid #e2e8f0; /* чуть толще рамка */
+            border: 1.5px solid #e2e8f0;
             cursor: default;
         }
 
         .status-text-mini {
-            line-height: 1.2; /* немного увеличили межстрочник */
+            line-height: 1.2;
         }
-
 
         /* Цветные точки для статуса */
         .status-dot {
             display: inline-block;
-            width: 12px; /* УВЕЛИЧИЛИ с 8px до 12px */
-            height: 12px; /* УВЕЛИЧИЛИ с 8px до 12px */
+            width: 12px;
+            height: 12px;
             border-radius: 50%;
         }
 
@@ -284,7 +285,7 @@
         /* В работе */
         .status-in-progress {
             background: #3b82f6;
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2); /* увеличили тень */
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
         }
 
         /* Завершена */
@@ -313,11 +314,170 @@
             flex-wrap: wrap;
         }
 
+        /* Стили для чата */
+        .task-chat-section {
+            margin-top: 1.5rem;
+            border-top: 2px solid #eef2f6;
+            padding-top: 1rem;
+        }
 
+        .chat-toggle {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 12px;
+            background: #f8fafc;
+            transition: all 0.2s;
+        }
+
+        .chat-toggle:hover {
+            background: #f1f5f9;
+        }
+
+        .chat-toggle-left {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--primary-dark);
+            font-weight: 600;
+        }
+
+        .chat-toggle-left i {
+            color: var(--accent-purple);
+            font-size: 1.2rem;
+        }
+
+        .chat-toggle-right {
+            color: #94a3b8;
+            transition: transform 0.2s;
+        }
+
+        .chat-toggle.active .chat-toggle-right {
+            transform: rotate(180deg);
+        }
+
+        .chat-container {
+            display: none;
+            margin-top: 1rem;
+        }
+
+        .chat-container.active {
+            display: block;
+        }
+
+        .chat-messages {
+            max-height: 250px;
+            overflow-y: auto;
+            padding: 0.5rem;
+            background: #f8fafc;
+            border-radius: 16px;
+            margin-bottom: 1rem;
+        }
+
+        .chat-message {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 1rem;
+            padding: 0.5rem;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+
+        .message-avatar {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 0.9rem;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+
+        .message-content {
+            flex: 1;
+        }
+
+        .message-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 4px;
+        }
+
+        .message-author {
+            font-weight: 600;
+            color: var(--primary-dark);
+            font-size: 0.9rem;
+        }
+
+        .message-time {
+            color: #94a3b8;
+            font-size: 0.75rem;
+        }
+
+        .message-text {
+            color: #475569;
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+
+        .chat-input-area {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .chat-input {
+            flex: 1;
+            padding: 0.75rem 1rem;
+            border: 2px solid #eef2f6;
+            border-radius: 30px;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+            background: white;
+        }
+
+        .chat-input:focus {
+            outline: none;
+            border-color: var(--accent-purple);
+        }
+
+        .chat-send-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            border: none;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 2px 8px rgba(139, 92, 246, 0.3);
+        }
+
+        .chat-send-btn:hover {
+            transform: scale(1.05);
+        }
+
+        .chat-badge {
+            background: var(--accent-purple);
+            color: white;
+            font-size: 0.7rem;
+            padding: 0.2rem 0.5rem;
+            border-radius: 30px;
+            margin-left: 8px;
+        }
     </style>
 {% endblock %}
 
-<!-- Весь код до модалки остается тем же -->
 {% block main %}
     <main class="main-content">
         {{ navbar() }}
@@ -334,11 +494,9 @@
                 </button>
             </div>
 
-
             <div class="tasks-grid">
-
                 {% for task in tasks %}
-                    <!-- Карточка 1 -->
+                    <!-- Карточка задачи -->
                     <div class="task-card">
                         <div class="task-header">
                             <div class="task-title-group">
@@ -373,7 +531,6 @@
                         </div>
 
                         {% if task.file %}
-
                             <div class="task-rar">
                                 <div class="rar-icon">
                                     <i class="bi bi-file-zip"></i>
@@ -388,13 +545,56 @@
                             </div>
                         {% endif %}
 
+                        <!-- Секция чата -->
+                        <div class="task-chat-section">
+                            <div class="chat-toggle" onclick="toggleChat(this, '{{ task.id }}')">
+                                <div class="chat-toggle-left">
+                                    <i class="bi bi-chat-dots"></i>
+                                    <span>Обсуждение задачи</span>
+                                    <span class="chat-badge" id="badge-{{ task.id }}">0</span>
+                                </div>
+                                <div class="chat-toggle-right">
+                                    <i class="bi bi-chevron-down"></i>
+                                </div>
+                            </div>
+
+                            <div class="chat-container" id="chat-{{ task.id }}">
+                                <div class="chat-messages" id="messages-{{ task.id }}">
+
+                                    {% for message in task.chat_messages %}
+                                    <!-- Сообщение 1 -->
+                                    <div class="chat-message">
+                                        <div class="message-avatar">{{ message.initials }}</div>
+                                        <div class="message-content">
+                                            <div class="message-header">
+                                                <span class="message-author">{{ message.author }}</span>
+                                                <span class="message-time">{{ message.time }}</span>
+                                            </div>
+                                            <div class="message-text">{{ message.text }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                        {% endfor %}
+                                </div>
+
+
+                                <div class="chat-input-area">
+                                    <input id="input-{{ task.id }}" type="text" class="chat-input"
+                                           placeholder="Напишите сообщение..."
+                                           onkeypress="if(event.key === 'Enter') sendMessage('{{ task.id }}')">
+                                    <button class="chat-send-btn" onclick="sendMessage('{{ task.id }}')">
+                                        <i class="bi bi-send"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
                         <div class="task-footer">
                             <div class="assignee">
                                 <i class="bi bi-person-circle"></i>
                                 <span>{{ task.executor }}</span>
                             </div>
                             <div class="task-actions">
-
                                 <button onclick="toggleTaskStatus(this, {{ loop.index }});" title="Изменить статус">
                                     {% if task.status == "STARTED" %}
                                         <i class="bi bi-pause"></i>
@@ -416,8 +616,6 @@
         </div>
     </main>
     {{ func_tasks(workers, user) }}
-
-
 {% endblock %}
 
 {% block script %}
@@ -430,10 +628,7 @@
             const fileNameDisplay = document.getElementById('fileNameDisplay');
 
             if (file) {
-                // Меняем текст в области загрузки
                 uploadText.textContent = 'Файл выбран';
-
-                // Показываем блок с именем файла
                 fileNameDisplay.textContent = file.name;
                 selectedFileBlock.style.display = 'block';
             }
@@ -445,40 +640,18 @@
             const uploadText = document.getElementById('uploadText');
             const selectedFileBlock = document.getElementById('selectedFileBlock');
 
-            // Очищаем input
             fileInput.value = '';
-
-            // Возвращаем текст обратно
             uploadText.textContent = 'Выберите RAR архив';
-
-            // Прячем блок с файлом
             selectedFileBlock.style.display = 'none';
-        }
-
-        // Функция создания задачи
-        function createTask() {
-            const fileInput = document.getElementById('rarFile');
-            const file = fileInput.files[0];
-
-            let message = 'Задача создана (демо)';
-            if (file) {
-                message += `\nФайл: ${file.name}`;
-            }
-
-            alert(message);
-            closeModal();
         }
 
         // Функция закрытия модалки
         function closeModal() {
             document.getElementById('taskModal').style.display = 'none';
-            // Очищаем все поля
             document.getElementById('taskTitle').value = '';
             document.getElementById('taskDescription').value = '';
             document.getElementById('taskDeadline').value = '';
             document.getElementById('taskExecutor').selectedIndex = 0;
-
-            // Очищаем файл
             removeFile();
         }
 
@@ -495,8 +668,9 @@
             }
         }
 
+        // Функция переключения статуса задачи
         function toggleTaskStatus(button, taskId) {
-            const taskCard = button.closest('.task-card'); // был пробел в '.task- card'
+            const taskCard = button.closest('.task-card');
             const statusChip = taskCard.querySelector('.status-chip-mini');
             const statusDot = statusChip.querySelector('.status-dot');
             const statusText = statusChip.querySelector('.status-text-mini');
@@ -504,28 +678,23 @@
 
             let newStatus = '';
 
-            // Меняем классы для точки
             if (statusDot.classList.contains('status-not-started')) {
-                // Не в работе -> В работе
                 statusDot.className = 'status-dot status-in-progress';
                 statusText.textContent = 'В работе';
                 button.innerHTML = '<i class="bi bi-pause"></i>';
                 newStatus = 'STARTED';
             } else if (statusDot.classList.contains('status-in-progress')) {
-                // В работе -> Завершена
                 statusDot.className = 'status-dot status-completed';
                 statusText.textContent = 'Завершена';
                 button.innerHTML = '<i class="bi bi-arrow-repeat"></i>';
-                newStatus = 'COMPLETED';;
+                newStatus = 'COMPLETED';
             } else {
-                // Завершена -> Не в работе
                 statusDot.className = 'status-dot status-not-started';
                 statusText.textContent = 'Не в работе';
                 button.innerHTML = '<i class="bi bi-play"></i>';
                 newStatus = 'NOT_STARTED';
             }
 
-            // Кодируем спецсимволы в названии задачи
             const encodedTitle = encodeURIComponent(taskTitle);
 
             fetch(`/tasks/update/${encodedTitle}/${newStatus}`, {
@@ -546,6 +715,103 @@
                 .catch(error => {
                     console.error('Ошибка:', error);
                 });
+        }
+
+        // Храним активные соединения для каждой задачи
+        const taskSockets = {};
+
+        // Подключение к WebSocket задачи
+        function connectToTask(taskId) {
+            if (taskSockets[taskId]) return; // Уже подключены
+
+            const ws = new WebSocket(`ws://${window.location.host}/ws/task/${taskId}`);
+
+            ws.onopen = function () {
+                console.log(`Подключено к задаче ${taskId}`);
+            };
+
+            ws.onmessage = function (event) {
+                // Получаем сообщение
+                const data = JSON.parse(event.data);
+                addMessageToChat(taskId, data);
+            };
+
+            ws.onclose = function () {
+                console.log(`Отключено от задачи ${taskId}`);
+                delete taskSockets[taskId];
+            };
+
+            taskSockets[taskId] = ws;
+        }
+
+        // Отправка сообщения
+        function sendMessage(taskId) {
+            const input = document.getElementById(`input-${taskId}`);
+            const text = input.value.trim();
+            if (!text) return;
+
+            // Подключаемся, если еще не подключены
+            if (!taskSockets[taskId]) {
+                connectToTask(taskId);
+            }
+
+            // Ждем немного, чтобы соединение установилось
+            setTimeout(() => {
+                if (taskSockets[taskId] && taskSockets[taskId].readyState === WebSocket.OPEN) {
+                    // Создаем сообщение
+                    const message = {
+                        text: text,
+                        author: "{{ user.name }} {{ user.surname }}", // Имя пользователя из шаблона
+                        time: new Date().toLocaleTimeString('ru-RU', {hour: '2-digit', minute: '2-digit'})
+                    };
+
+                    // Отправляем
+                    taskSockets[taskId].send(JSON.stringify(message));
+
+                    // Очищаем input
+                    input.value = '';
+                } else {
+                    console.log('Соединение еще не открыто');
+                }
+            }, 100);
+        }
+
+        // Добавление сообщения в чат
+        function addMessageToChat(taskId, messageData) {
+            const messagesContainer = document.getElementById(`messages-${taskId}`);
+            if (!messagesContainer) return;
+
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'chat-message';
+
+            // Получаем инициалы
+            const initials = messageData.author.split(' ').map(n => n[0]).join('').toUpperCase();
+
+            messageDiv.innerHTML = `
+        <div class="message-avatar">${initials}</div>
+        <div class="message-content">
+            <div class="message-header">
+                <span class="message-author">${messageData.author}</span>
+                <span class="message-time">${messageData.time}</span>
+            </div>
+            <div class="message-text">${messageData.text}</div>
+        </div>
+    `;
+
+            messagesContainer.appendChild(messageDiv);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+
+        // Обновляем toggleChat для подключения при открытии
+        function toggleChat(element, taskId) {
+            element.classList.toggle('active');
+            const chatContainer = document.getElementById(`chat-${taskId}`);
+            chatContainer.classList.toggle('active');
+
+            // При открытии чата подключаемся к WebSocket
+            if (chatContainer.classList.contains('active')) {
+                connectToTask(taskId);
+            }
         }
     </script>
 {% endblock %}
