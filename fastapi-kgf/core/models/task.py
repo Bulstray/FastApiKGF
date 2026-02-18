@@ -1,6 +1,6 @@
 from .base import Base
 
-from sqlalchemy.orm import Mapped, mapped_column, relationship
+from sqlalchemy.orm import Mapped, mapped_column, relationship, backref
 from core.types.tasks import TaskStatus
 from sqlalchemy import Enum
 
@@ -28,6 +28,8 @@ class Task(Base):
 
     chat_messages: Mapped[list["ChatsMessage"]] = relationship(
         "ChatsMessage",
-        back_populates="tasks",
+        backref="task",
         lazy="selectin",
+        cascade="all, delete-orphan",
+        passive_deletes=True,
     )
