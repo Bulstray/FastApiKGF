@@ -28,9 +28,12 @@ async def create_file_in_db(
 
 
 async def delete_tasks_in_db(session: AsyncSession, title):
-    stmt = delete(Task).where(Task.title == title)
-    await session.execute(stmt)
-    await session.commit()
+    # Сначала получаем объект
+    result = await get_task_by_title(session=session, title=title)
+
+    if result:
+        await session.delete(result)  # ORM-удаление
+        await session.commit()
 
 
 async def update_status_task(session: AsyncSession, title: str, status: str):
