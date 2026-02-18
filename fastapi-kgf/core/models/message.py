@@ -20,8 +20,3 @@ class ChatsMessage(Base):
     author: Mapped[str]
     initials: Mapped[str]
     time: Mapped[str]
-
-    tasks: Mapped["Task"] = relationship(
-        "Task",
-        back_populates="chat_messages",
-    )
