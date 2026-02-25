@@ -34,6 +34,7 @@ class Settings(BaseSettings):
 
     uploads_program_dir: AsyncPath = AsyncPath("uploads/programs")
     uploads_file_task_dir: AsyncPath = AsyncPath("uploads/file_tasks")
+    uploads_file_in_chat: AsyncPath = AsyncPath("uploads/file_in_chat")
 
 
 settings = Settings()  # type: ignore[call-arg]

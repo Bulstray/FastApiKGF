@@ -28,9 +28,9 @@
                         </div>
                         <div class="col-md-6">
                             <label class="form-label">Исполнитель</label>
-                            <select name="executor" class="form-select" required>
+                            <select name="executor_id" class="form-select" required>
                                 {% for worker in workers %}
-                                    <option value="{{ worker.name }} {{ worker.surname }}">{{ worker.name }} {{ worker.surname }}</option>
+                                    <option value="{{ worker.id }}">{{ worker.name }} {{ worker.surname }}</option>
                                 {% endfor %}
                             </select>
                         </div>
@@ -38,13 +38,11 @@
 
                     <div class="mb-3">
                         <label class="form-label">Постановщик</label>
-                        <select class="form-select" required>
-                            <option>{{ user.name }} {{ user.surname }}</option>
-                        </select>
-                        <!-- Добавляем скрытое поле для отправки customer_id -->
-                        <input type="hidden" name="customer" value="{{ user.name }} {{ user.surname }}">
+                        <input type="text" class="form-control"
+                               value="{{ user.name }} {{ user.surname }}"
+                               readonly>
+                        <input type="hidden" name="customer_id" value="{{ user.id }}">
                     </div>
-
                     <div class="mb-3">
                         <label class="form-label">RAR архив</label>
                         <input type="file"

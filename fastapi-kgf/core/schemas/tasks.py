@@ -5,8 +5,8 @@ class TaskBase(BaseModel):
     title: str
     description: str
     deadline: str
-    executor: str
-    customer: str
+    executor_id: int
+    customer_id: int
     file: str | None = None
 
 

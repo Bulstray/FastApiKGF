@@ -3,11 +3,11 @@ from typing import Annotated
 from fastapi import Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from core.config import settings
 from core.models import db_helper
 from services.files.programs import ProgramService
-from services.users.service import UserService
 from services.files.tasks_files.service import TasksFilesService
-from core.config import settings
+from services.users.service import UserService
 
 
 def get_program_service(

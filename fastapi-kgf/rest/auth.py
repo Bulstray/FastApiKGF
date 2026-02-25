@@ -2,7 +2,6 @@ from typing import Annotated
 
 from fastapi import (
     APIRouter,
-    Cookie,
     Depends,
     Form,
     Request,

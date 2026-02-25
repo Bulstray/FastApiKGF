@@ -29,6 +29,7 @@ class UserBase(BaseModel):
 
 
 class UserRead(BaseModel):
+    id: int
     username: str
     role: UserRole
     name: str

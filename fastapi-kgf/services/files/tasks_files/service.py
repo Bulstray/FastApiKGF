@@ -1,16 +1,12 @@
-from sqlalchemy.ext.asyncio import AsyncSession
 from aiopath import AsyncPath
-
-from core.types.tasks import TaskStatus
-from services.files.files import FilesService
 from fastapi import UploadFile
-
-from core.schemas.tasks import TaskCreate
-from core.models.task import Task
-
-from storage.db import crud_tasks
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from core.config import settings
+from core.models.task import Task
+from core.schemas.tasks import TaskCreate
+from services.files.files import FilesService
+from storage.db import crud_tasks
 
 
 class TasksFilesService:
@@ -26,15 +22,17 @@ class TasksFilesService:
         result = await crud_tasks.get_all_tasks(session=self.session)
         return result
 
-    async def get_task_by_title(self, title: str):
-        result = await crud_tasks.get_task_by_title(
+    async def get_task_by_id(self, task_id: int):
+        result = await crud_tasks.get_task_by_id(
             session=self.session,
-            title=title,
+            task_id=task_id,
         )
         return result
 
     async def create_task(
-        self, task: TaskCreate, file: UploadFile | None = None
+        self,
+        task: TaskCreate,
+        file: UploadFile | None = None,
     ) -> None:
         task_model = Task(**task.model_dump())
         await crud_tasks.create_file_in_db(
@@ -45,17 +43,19 @@ class TasksFilesService:
         if file.filename:
             await self.file_service.save_program_file(file=file)
 
-    async def delete_task(self, title):
-        task = await self.get_task_by_title(title)
+    async def delete_task(self, id_task: id):
+        task = await self.get_task_by_id(id_task)
 
         if task.file:
             file_path = AsyncPath(rf"{settings.uploads_file_task_dir}\{task.file}")
             await self.file_service.delete_program_file(file=file_path)
 
-        await crud_tasks.delete_tasks_in_db(
-            session=self.session,
-            title=title,
-        )
+        for file_in_chat in task.messages:
+            if file_in_chat.file:
+                file = AsyncPath(file_in_chat.file.folder_path)
+                await file.unlink()
+
+        await crud_tasks.delete_tasks_in_db(session=self.session, task=task)
 
     async def update_status_in_db(self, title: str, status: str):
         await crud_tasks.update_status_task(

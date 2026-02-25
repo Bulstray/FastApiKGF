@@ -1,8 +1,8 @@
 from aiopath import AsyncPath
 from fastapi import UploadFile
 
-from core.config import settings
 from utils.file_size import get_file_size
+import uuid
 
 
 class FilesService:
@@ -15,7 +15,9 @@ class FilesService:
             msg = "File must have a filename"
             raise ValueError(msg)
 
-        file_path = self.upload_path / file.filename
+        file_path = (
+            self.upload_path / f"{uuid.uuid4().hex}{AsyncPath(file.filename).suffix}"
+        )
 
         if await file_path.exists():
             msg = f"File {file.filename} already exists"

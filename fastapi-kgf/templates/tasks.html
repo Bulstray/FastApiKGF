@@ -475,6 +475,152 @@
             border-radius: 30px;
             margin-left: 8px;
         }
+
+        /* Стили для прикрепления файлов */
+        .chat-attach-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #f1f5f9;
+            border: none;
+            color: #64748b;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .chat-attach-btn:hover {
+            background: #e2e8f0;
+            color: var(--accent-purple);
+        }
+
+        .file-preview {
+            margin: 10px 0;
+            padding: 8px 12px;
+            background: #f8fafc;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border: 1px solid #e2e8f0;
+        }
+
+        .file-info {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--primary-dark);
+            font-size: 0.9rem;
+        }
+
+        .file-info i {
+            color: var(--accent-purple);
+            font-size: 1.2rem;
+        }
+
+        .remove-file-btn {
+            background: none;
+            border: none;
+            color: #94a3b8;
+            cursor: pointer;
+            padding: 4px 8px;
+            border-radius: 50%;
+            transition: all 0.2s;
+        }
+
+        .remove-file-btn:hover {
+            background: #fee2e2;
+            color: #ef4444;
+        }
+
+        /* Стили для сообщений с файлами */
+        .message-file {
+            margin-top: 8px;
+            padding: 8px 12px;
+            background: #f1f5f9;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .message-file i {
+            color: var(--accent-purple);
+            font-size: 1.2rem;
+        }
+
+        .file-link {
+            color: var(--primary-dark);
+            text-decoration: none;
+            font-size: 0.9rem;
+            flex: 1;
+            cursor: pointer;
+        }
+
+        .file-link:hover {
+            color: var(--accent-purple);
+            text-decoration: underline;
+        }
+
+        .file-size {
+            color: #94a3b8;
+            font-size: 0.8rem;
+        }
+
+        /* Стилизованная кнопка скачивания */
+        .download-file-btn {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            border: none;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 2px 8px rgba(139, 92, 246, 0.3);
+            text-decoration: none;
+            margin-left: 8px;
+            flex-shrink: 0;
+        }
+
+        .download-file-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 4px 12px rgba(139, 92, 246, 0.4);
+        }
+
+        .download-file-btn i {
+            font-size: 1rem;
+        }
+
+        /* Альтернативный вариант - светлая кнопка */
+        .download-file-btn-light {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: white;
+            border: 2px solid var(--accent-purple);
+            color: var(--accent-purple);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-decoration: none;
+            margin-left: 8px;
+            flex-shrink: 0;
+        }
+
+        .download-file-btn-light:hover {
+            background: var(--accent-purple);
+            color: white;
+            transform: scale(1.1);
+        }
     </style>
 {% endblock %}
 
@@ -526,7 +672,7 @@
                             </div>
                             <div class="meta-item">
                                 <i class="bi bi-person-up"></i>
-                                <span>Постановщик: <strong>{{ task.customer }}</strong></span>
+                                <span>Постановщик: <strong>{{ task.executor.name }} {{ task.executor.surname }}</strong></span>
                             </div>
                         </div>
 
@@ -561,20 +707,30 @@
                             <div class="chat-container" id="chat-{{ task.id }}">
                                 <div class="chat-messages" id="messages-{{ task.id }}">
 
-                                    {% for message in task.chat_messages %}
-                                    <!-- Сообщение 1 -->
-                                    <div class="chat-message">
-                                        <div class="message-avatar">{{ message.initials }}</div>
-                                        <div class="message-content">
-                                            <div class="message-header">
-                                                <span class="message-author">{{ message.author }}</span>
-                                                <span class="message-time">{{ message.time }}</span>
-                                            </div>
-                                            <div class="message-text">{{ message.text }}
+                                    {% for message in task.messages %}
+                                        <!-- Сообщение 1 -->
+                                        <div class="chat-message">
+                                            <div class="message-avatar">{{ message.initials }}</div>
+                                            <div class="message-content">
+                                                <div class="message-header">
+                                                    <span class="message-author">{{ message.author }}</span>
+                                                    <span class="message-time">{{ message.time }}</span>
+                                                </div>
+                                                <div class="message-text">{{ message.text }}
+                                                </div>
+                                                {% if message.file %}
+                                                    <div class="message-file" data-file-id="{{ message.file.id }}">
+                                                        <i class="bi bi-file-zip"></i>
+                                                        <span class="file-link">{{ message.file.name }}</span>
+                                                        <span class="file-size"></span>
+                                                        <a class="download-file-btn" href="{{ url_for('task:download:chat', file_path=message.file.folder_path)}}">
+                                                            <i class="bi bi-download"></i>
+                                                        </a>
+                                                    </div>
+                                                {% endif %}
                                             </div>
                                         </div>
-                                    </div>
-                                        {% endfor %}
+                                    {% endfor %}
                                 </div>
 
 
@@ -582,8 +738,25 @@
                                     <input id="input-{{ task.id }}" type="text" class="chat-input"
                                            placeholder="Напишите сообщение..."
                                            onkeypress="if(event.key === 'Enter') sendMessage('{{ task.id }}')">
+
+                                    <label for="chat-file-{{ task.id }}" class="chat-attach-btn"
+                                           title="Прикрепить файл">
+                                        <i class="bi bi-paperclip"></i>
+                                    </label>
+                                    <input type="file" id="chat-file-{{ task.id }}" class="chat-file-input"
+                                           style="display: none;" onchange="handleFileSelect(this, '{{ task.id }}')">
                                     <button class="chat-send-btn" onclick="sendMessage('{{ task.id }}')">
                                         <i class="bi bi-send"></i>
+                                    </button>
+                                </div>
+                                <div id="file-preview-{{ task.id }}" class="file-preview" style="display: none;">
+                                    <div class="file-info">
+                                        <i class="bi bi-file-earmark"></i>
+                                        <span id="file-name-{{ task.id }}"></span>
+                                        <span id="file-size-{{ task.id }}"></span>
+                                    </div>
+                                    <button onclick="removeSelectedFile('{{ task.id }}')" class="remove-file-btn">
+                                        <i class="bi bi-x"></i>
                                     </button>
                                 </div>
                             </div>
@@ -592,7 +765,7 @@
                         <div class="task-footer">
                             <div class="assignee">
                                 <i class="bi bi-person-circle"></i>
-                                <span>{{ task.executor }}</span>
+                                <span>{{ task.customer.name }} {{ task.customer.surname }}</span>
                             </div>
                             <div class="task-actions">
                                 <button onclick="toggleTaskStatus(this, {{ loop.index }});" title="Изменить статус">
@@ -604,7 +777,7 @@
                                         <i class="bi bi-play"></i>
                                     {% endif %}
                                 </button>
-                                <button onclick="if(confirm('Удалить задачу?')) window.location.href='{{ url_for("task:delete", title=task.title) }}'"
+                                <button onclick="if(confirm('Удалить задачу?')) window.location.href='{{ url_for("task:delete", task_id=task.id) }}'"
                                         title="Удалить">
                                     <i class="bi bi-trash"></i>
                                 </button>
@@ -745,10 +918,13 @@
         }
 
         // Отправка сообщения
+        // Отправка сообщения
         function sendMessage(taskId) {
             const input = document.getElementById(`input-${taskId}`);
             const text = input.value.trim();
-            if (!text) return;
+            const file = selectedFiles[taskId];
+
+            if (!text && !file) return;
 
             // Подключаемся, если еще не подключены
             if (!taskSockets[taskId]) {
@@ -756,20 +932,38 @@
             }
 
             // Ждем немного, чтобы соединение установилось
-            setTimeout(() => {
+            setTimeout(async () => {
                 if (taskSockets[taskId] && taskSockets[taskId].readyState === WebSocket.OPEN) {
-                    // Создаем сообщение
+
                     const message = {
                         text: text,
                         author: "{{ user.name }} {{ user.surname }}", // Имя пользователя из шаблона
                         time: new Date().toLocaleTimeString('ru-RU', {hour: '2-digit', minute: '2-digit'})
                     };
 
+                    if (file) {
+                        try {
+                            // Конвертируем файл в base64
+                            const base64File = await fileToBase64(file);
+                            message.file = {
+                                name: file.name,
+                                size: file.size,
+                                type: file.type,
+                                content: base64File,
+                                id: Date.now() + '_' + file.name
+                            };
+                        } catch (error) {
+                            console.error('Ошибка конвертации файла:', error);
+                            return;
+                        }
+                    }
+
                     // Отправляем
                     taskSockets[taskId].send(JSON.stringify(message));
 
                     // Очищаем input
                     input.value = '';
+                    removeSelectedFile(taskId);
                 } else {
                     console.log('Соединение еще не открыто');
                 }
@@ -787,6 +981,21 @@
             // Получаем инициалы
             const initials = messageData.author.split(' ').map(n => n[0]).join('').toUpperCase();
 
+            let fileHtml = '';
+            if (messageData.file) {
+                const fileIcon = getFileIcon(messageData.file.name);
+                fileHtml = `
+            <div class="message-file" data-file-id="${messageData.file.id}" data-file-content="${messageData.file.content}" data-file-name="${messageData.file.name}">
+                <i class="bi ${fileIcon}"></i>
+                <span class="file-link" onclick="downloadFileFromMessage(this)">${messageData.file.name}</span>
+                <span class="file-size">${formatFileSize(messageData.file.size)}</span>
+                <button class="download-file-btn" onclick="downloadFileFromMessage(this.parentElement)">
+                    <i class="bi bi-download"></i>
+                </button>
+            </div>
+        `;
+            }
+
             messageDiv.innerHTML = `
         <div class="message-avatar">${initials}</div>
         <div class="message-content">
@@ -794,7 +1003,8 @@
                 <span class="message-author">${messageData.author}</span>
                 <span class="message-time">${messageData.time}</span>
             </div>
-            <div class="message-text">${messageData.text}</div>
+            ${messageData.text ? `<div class="message-text">${messageData.text}</div>` : ''}
+            ${fileHtml}
         </div>
     `;
 
@@ -813,5 +1023,102 @@
                 connectToTask(taskId);
             }
         }
+
+        // Хранилище выбранных файлов для каждой задачи
+        const selectedFiles = {};
+
+        // Обработка выбора файла
+        function handleFileSelect(input, taskId) {
+            const file = input.files[0];
+            if (!file) return;
+
+            // Сохраняем файл
+            selectedFiles[taskId] = file;
+
+            // Показываем предпросмотр
+            const preview = document.getElementById(`file-preview-${taskId}`);
+            const fileName = document.getElementById(`file-name-${taskId}`);
+            const fileSize = document.getElementById(`file-size-${taskId}`);
+
+            fileName.textContent = file.name;
+            fileSize.textContent = `(${formatFileSize(file.size)})`;
+            preview.style.display = 'flex';
+        }
+
+        // Форматирование размера файла
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+
+        // Удаление выбранного файла
+        function removeSelectedFile(taskId) {
+            delete selectedFiles[taskId];
+
+            // Очищаем input
+            const fileInput = document.getElementById(`chat-file-${taskId}`);
+            if (fileInput) fileInput.value = '';
+
+            // Скрываем предпросмотр
+            const preview = document.getElementById(`file-preview-${taskId}`);
+            if (preview) preview.style.display = 'none';
+        }
+
+        // Конвертация файла в base64
+        function fileToBase64(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = () => resolve(reader.result);
+                reader.onerror = error => reject(error);
+            });
+        }
+
+        // Скачивание файла из сообщения
+        function downloadFileFromMessage(element) {
+            let fileDiv;
+            if (element.classList.contains('message-file')) {
+                fileDiv = element;
+            } else {
+                fileDiv = element.closest('.message-file');
+            }
+
+            if (!fileDiv) return;
+
+            const fileContent = fileDiv.dataset.fileContent;
+            const fileName = fileDiv.dataset.fileName;
+
+            // Ссылка для скачивания
+            const link = document.createElement('a');
+            link.href = fileContent;
+            link.download = fileName;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        // Получение иконки для типа файла
+        function getFileIcon(filename) {
+            const ext = filename.split('.').pop().toLowerCase();
+            const icons = {
+                'pdf': 'bi-file-pdf',
+                'doc': 'bi-file-word',
+                'docx': 'bi-file-word',
+                'xls': 'bi-file-excel',
+                'xlsx': 'bi-file-excel',
+                'jpg': 'bi-file-image',
+                'jpeg': 'bi-file-image',
+                'png': 'bi-file-image',
+                'gif': 'bi-file-image',
+                'zip': 'bi-file-zip',
+                'rar': 'bi-file-zip',
+                'txt': 'bi-file-text'
+            };
+            return icons[ext] || 'bi-file-earmark';
+        }
+
     </script>
 {% endblock %}
