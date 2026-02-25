@@ -2,9 +2,7 @@ import json
 from typing import Annotated
 
 from fastapi import APIRouter, Depends, WebSocket, WebSocketDisconnect
-from sqlalchemy.ext.asyncio import AsyncSession
 
-from core.models import db_helper
 from dependencies.message import get_message_service
 from services.messages.connection_service import connectionmanager
 from services.messages.message_service import MessageManager

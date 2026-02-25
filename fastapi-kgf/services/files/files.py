@@ -1,8 +1,9 @@
+import uuid
+
 from aiopath import AsyncPath
 from fastapi import UploadFile
 
 from utils.file_size import get_file_size
-import uuid
 
 
 class FilesService:

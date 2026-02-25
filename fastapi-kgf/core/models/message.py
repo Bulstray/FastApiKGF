@@ -1,13 +1,13 @@
-from sqlalchemy import ForeignKey, Text, String
+from typing import TYPE_CHECKING
+
+from sqlalchemy import ForeignKey, String, Text
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from .base import Base
 
-from typing import TYPE_CHECKING
-
 if TYPE_CHECKING:
-    from .task import Task
     from .message_file import MessageFile
+    from .task import Task
 
 
 class Message(Base):

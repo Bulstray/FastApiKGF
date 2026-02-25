@@ -1,4 +1,3 @@
-from pathlib import Path
 from typing import TYPE_CHECKING, Annotated
 
 from fastapi import APIRouter, Depends, Form, Request, UploadFile, status
@@ -53,8 +52,6 @@ async def create_task(
     customer_id: Annotated[int, Form(...)],
     rar_file: UploadFile | None = None,
 ):
-
-    print(customer_id)
 
     task = TaskCreate(
         title=title,

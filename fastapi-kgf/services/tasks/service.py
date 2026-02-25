@@ -1,8 +1,7 @@
+from aiopath import AsyncPath
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from storage.db import crud_tasks
-
-from aiopath import AsyncPath
 
 
 class TasksService:

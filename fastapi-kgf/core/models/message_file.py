@@ -1,12 +1,12 @@
+from typing import TYPE_CHECKING
+
 from sqlalchemy import ForeignKey, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from core.models import Base
 
-from typing import TYPE_CHECKING
-
 if TYPE_CHECKING:
-    from .messages import Message
+    from .message import Message
 
 
 class MessageFile(Base):

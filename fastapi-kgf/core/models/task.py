@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING
 
-from sqlalchemy import Enum, String, Text, ForeignKey
+from sqlalchemy import Enum, ForeignKey, String, Text
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from core.types.tasks import TaskStatus
@@ -9,7 +9,7 @@ from .base import Base
 from .user import User
 
 if TYPE_CHECKING:
-    from .messages import Message
+    from .message import Message
     from .user import User
 
 

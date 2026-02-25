@@ -13,7 +13,6 @@ from .superuser import SuperUserConfig
 
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
-ACTIVE_SESSION: dict[str, dict[str, Any]] = {}
 SESSION_COOKIE_NAME = "web-app-session-id"
 
 

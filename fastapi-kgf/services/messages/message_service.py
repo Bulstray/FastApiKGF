@@ -2,10 +2,9 @@ import base64
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from core.models import MessageFile, Message
-from storage.db import crud_message
-
 from core.config import settings
+from core.models import Message, MessageFile
+from storage.db import crud_message
 
 
 class MessageManager:
@@ -34,7 +33,8 @@ class MessageManager:
             content = file_data.get("content").split(";base64,")[-1]
 
             with open(
-                f'{settings.uploads_file_in_chat}/{file_data.get("name")}', "wb"
+                f'{settings.uploads_file_in_chat}/{file_data.get("name")}',
+                "wb",
             ) as file_ctx:
                 file_ctx.write(base64.b64decode(content))
 
