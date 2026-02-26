@@ -43,7 +43,7 @@ async def login_submit(
             status_code=status.HTTP_401_UNAUTHORIZED,
         )
 
-    session_id = SessionManager.create_session(user=user)
+    session_id = await SessionManager.create_session(user=user)
 
     redirect = RedirectResponse(
         url="/",
