@@ -1,11 +1,12 @@
-from typing import Annotated
+from typing import TYPE_CHECKING, Annotated
 
-from fastapi import Depends, APIRouter, Request
+from fastapi import APIRouter, Depends, Request
 from starlette.responses import FileResponse
 
-from core.schemas.user import UserRead
 from dependencies.session_auth import require_auth
 
+if TYPE_CHECKING:
+    from core.schemas.user import UserRead
 
 router = APIRouter(prefix="/download")
 
@@ -14,9 +15,9 @@ router = APIRouter(prefix="/download")
 async def download_file(
     name: str,
     file_path: str,
-    is_auth_user: Annotated[UserRead, Depends(require_auth)],
+    is_auth_user: Annotated["UserRead", Depends(require_auth)],
     request: Request,
-):
+) -> FileResponse:
     return FileResponse(
         file_path,
         filename=name,

@@ -16,7 +16,11 @@ async def get_authenticated_user(
     if session_id is None:
         return None
 
-    if (answer := await SessionStorage.get_by_session_id(session_id)) is not None:
+    if (
+        answer := await SessionStorage.get_by_session_id(
+            session_id,
+        )
+    ) is not None:
         return answer
 
     return None

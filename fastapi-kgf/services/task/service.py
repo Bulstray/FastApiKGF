@@ -1,8 +1,9 @@
 from aiopath import AsyncPath
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from core.schemas.tasks import TaskCreate
+from core.models import Task
 from core.schemas.tasks import Task as TaskSchema
+from core.schemas.tasks import TaskCreate
 from services.files import FilesService
 from storage.db import crud_tasks
 
@@ -16,16 +17,16 @@ class TasksFilesService:
         self.session = session
         self.file_service = FilesService(uploads_path=uploads_path)
 
-    async def get_tasks(self):
-        result = await crud_tasks.get_all_tasks(session=self.session)
-        return result
+    async def get_tasks(self) -> list[Task]:
+        return await crud_tasks.get_all_tasks(
+            session=self.session,
+        )
 
-    async def get_task_by_id(self, task_id: int):
-        result = await crud_tasks.get_task_by_id(
+    async def get_task_by_id(self, task_id: int) -> Task | None:
+        return await crud_tasks.get_task_by_id(
             session=self.session,
             task_id=task_id,
         )
-        return result
 
     async def create_task(
         self,
@@ -50,12 +51,12 @@ class TasksFilesService:
         )
         await crud_tasks.create_file_in_db(session=self.session, task_in=task)
 
-    async def delete_task(self, id_task: id):
+    async def delete_task(self, id_task: id) -> None:
         task = await self.get_task_by_id(id_task)
 
         await crud_tasks.delete_tasks_in_db(session=self.session, task=task)
 
-    async def update_status_in_db(self, title: str, status: str):
+    async def update_status_in_db(self, title: str, status: str) -> None:
         await crud_tasks.update_status_task(
             session=self.session,
             title=title,

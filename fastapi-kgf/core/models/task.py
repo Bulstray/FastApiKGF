@@ -1,10 +1,10 @@
+from pathlib import Path
 from typing import TYPE_CHECKING
 
 from sqlalchemy import Enum, ForeignKey, String, Text, event
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from core.types.tasks import TaskStatus
-from pathlib import Path
 
 from .base import Base
 from .user import User

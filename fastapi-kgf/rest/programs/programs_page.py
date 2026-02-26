@@ -6,9 +6,9 @@ from fastapi.responses import HTMLResponse
 from core.schemas import ProgramRead
 from core.schemas.user import UserRead
 from dependencies.providers import get_program_service
+from dependencies.session_auth import require_auth
 from services.programs import ProgramService
 from templating.jinja_template import templates
-from dependencies.session_auth import require_auth
 
 router = APIRouter()
 

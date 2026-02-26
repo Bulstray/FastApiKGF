@@ -8,7 +8,6 @@ from services.files import FilesService
 from services.programs.exceptions import (
     ProgramFileNameAlreadyExistsError,
     ProgramNameAlreadyExistsError,
-    ProgramNameDoesNotExistError,
 )
 from storage.db.crud_programs import (
     create_program_in_db,
@@ -66,10 +65,6 @@ class ProgramService:
         return await create_program_in_db(self.session, program)
 
     async def delete_program(self, name: str) -> None:
-        program = await self.get_program_by_name(
-            program_name=name,
-        )
-
         await delete_program_from_db(
             session=self.session,
             name=name,

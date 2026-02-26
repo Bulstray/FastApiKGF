@@ -1,4 +1,4 @@
-from pydantic import BaseModel, field_validator, ConfigDict, model_validator
+from pydantic import BaseModel, ConfigDict, model_validator
 
 
 class Message(BaseModel):

@@ -1,13 +1,12 @@
+from typing import Annotated
+
 from fastapi import APIRouter, Depends
 from starlette.requests import Request
 from starlette.responses import HTMLResponse
 
-from dependencies.session_auth import require_auth
-
 from core.schemas.user import UserRead
+from dependencies.session_auth import require_auth
 from templating.jinja_template import templates
-
-from typing import Annotated
 
 router = APIRouter()
 

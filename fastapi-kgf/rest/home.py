@@ -1,11 +1,11 @@
+from typing import Annotated
+
 from fastapi import APIRouter, Depends
 from fastapi.requests import Request
 from fastapi.responses import HTMLResponse
-from typing import Annotated
-from dependencies.session_auth import get_authenticated_user
 
 from core.schemas.user import UserRead
-
+from dependencies.session_auth import get_authenticated_user
 from templating.jinja_template import templates
 
 router = APIRouter()

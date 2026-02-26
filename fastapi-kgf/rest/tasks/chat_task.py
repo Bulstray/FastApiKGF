@@ -1,13 +1,12 @@
 import json
 from typing import Annotated
 
-from fastapi import Depends, APIRouter
+from fastapi import APIRouter, Depends
 from starlette.websockets import WebSocket, WebSocketDisconnect
 
 from dependencies.message import get_message_service
 from services.messages.connection_service import connectionmanager
 from services.messages.message_service import MessageManager
-
 
 router = APIRouter(prefix="/ws/task")
 
@@ -17,7 +16,7 @@ async def websocket_endpoint(
     websocket: WebSocket,
     task_id: int,
     message_service: Annotated[MessageManager, Depends(get_message_service)],
-):
+) -> None:
     await connectionmanager.connect(websocket, task_id)
     try:
         while True:

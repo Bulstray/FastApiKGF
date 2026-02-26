@@ -1,6 +1,6 @@
 from typing import Annotated
 
-from fastapi import Depends, APIRouter
+from fastapi import APIRouter, Depends
 from starlette import status
 from starlette.requests import Request
 from starlette.responses import HTMLResponse, RedirectResponse
@@ -27,7 +27,7 @@ async def logout_page(
 
     if session_id:
         session_service = SessionManager()
-        session_service.delete_session(session_id)
+        await session_service.delete_session(session_id)
 
     redirect = RedirectResponse(
         url=return_url or "/",

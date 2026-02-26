@@ -1,6 +1,6 @@
 from typing import Annotated
 
-from fastapi import Depends, APIRouter
+from fastapi import APIRouter, Depends
 from starlette import status
 from starlette.requests import Request
 from starlette.responses import RedirectResponse
@@ -9,7 +9,6 @@ from core.schemas.tasks import TaskCreate
 from dependencies.providers import get_tasks_service
 from services.task import TasksFilesService
 
-
 router = APIRouter()
 
 
@@ -17,7 +16,7 @@ router = APIRouter()
 async def create_task(
     request: Request,
     service: Annotated[TasksFilesService, Depends(get_tasks_service)],
-):
+) -> RedirectResponse:
 
     async with request.form() as form:
         task = TaskCreate.model_validate(form)

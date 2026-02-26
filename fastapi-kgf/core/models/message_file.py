@@ -1,11 +1,8 @@
+from pathlib import Path
 from typing import TYPE_CHECKING
 
 from sqlalchemy import ForeignKey, String, event
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-
-from pathlib import Path
-
-from aiopath import AsyncPath
 
 from core.models import Base
 

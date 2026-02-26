@@ -1,20 +1,28 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from services.files import FilesService
-
-from core.schemas.message import Message
 from core.models import MessageFile
+from core.schemas.message import Message
+from services.files import FilesService
 from storage.db import crud_message
 
 
 class MessageManager:
-    def __init__(self, session: AsyncSession, file_service: FilesService):
+    def __init__(
+        self,
+        session: AsyncSession,
+        file_service: FilesService,
+    ) -> None:
         self.session = session
         self.file_service = file_service
 
-    async def add_message_in_db(self, message_data: dict[str, str]):
+    async def add_message_in_db(
+        self,
+        message_data: dict[str, str],
+    ) -> None:
 
         message_in = Message.model_validate(message_data)
+
+        print(message_in)
 
         message_in_db = await crud_message.create_chats_message(
             session=self.session,

@@ -19,8 +19,8 @@ class SessionManager:
         return session_id
 
     @staticmethod
-    def delete_session(session_id: str) -> None:
+    async def delete_session(session_id: str) -> None:
 
-        SessionStorage.delete_by_session_id(
+        await SessionStorage.delete_by_session_id(
             session_id=session_id,
         )

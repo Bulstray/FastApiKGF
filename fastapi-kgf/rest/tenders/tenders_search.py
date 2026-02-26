@@ -1,6 +1,6 @@
 from typing import Annotated
 
-from fastapi import Query, Depends, APIRouter
+from fastapi import APIRouter, Depends, Query
 from starlette.requests import Request
 from starlette.responses import HTMLResponse, RedirectResponse
 

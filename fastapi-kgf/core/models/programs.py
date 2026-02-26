@@ -1,4 +1,6 @@
-from sqlalchemy import String, Text
+from pathlib import Path
+
+from sqlalchemy import String, Text, event
 from sqlalchemy.orm import Mapped, mapped_column
 
 from .base import Base
@@ -32,3 +34,10 @@ class Program(Base):
         String(200),
         nullable=False,
     )
+
+
+@event.listens_for(Program, "after_delete")
+def delete_file_after_delete(mapper, connection, target) -> None:
+    folder_file = Path(target.folder_file)
+    if folder_file.exists():
+        folder_file.unlink()

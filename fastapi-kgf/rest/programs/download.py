@@ -1,12 +1,12 @@
 from typing import Annotated
 
 from aiopath import AsyncPath
-from fastapi import Depends, HTTPException, APIRouter
+from fastapi import APIRouter, Depends, HTTPException
 from starlette import status
-from starlette.responses import RedirectResponse, FileResponse
+from starlette.responses import FileResponse, RedirectResponse
 
-from dependencies.session_auth import require_auth
 from dependencies.providers import get_program_service
+from dependencies.session_auth import require_auth
 from services.programs import ProgramService
 
 router = APIRouter()

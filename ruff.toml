@@ -70,7 +70,7 @@ select = [
 	"AIR", # airflow (AIR)
 	"YTT", # flake8-2020 (YTT)
 	"ANN", # flake8-annotations (ANN)
-	# "ASYNC",
+	"ASYNC",
 	"S", # flake8-bandit (S)
 	"BLE", # flake8-blind-except (BLE)
 	"T10", # flake8-debugger (T10)
@@ -95,13 +95,13 @@ select = [
 	"FAST" # fastapi
 ]
 
-ignore = ["RUF002"]
+ignore = ["RUF002", "ARG001",]
 
 [lint.per-file-ignores]
 "fastapi-kgf/app_lifespan.py" = ["ARG001", "PGH003"]
 "fastapi-kgf/core/models/user.py" = ["ARG002"]
 "fastapi-kgf/rest/main_views.py" = ["E501"]
 "fastapi-kgf/core/config.py" = ["PGH003"]
-"fastapi-kgf/rest/tenders.py" = ["ARG001"]
-"fastapi-kgf/rest/programs.py" = ["ARG001"]
-"fastapi-kgf/rest/auth.py" = ["ARG001"]
+"fastapi-kgf/core/models/programs.py" = ["ANN"]
+"fastapi-kgf/core/models/task.py" = ["ANN"]
+"fastapi-kgf/core/models/message_file.py" = ["ANN"]

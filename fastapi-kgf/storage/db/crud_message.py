@@ -7,7 +7,7 @@ from core.schemas.message import Message as MessageSchema
 async def create_chats_message(
     session: AsyncSession,
     message_in: MessageSchema,
-):
+) -> Message:
     message = Message(**message_in.model_dump())
     session.add(message)
     await session.commit()
@@ -18,7 +18,7 @@ async def create_chats_message(
 async def create_file_data_message(
     session: AsyncSession,
     file: MessageFile,
-):
+) -> MessageFile:
     session.add(file)
     await session.commit()
     await session.refresh(file)

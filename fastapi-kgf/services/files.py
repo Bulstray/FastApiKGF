@@ -11,14 +11,19 @@ class FilesService:
     def __init__(self, uploads_path: AsyncPath) -> None:
         self.upload_path: AsyncPath = uploads_path
 
-    async def save_program_file(self, file: UploadFile, content: bytes) -> AsyncPath:
+    async def save_program_file(
+        self,
+        file: UploadFile,
+        content: bytes,
+    ) -> AsyncPath:
 
         if not file.filename:
             msg = "File must have a filename"
             raise ValueError(msg)
 
         file_path = (
-            self.upload_path / f"{uuid.uuid4().hex}{AsyncPath(file.filename).suffix}"
+            self.upload_path / f"{uuid.uuid4().hex}"
+            f"{AsyncPath(file.filename).suffix}"
         )
 
         async with file_path.open("wb") as buffer:
@@ -26,10 +31,16 @@ class FilesService:
 
         return file_path
 
-    async def save_program_file_bs64(self, code_file: str, filename: str) -> AsyncPath:
+    async def save_program_file_bs64(
+        self,
+        code_file: str,
+        filename: str,
+    ) -> AsyncPath:
         content = code_file.split(";base64,")[-1]
 
-        file_path = self.upload_path / f"{uuid.uuid4().hex}{AsyncPath(filename).suffix}"
+        file_path = self.upload_path / (
+            f"{uuid.uuid4().hex}{AsyncPath(filename).suffix}"
+        )
 
         async with file_path.open("wb") as file_ctx:
             await file_ctx.write(base64.b64decode(content))

@@ -705,7 +705,7 @@
                       <div class="message-content">
                         <div class="message-header">
                           <span class="message-author">{{ message.author }}</span>
-                          <span class="message-time">{{ message.time }}</span>
+                          <span class="message-time">{{ message.created_at }}</span>
                         </div>
                         <div class="message-text">{{ message.text }}
                         </div>
@@ -995,7 +995,7 @@
         <div class="message-content">
             <div class="message-header">
                 <span class="message-author">${messageData.author}</span>
-                <span class="message-time">${messageData.time}</span>
+                <span class="message-time">${messageData.created_at}</span>
             </div>
             ${messageData.text ? `<div class="message-text">${messageData.text}</div>` : ''}
             ${fileHtml}
