@@ -10,7 +10,7 @@ class FilesService:
     def __init__(self, uploads_path: AsyncPath) -> None:
         self.upload_path: AsyncPath = uploads_path
 
-    async def save_program_file(self, file: UploadFile) -> AsyncPath:
+    async def save_program_file(self, file: UploadFile, content: bytes) -> str:
 
         if not file.filename:
             msg = "File must have a filename"
@@ -25,10 +25,9 @@ class FilesService:
             raise FileExistsError(msg)
 
         async with file_path.open("wb") as buffer:
-            content = await file.read()
             await buffer.write(content)
 
-        return file_path
+        return str(file_path)
 
     @staticmethod
     async def delete_program_file(file: AsyncPath) -> None:

@@ -2,6 +2,7 @@ from sqlalchemy import select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from core.models import Task
+from core.schemas.tasks import Task as TaskSchema
 
 
 async def get_all_tasks(session: AsyncSession):
@@ -17,8 +18,10 @@ async def get_task_by_id(session: AsyncSession, task_id: int):
 
 async def create_file_in_db(
     session: AsyncSession,
-    task: Task,
+    task_in: TaskSchema,
 ) -> Task:
+    task = Task(**task_in.model_dump())
+
     session.add(task)
     await session.commit()
     await session.refresh(task)

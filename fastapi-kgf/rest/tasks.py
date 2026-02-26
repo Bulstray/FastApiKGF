@@ -45,26 +45,15 @@ async def tasks_page(
 async def create_task(
     request: Request,
     service: Annotated[TasksFilesService, Depends(get_tasks_service)],
-    title: Annotated[str, Form(...)],
-    description: Annotated[str, Form(...)],
-    deadline: Annotated[str, Form(...)],
-    executor_id: Annotated[int, Form(...)],
-    customer_id: Annotated[int, Form(...)],
-    rar_file: UploadFile | None = None,
 ):
 
-    task = TaskCreate(
-        title=title,
-        description=description,
-        executor_id=executor_id,
-        customer_id=customer_id,
-        deadline=deadline,
-        file=rar_file.filename,
-    )
+    async with request.form() as form:
+        task = TaskCreate.model_validate(form)
+        content = await form.get("rar_file").read()
 
     await service.create_task(
-        task=task,
-        file=rar_file,
+        task_in=task,
+        content=content,
     )
 
     return RedirectResponse(
@@ -77,6 +66,7 @@ async def create_task(
 async def delete_task(
     task_id: int,
     service: Annotated[TasksFilesService, Depends(get_tasks_service)],
+    is_auth_user: Annotated[UserRead, Depends(require_auth)],
 ):
     await service.delete_task(
         id_task=task_id,
@@ -88,13 +78,14 @@ async def delete_task(
     )
 
 
-@router.get("download/{name}/", name="task:download")
+@router.get("download/{name}/{file_path:path}", name="task:download")
 async def download_file(
     name: str,
-    request: Request,
+    file_path: str,
+    is_auth_user: Annotated[UserRead, Depends(require_auth)],
 ):
     return FileResponse(
-        rf"{settings.uploads_file_task_dir}/{name}",
+        file_path,
         filename=name,
     )
 
@@ -103,6 +94,7 @@ async def download_file(
 async def update_status_task(
     title: str,
     status_task: str,
+    is_auth_user: Annotated[UserRead, Depends(require_auth)],
     service: Annotated[TasksFilesService, Depends(get_tasks_service)],
 ):
     await service.update_status_in_db(

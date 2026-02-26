@@ -62,7 +62,12 @@ class Task(Base):
         foreign_keys=[customer_id],
     )
 
-    file: Mapped[str | None] = mapped_column(
+    filename: Mapped[str | None] = mapped_column(
+        String(500),
+        nullable=True,
+    )
+
+    folder_file: Mapped[str | None] = mapped_column(
         String(500),
         nullable=True,
     )

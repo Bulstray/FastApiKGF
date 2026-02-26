@@ -5,8 +5,10 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from core.config import settings
 from core.models.task import Task
 from core.schemas.tasks import TaskCreate
+from core.schemas.tasks import Task as TaskSchema
 from services.files.files import FilesService
 from storage.db import crud_tasks
+from fastapi import UploadFile
 
 
 class TasksFilesService:
@@ -31,17 +33,26 @@ class TasksFilesService:
 
     async def create_task(
         self,
-        task: TaskCreate,
-        file: UploadFile | None = None,
+        task_in: TaskCreate,
+        content: bytes,
     ) -> None:
-        task_model = Task(**task.model_dump())
-        await crud_tasks.create_file_in_db(
-            session=self.session,
-            task=task_model,
-        )
 
-        if file.filename:
-            file_name = await self.file_service.save_program_file(file=file)
+        folder = None
+        filename = None
+
+        if task_in.rar_file.filename:
+            filename = task_in.rar_file.filename
+            folder = await self.file_service.save_program_file(
+                file=task_in.rar_file,
+                content=content,
+            )
+
+        task = TaskSchema(
+            filename=filename,
+            folder_file=folder,
+            **task_in.model_dump(),
+        )
+        await crud_tasks.create_file_in_db(session=self.session, task_in=task)
 
     async def delete_task(self, id_task: id):
         task = await self.get_task_by_id(id_task)

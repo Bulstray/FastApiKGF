@@ -1,14 +1,25 @@
-from pydantic import BaseModel
+from fastapi import UploadFile
+from pydantic import BaseModel, ConfigDict
 
 
-class TaskBase(BaseModel):
+class Task(BaseModel):
     title: str
     description: str
     deadline: str
     executor_id: int
     customer_id: int
-    file: str | None = None
+    filename: str | None = None
+    folder_file: str | None = None
+
+    model_config = ConfigDict(extra="ignore")
 
 
-class TaskCreate(TaskBase):
+class TaskCreate(BaseModel):
     """Модель для создания задания"""
+
+    title: str
+    description: str
+    deadline: str
+    executor_id: int
+    customer_id: int
+    rar_file: UploadFile
