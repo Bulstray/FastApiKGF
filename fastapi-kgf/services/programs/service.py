@@ -70,13 +70,6 @@ class ProgramService:
             program_name=name,
         )
 
-        if not program:
-            raise ProgramNameDoesNotExistError(name)
-
-        file_path = AsyncPath(program.folder_path)
-
-        await self.file_service.delete_program_file(file_path)
-
         await delete_program_from_db(
             session=self.session,
             name=name,

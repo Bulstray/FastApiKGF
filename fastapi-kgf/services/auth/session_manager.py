@@ -7,11 +7,11 @@ from storage.redis.session import SessionStorage
 
 class SessionManager:
     @staticmethod
-    def create_session(user: User) -> str:
+    async def create_session(user: User) -> str:
 
         session_id = uuid.uuid4().hex
 
-        SessionStorage.save_session(
+        await SessionStorage.save_session(
             session_id=f"{session_id}",
             user=UserRead.model_validate(user),
         )

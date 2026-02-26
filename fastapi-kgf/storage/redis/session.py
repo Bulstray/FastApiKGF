@@ -1,4 +1,4 @@
-from redis import Redis
+from redis.asyncio import Redis
 
 from core.config import settings
 from core.schemas.user import UserRead
@@ -14,26 +14,20 @@ redis = Redis(
 class SessionStorage:
 
     @staticmethod
-    def save_session(session_id: str, user: UserRead) -> None:
-        redis.hset(
-            name=settings.redis.collections_name.sessions_hash,
-            key=session_id,
-            value=user.model_dump_json(),
-        )
-
-    @staticmethod
-    def delete_by_session_id(session_id: str) -> None:
-        redis.hdel(
-            settings.redis.collections_name.sessions_hash,
+    async def save_session(session_id: str, user: UserRead) -> None:
+        await redis.set(
             session_id,
+            user.model_dump_json(),
+            ex=48000,
         )
 
     @staticmethod
-    def get_by_session_id(session_id: str) -> UserRead | None:
-        answer = redis.hget(
-            name=settings.redis.collections_name.sessions_hash,
-            key=session_id,
-        )
+    async def delete_by_session_id(session_id: str) -> None:
+        await redis.delete(session_id)
+
+    @staticmethod
+    async def get_by_session_id(session_id: str) -> UserRead | None:
+        answer = await redis.get(session_id)
 
         if answer:
             return UserRead.model_validate_json(answer)

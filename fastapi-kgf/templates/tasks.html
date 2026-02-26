@@ -7,975 +7,978 @@
 
 
 {% block style %}
-    {{ style_navbar() }}
-    {{ tasks_style() }}
-    <style>
-
-        .main-content {
-            margin-left: 280px;
-            padding: 2rem;
-        }
-
-        /* Контейнер задач */
-        .tasks-container {
-            max-width: 1400px;
-            margin: 0 auto;
-        }
-
-        /* Хедер */
-        .tasks-header {
-            background: white;
-            border-radius: 24px;
-            padding: 2rem;
-            margin-bottom: 2rem;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .task-title {
-            font-size: 1.2rem;
-            font-weight: 700;
-            color: var(--primary-dark);
-            margin: 0;
-        }
-
-
-        .tasks-title i {
-            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin-right: 12px;
-        }
-
-        .create-task-btn {
-            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-            border: none;
-            padding: 0.875rem 2rem;
-            font-weight: 600;
-            border-radius: 16px;
-            color: white;
-            transition: all 0.2s;
-            box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            cursor: pointer;
-        }
-
-        .create-task-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(139, 92, 246, 0.4);
-        }
-
-        /* Сетка задач */
-        .tasks-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
-            gap: 1.5rem;
-        }
-
-        /* Карточка задачи */
-        .task-card {
-            background-color: #ffffff;
-            border-radius: 24px;
-            padding: 1.5rem;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
-            transition: all 0.2s;
-            border: 1px solid #8e8e8e;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .task-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.08);
-        }
-
-        .task-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 1rem;
-        }
-
-        .task-title {
-            font-size: 1.2rem;
-            font-weight: 700;
-            color: var(--primary-dark);
-            margin: 0;
-        }
-
-        .task-footer {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-top: 1rem;
-            padding-top: 1rem;
-            border-top: 2px solid #eef2f6;
-        }
-
-        .assignee {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            color: var(--primary-dark);
-            font-weight: 500;
-            font-size: 0.9rem;
-        }
-
-        .assignee i {
-            color: var(--accent-purple);
-        }
-
-        .task-actions {
-            display: flex;
-            gap: 8px;
-        }
-
-        .task-actions button {
-            background: none;
-            border: none;
-            color: #94a3b8;
-            font-size: 1.1rem;
-            padding: 4px 8px;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .task-actions button:hover {
-            color: var(--accent-purple);
-            transform: scale(1.1);
-        }
-
-        /* Дедлайн */
-        .deadline-badge {
-            padding: 0.35rem 0.75rem;
-            border-radius: 30px;
-            font-size: 0.8rem;
-            font-weight: 600;
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-        }
-
-        .deadline-urgent {
-            background: #fee2e2;
-            color: #ef4444;
-        }
-
-        .deadline-warning {
-            background: #fef3c7;
-            color: #f59e0b;
-        }
-
-        .deadline-normal {
-            background: #dcfce7;
-            color: #10b981;
-        }
-
-        .deadline-passed {
-            background: #f1f5f9;
-            color: #64748b;
-        }
-
-        .task-description {
-            color: #64748b;
-            margin-bottom: 1.5rem;
-            line-height: 1.5;
-        }
-
-        .task-meta {
-            display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
-            margin-bottom: 1rem;
-        }
-
-        .meta-item {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            color: #64748b;
-            font-size: 0.9rem;
-        }
-
-        .meta-item i {
-            color: var(--accent-purple);
-            width: 20px;
-        }
-
-        /* RAR блок */
-        .task-rar {
-            background: linear-gradient(135deg, #fafbff, #ffffff);
-            border: 2px solid #eef2f6;
-            border-radius: 16px;
-            padding: 1rem;
-            margin: 1rem 0;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .rar-icon {
-            width: 48px;
-            height: 48px;
-            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 1.5rem;
-        }
-
-        .rar-info {
-            flex: 1;
-        }
-
-        .rar-name {
-            font-weight: 600;
-            color: var(--primary-dark);
-            font-size: 0.95rem;
-        }
-
-        .rar-size {
-            font-size: 0.8rem;
-            color: var(--text-light);
-        }
-
-        .download-rar {
-            color: var(--accent-purple);
-            font-size: 1.2rem;
-            cursor: pointer;
-            padding: 8px;
-        }
-
-        .status-chip-mini {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            padding: 0.3rem 1.2rem 0.3rem 1rem;
-            border-radius: 40px;
-            font-size: 0.9rem;
-            font-weight: 600;
-            background: #f8fafc;
-            border: 1.5px solid #e2e8f0;
-            cursor: default;
-        }
-
-        .status-text-mini {
-            line-height: 1.2;
-        }
-
-        /* Цветные точки для статуса */
-        .status-dot {
-            display: inline-block;
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-        }
-
-        /* Не в работе */
-        .status-not-started {
-            background: #94a3b8;
-        }
-
-        /* В работе */
-        .status-in-progress {
-            background: #3b82f6;
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
-        }
-
-        /* Завершена */
-        .status-completed {
-            background: #10b981;
-        }
-
-        /* Текст статуса */
-        .status-not-started + .status-text-mini {
-            color: #475569;
-        }
-
-        .status-in-progress + .status-text-mini {
-            color: #1e40af;
-            font-weight: 700;
-        }
-
-        .status-completed + .status-text-mini {
-            color: #065f46;
-        }
-
-        .task-title-group {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            flex-wrap: wrap;
-        }
-
-        /* Стили для чата */
-        .task-chat-section {
-            margin-top: 1.5rem;
-            border-top: 2px solid #eef2f6;
-            padding-top: 1rem;
-        }
-
-        .chat-toggle {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            cursor: pointer;
-            padding: 0.5rem;
-            border-radius: 12px;
-            background: #f8fafc;
-            transition: all 0.2s;
-        }
-
-        .chat-toggle:hover {
-            background: #f1f5f9;
-        }
-
-        .chat-toggle-left {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            color: var(--primary-dark);
-            font-weight: 600;
-        }
-
-        .chat-toggle-left i {
-            color: var(--accent-purple);
-            font-size: 1.2rem;
-        }
-
-        .chat-toggle-right {
-            color: #94a3b8;
-            transition: transform 0.2s;
-        }
-
-        .chat-toggle.active .chat-toggle-right {
-            transform: rotate(180deg);
-        }
-
-        .chat-container {
-            display: none;
-            margin-top: 1rem;
-        }
-
-        .chat-container.active {
-            display: block;
-        }
-
-        .chat-messages {
-            max-height: 250px;
-            overflow-y: auto;
-            padding: 0.5rem;
-            background: #f8fafc;
-            border-radius: 16px;
-            margin-bottom: 1rem;
-        }
-
-        .chat-message {
-            display: flex;
-            gap: 8px;
-            margin-bottom: 1rem;
-            padding: 0.5rem;
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-        }
-
-        .message-avatar {
-            width: 32px;
-            height: 32px;
-            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 0.9rem;
-            font-weight: 600;
-            flex-shrink: 0;
-        }
-
-        .message-content {
-            flex: 1;
-        }
-
-        .message-header {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 4px;
-        }
-
-        .message-author {
-            font-weight: 600;
-            color: var(--primary-dark);
-            font-size: 0.9rem;
-        }
-
-        .message-time {
-            color: #94a3b8;
-            font-size: 0.75rem;
-        }
-
-        .message-text {
-            color: #475569;
-            font-size: 0.9rem;
-            line-height: 1.4;
-        }
-
-        .chat-input-area {
-            display: flex;
-            gap: 8px;
-            align-items: center;
-        }
-
-        .chat-input {
-            flex: 1;
-            padding: 0.75rem 1rem;
-            border: 2px solid #eef2f6;
-            border-radius: 30px;
-            font-size: 0.9rem;
-            transition: all 0.2s;
-            background: white;
-        }
-
-        .chat-input:focus {
-            outline: none;
-            border-color: var(--accent-purple);
-        }
-
-        .chat-send-btn {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-            border: none;
-            color: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: all 0.2s;
-            box-shadow: 0 2px 8px rgba(139, 92, 246, 0.3);
-        }
-
-        .chat-send-btn:hover {
-            transform: scale(1.05);
-        }
-
-        /* Стили для прикрепления файлов */
-        .chat-attach-btn {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: #f1f5f9;
-            border: none;
-            color: #64748b;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .chat-attach-btn:hover {
-            background: #e2e8f0;
-            color: var(--accent-purple);
-        }
-
-        .file-preview {
-            margin: 10px 0;
-            padding: 8px 12px;
-            background: #f8fafc;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            border: 1px solid #e2e8f0;
-        }
-
-        .file-info {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            color: var(--primary-dark);
-            font-size: 0.9rem;
-        }
-
-        .file-info i {
-            color: var(--accent-purple);
-            font-size: 1.2rem;
-        }
-
-        .remove-file-btn {
-            background: none;
-            border: none;
-            color: #94a3b8;
-            cursor: pointer;
-            padding: 4px 8px;
-            border-radius: 50%;
-            transition: all 0.2s;
-        }
-
-        .remove-file-btn:hover {
-            background: #fee2e2;
-            color: #ef4444;
-        }
-
-        /* Стили для сообщений с файлами */
-        .message-file {
-            margin-top: 8px;
-            padding: 8px 12px;
-            background: #f1f5f9;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            border: 1px solid #e2e8f0;
-        }
-
-        .message-file i {
-            color: var(--accent-purple);
-            font-size: 1.2rem;
-        }
-
-        .file-link {
-            color: var(--primary-dark);
-            text-decoration: none;
-            font-size: 0.9rem;
-            flex: 1;
-            cursor: pointer;
-        }
-
-        .file-link:hover {
-            color: var(--accent-purple);
-            text-decoration: underline;
-        }
-
-        .file-size {
-            color: #94a3b8;
-            font-size: 0.8rem;
-        }
-
-        /* Стилизованная кнопка скачивания */
-        .download-file-btn {
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-            border: none;
-            color: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: all 0.2s;
-            box-shadow: 0 2px 8px rgba(139, 92, 246, 0.3);
-            text-decoration: none;
-            margin-left: 8px;
-            flex-shrink: 0;
-        }
-
-        .download-file-btn:hover {
-            transform: scale(1.1);
-            box-shadow: 0 4px 12px rgba(139, 92, 246, 0.4);
-        }
-
-        .download-file-btn i {
-            font-size: 1rem;
-        }
-
-        /* Альтернативный вариант - светлая кнопка */
-        .download-file-btn-light {
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            background: white;
-            border: 2px solid var(--accent-purple);
-            color: var(--accent-purple);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: all 0.2s;
-            text-decoration: none;
-            margin-left: 8px;
-            flex-shrink: 0;
-        }
-
-        .download-file-btn-light:hover {
-            background: var(--accent-purple);
-            color: white;
-            transform: scale(1.1);
-        }
-    </style>
+  {{ style_navbar() }}
+  {{ tasks_style() }}
+  <style>
+
+    .main-content {
+      margin-left: 280px;
+      padding: 2rem;
+    }
+
+    /* Контейнер задач */
+    .tasks-container {
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    /* Хедер */
+    .tasks-header {
+      background: white;
+      border-radius: 24px;
+      padding: 2rem;
+      margin-bottom: 2rem;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .task-title {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--primary-dark);
+      margin: 0;
+    }
+
+
+    .tasks-title i {
+      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-right: 12px;
+    }
+
+    .create-task-btn {
+      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+      border: none;
+      padding: 0.875rem 2rem;
+      font-weight: 600;
+      border-radius: 16px;
+      color: white;
+      transition: all 0.2s;
+      box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+    }
+
+    .create-task-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(139, 92, 246, 0.4);
+    }
+
+    /* Сетка задач */
+    .tasks-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+      gap: 1.5rem;
+    }
+
+    /* Карточка задачи */
+    .task-card {
+      background-color: #ffffff;
+      border-radius: 24px;
+      padding: 1.5rem;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+      transition: all 0.2s;
+      border: 1px solid #8e8e8e;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .task-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 24px rgba(0, 0, 0, 0.08);
+    }
+
+    .task-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 1rem;
+    }
+
+    .task-title {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--primary-dark);
+      margin: 0;
+    }
+
+    .task-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 1rem;
+      padding-top: 1rem;
+      border-top: 2px solid #eef2f6;
+    }
+
+    .assignee {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--primary-dark);
+      font-weight: 500;
+      font-size: 0.9rem;
+    }
+
+    .assignee i {
+      color: var(--accent-purple);
+    }
+
+    .task-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .task-actions button {
+      background: none;
+      border: none;
+      color: #94a3b8;
+      font-size: 1.1rem;
+      padding: 4px 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .task-actions button:hover {
+      color: var(--accent-purple);
+      transform: scale(1.1);
+    }
+
+    /* Дедлайн */
+    .deadline-badge {
+      padding: 0.35rem 0.75rem;
+      border-radius: 30px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .deadline-urgent {
+      background: #fee2e2;
+      color: #ef4444;
+    }
+
+    .deadline-warning {
+      background: #fef3c7;
+      color: #f59e0b;
+    }
+
+    .deadline-normal {
+      background: #dcfce7;
+      color: #10b981;
+    }
+
+    .deadline-passed {
+      background: #f1f5f9;
+      color: #64748b;
+    }
+
+    .task-description {
+      color: #64748b;
+      margin-bottom: 1.5rem;
+      line-height: 1.5;
+    }
+
+    .task-meta {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .meta-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: #64748b;
+      font-size: 0.9rem;
+    }
+
+    .meta-item i {
+      color: var(--accent-purple);
+      width: 20px;
+    }
+
+    /* RAR блок */
+    .task-rar {
+      background: linear-gradient(135deg, #fafbff, #ffffff);
+      border: 2px solid #eef2f6;
+      border-radius: 16px;
+      padding: 1rem;
+      margin: 1rem 0;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .rar-icon {
+      width: 48px;
+      height: 48px;
+      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 1.5rem;
+    }
+
+    .rar-info {
+      flex: 1;
+    }
+
+    .rar-name {
+      font-weight: 600;
+      color: var(--primary-dark);
+      font-size: 0.95rem;
+    }
+
+    .rar-size {
+      font-size: 0.8rem;
+      color: var(--text-light);
+    }
+
+    .download-rar {
+      color: var(--accent-purple);
+      font-size: 1.2rem;
+      cursor: pointer;
+      padding: 8px;
+    }
+
+    .status-chip-mini {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 0.3rem 1.2rem 0.3rem 1rem;
+      border-radius: 40px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      background: #f8fafc;
+      border: 1.5px solid #e2e8f0;
+      cursor: default;
+    }
+
+    .status-text-mini {
+      line-height: 1.2;
+    }
+
+    /* Цветные точки для статуса */
+    .status-dot {
+      display: inline-block;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+    }
+
+    /* Не в работе */
+    .status-not-started {
+      background: #94a3b8;
+    }
+
+    /* В работе */
+    .status-in-progress {
+      background: #3b82f6;
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+    }
+
+    /* Завершена */
+    .status-completed {
+      background: #10b981;
+    }
+
+    /* Текст статуса */
+    .status-not-started + .status-text-mini {
+      color: #475569;
+    }
+
+    .status-in-progress + .status-text-mini {
+      color: #1e40af;
+      font-weight: 700;
+    }
+
+    .status-completed + .status-text-mini {
+      color: #065f46;
+    }
+
+    .task-title-group {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    /* Стили для чата */
+    .task-chat-section {
+      margin-top: 1.5rem;
+      border-top: 2px solid #eef2f6;
+      padding-top: 1rem;
+    }
+
+    .chat-toggle {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+      padding: 0.5rem;
+      border-radius: 12px;
+      background: #f8fafc;
+      transition: all 0.2s;
+    }
+
+    .chat-toggle:hover {
+      background: #f1f5f9;
+    }
+
+    .chat-toggle-left {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--primary-dark);
+      font-weight: 600;
+    }
+
+    .chat-toggle-left i {
+      color: var(--accent-purple);
+      font-size: 1.2rem;
+    }
+
+    .chat-toggle-right {
+      color: #94a3b8;
+      transition: transform 0.2s;
+    }
+
+    .chat-toggle.active .chat-toggle-right {
+      transform: rotate(180deg);
+    }
+
+    .chat-container {
+      display: none;
+      margin-top: 1rem;
+    }
+
+    .chat-container.active {
+      display: block;
+    }
+
+    .chat-messages {
+      max-height: 250px;
+      overflow-y: auto;
+      padding: 0.5rem;
+      background: #f8fafc;
+      border-radius: 16px;
+      margin-bottom: 1rem;
+    }
+
+    .chat-message {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 1rem;
+      padding: 0.5rem;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    }
+
+    .message-avatar {
+      width: 32px;
+      height: 32px;
+      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 0.9rem;
+      font-weight: 600;
+      flex-shrink: 0;
+    }
+
+    .message-content {
+      flex: 1;
+    }
+
+    .message-header {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 4px;
+    }
+
+    .message-author {
+      font-weight: 600;
+      color: var(--primary-dark);
+      font-size: 0.9rem;
+    }
+
+    .message-time {
+      color: #94a3b8;
+      font-size: 0.75rem;
+    }
+
+    .message-text {
+      color: #475569;
+      font-size: 0.9rem;
+      line-height: 1.4;
+    }
+
+    .chat-input-area {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .chat-input {
+      flex: 1;
+      padding: 0.75rem 1rem;
+      border: 2px solid #eef2f6;
+      border-radius: 30px;
+      font-size: 0.9rem;
+      transition: all 0.2s;
+      background: white;
+    }
+
+    .chat-input:focus {
+      outline: none;
+      border-color: var(--accent-purple);
+    }
+
+    .chat-send-btn {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+      border: none;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.2s;
+      box-shadow: 0 2px 8px rgba(139, 92, 246, 0.3);
+    }
+
+    .chat-send-btn:hover {
+      transform: scale(1.05);
+    }
+
+    /* Стили для прикрепления файлов */
+    .chat-attach-btn {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: #f1f5f9;
+      border: none;
+      color: #64748b;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .chat-attach-btn:hover {
+      background: #e2e8f0;
+      color: var(--accent-purple);
+    }
+
+    .file-preview {
+      margin: 10px 0;
+      padding: 8px 12px;
+      background: #f8fafc;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border: 1px solid #e2e8f0;
+    }
+
+    .file-info {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--primary-dark);
+      font-size: 0.9rem;
+    }
+
+    .file-info i {
+      color: var(--accent-purple);
+      font-size: 1.2rem;
+    }
+
+    .remove-file-btn {
+      background: none;
+      border: none;
+      color: #94a3b8;
+      cursor: pointer;
+      padding: 4px 8px;
+      border-radius: 50%;
+      transition: all 0.2s;
+    }
+
+    .remove-file-btn:hover {
+      background: #fee2e2;
+      color: #ef4444;
+    }
+
+    /* Стили для сообщений с файлами */
+    .message-file {
+      margin-top: 8px;
+      padding: 8px 12px;
+      background: #f1f5f9;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      border: 1px solid #e2e8f0;
+    }
+
+    .message-file i {
+      color: var(--accent-purple);
+      font-size: 1.2rem;
+    }
+
+    .file-link {
+      color: var(--primary-dark);
+      text-decoration: none;
+      font-size: 0.9rem;
+      flex: 1;
+      cursor: pointer;
+    }
+
+    .file-link:hover {
+      color: var(--accent-purple);
+      text-decoration: underline;
+    }
+
+    .file-size {
+      color: #94a3b8;
+      font-size: 0.8rem;
+    }
+
+    /* Стилизованная кнопка скачивания */
+    .download-file-btn {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+      border: none;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.2s;
+      box-shadow: 0 2px 8px rgba(139, 92, 246, 0.3);
+      text-decoration: none;
+      margin-left: 8px;
+      flex-shrink: 0;
+    }
+
+    .download-file-btn:hover {
+      transform: scale(1.1);
+      box-shadow: 0 4px 12px rgba(139, 92, 246, 0.4);
+    }
+
+    .download-file-btn i {
+      font-size: 1rem;
+    }
+
+    /* Альтернативный вариант - светлая кнопка */
+    .download-file-btn-light {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: white;
+      border: 2px solid var(--accent-purple);
+      color: var(--accent-purple);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-decoration: none;
+      margin-left: 8px;
+      flex-shrink: 0;
+    }
+
+    .download-file-btn-light:hover {
+      background: var(--accent-purple);
+      color: white;
+      transform: scale(1.1);
+    }
+  </style>
 {% endblock %}
 
 {% block main %}
-    <main class="main-content">
-        {{ navbar() }}
-        <div class="tasks-container">
-            <!-- Хедер -->
-            <div class="tasks-header">
-                <h1 class="tasks-title">
-                    <i class="bi bi-check-circle"></i>
-                    Задачи
-                </h1>
-                <button class="create-task-btn" onclick="openModal()">
-                    <i class="bi bi-plus-lg"></i>
-                    Новая задача
-                </button>
+  <main class="main-content">
+    {{ navbar(user) }}
+    <div class="tasks-container">
+      <!-- Хедер -->
+      <div class="tasks-header">
+        <h1 class="tasks-title">
+          <i class="bi bi-check-circle"></i>
+          Задачи
+        </h1>
+        <button class="create-task-btn" onclick="openModal()">
+          <i class="bi bi-plus-lg"></i>
+          Новая задача
+        </button>
+      </div>
+
+      <div class="tasks-grid">
+        {% for task in tasks %}
+          <!-- Карточка задачи -->
+          <div class="task-card">
+            <div class="task-header">
+              <div class="task-title-group">
+                <h3 class="task-title">{{ task.title }}</h3>
+                <!-- Статус рядом с заголовком -->
+                <div class="status-chip-mini" data-task-id="{{ loop.index }}">
+                  {% if task.status == "STARTED" %}
+                    <span class="status-dot status-in-progress"></span>
+                    <span class="status-text-mini">В работе</span>
+                  {% elif task.status == "COMPLETED" %}
+                    <span class="status-dot status-completed"></span>
+                    <span class="status-text-mini">Завершена</span>
+                  {% else %}
+                    <span class="status-dot status-not-started"></span>
+                    <span class="status-text-mini">Не в работе</span>
+                  {% endif %}
+                </div>
+              </div>
+              <span class="deadline-badge deadline-urgent"><i class="bi bi-clock"></i> 2д</span>
+            </div>
+            <p class="task-description">{{ task.description }}</p>
+
+            <div class="task-meta">
+              <div class="meta-item">
+                <i class="bi bi-calendar"></i>
+                <span>Срок: {{ task.deadline }}</span>
+              </div>
+              <div class="meta-item">
+                <i class="bi bi-person-up"></i>
+                <span>Постановщик: <strong>{{ task.executor.name }} {{ task.executor.surname }}</strong></span>
+              </div>
             </div>
 
-            <div class="tasks-grid">
-                {% for task in tasks %}
-                    <!-- Карточка задачи -->
-                    <div class="task-card">
-                        <div class="task-header">
-                            <div class="task-title-group">
-                                <h3 class="task-title">{{ task.title }}</h3>
-                                <!-- Статус рядом с заголовком -->
-                                <div class="status-chip-mini" data-task-id="{{ loop.index }}">
-                                    {% if task.status == "STARTED" %}
-                                        <span class="status-dot status-in-progress"></span>
-                                        <span class="status-text-mini">В работе</span>
-                                    {% elif task.status == "COMPLETED" %}
-                                        <span class="status-dot status-completed"></span>
-                                        <span class="status-text-mini">Завершена</span>
-                                    {% else %}
-                                        <span class="status-dot status-not-started"></span>
-                                        <span class="status-text-mini">Не в работе</span>
-                                    {% endif %}
-                                </div>
-                            </div>
-                            <span class="deadline-badge deadline-urgent"><i class="bi bi-clock"></i> 2д</span>
-                        </div>
-                        <p class="task-description">{{ task.description }}</p>
+            {% if task.filename %}
+              <div class="task-rar">
+                <div class="rar-icon">
+                  <i class="bi bi-file-zip"></i>
+                </div>
+                <div class="rar-info">
+                  <div class="rar-name">{{ task.filename }}</div>
+                  <div class="rar-size">14.5 MB</div>
+                </div>
+                <a class="download-rar"
+                   href="{{ url_for("tasks:download", name=task.filename, file_path=task.folder_file) }}">
+                  <i class="bi bi-download"></i>
+                </a>
+              </div>
+            {% endif %}
 
-                        <div class="task-meta">
-                            <div class="meta-item">
-                                <i class="bi bi-calendar"></i>
-                                <span>Срок: {{ task.deadline }}</span>
-                            </div>
-                            <div class="meta-item">
-                                <i class="bi bi-person-up"></i>
-                                <span>Постановщик: <strong>{{ task.executor.name }} {{ task.executor.surname }}</strong></span>
-                            </div>
-                        </div>
+            <!-- Секция чата -->
+            <div class="task-chat-section">
+              <div class="chat-toggle" onclick="toggleChat(this, '{{ task.id }}')">
+                <div class="chat-toggle-left">
+                  <i class="bi bi-chat-dots"></i>
+                  <span>Обсуждение задачи</span>
+                </div>
+                <div class="chat-toggle-right">
+                  <i class="bi bi-chevron-down"></i>
+                </div>
+              </div>
 
-                        {% if task.filename %}
-                            <div class="task-rar">
-                                <div class="rar-icon">
-                                    <i class="bi bi-file-zip"></i>
-                                </div>
-                                <div class="rar-info">
-                                    <div class="rar-name">{{ task.filename }}</div>
-                                    <div class="rar-size">14.5 MB</div>
-                                </div>
-                                <a class="download-rar" href="{{ url_for("tasks:download", name=task.filename, file_path=task.folder_file) }}">
-                                    <i class="bi bi-download"></i>
-                                </a>
-                            </div>
+              <div class="chat-container" id="chat-{{ task.id }}">
+                <div class="chat-messages" id="messages-{{ task.id }}">
+
+                  {% for message in task.messages %}
+                    <!-- Сообщение 1 -->
+                    <div class="chat-message">
+                      <div class="message-avatar">{{ message.initials }}</div>
+                      <div class="message-content">
+                        <div class="message-header">
+                          <span class="message-author">{{ message.author }}</span>
+                          <span class="message-time">{{ message.time }}</span>
+                        </div>
+                        <div class="message-text">{{ message.text }}
+                        </div>
+                        {% if message.file %}
+                          <div class="message-file" data-file-id="{{ message.file.id }}">
+                            <i class="bi bi-file-zip"></i>
+                            <span class="file-link">{{ message.file.name }}</span>
+                            <span class="file-size"></span>
+                            <a class="download-file-btn"
+                               href="{{ url_for('tasks:download', name=message.file.name, file_path=message.file.folder_path) }}">
+                              <i class="bi bi-download"></i>
+                            </a>
+                          </div>
                         {% endif %}
-
-                        <!-- Секция чата -->
-                        <div class="task-chat-section">
-                            <div class="chat-toggle" onclick="toggleChat(this, '{{ task.id }}')">
-                                <div class="chat-toggle-left">
-                                    <i class="bi bi-chat-dots"></i>
-                                    <span>Обсуждение задачи</span>
-                                </div>
-                                <div class="chat-toggle-right">
-                                    <i class="bi bi-chevron-down"></i>
-                                </div>
-                            </div>
-
-                            <div class="chat-container" id="chat-{{ task.id }}">
-                                <div class="chat-messages" id="messages-{{ task.id }}">
-
-                                    {% for message in task.messages %}
-                                        <!-- Сообщение 1 -->
-                                        <div class="chat-message">
-                                            <div class="message-avatar">{{ message.initials }}</div>
-                                            <div class="message-content">
-                                                <div class="message-header">
-                                                    <span class="message-author">{{ message.author }}</span>
-                                                    <span class="message-time">{{ message.time }}</span>
-                                                </div>
-                                                <div class="message-text">{{ message.text }}
-                                                </div>
-                                                {% if message.file %}
-                                                    <div class="message-file" data-file-id="{{ message.file.id }}">
-                                                        <i class="bi bi-file-zip"></i>
-                                                        <span class="file-link">{{ message.file.name }}</span>
-                                                        <span class="file-size"></span>
-                                                        <a class="download-file-btn" href="{{ url_for('tasks:download', name=message.file.name, file_path=message.file.folder_path)}}">
-                                                            <i class="bi bi-download"></i>
-                                                        </a>
-                                                    </div>
-                                                {% endif %}
-                                            </div>
-                                        </div>
-                                    {% endfor %}
-                                </div>
-
-
-                                <div class="chat-input-area">
-                                    <input id="input-{{ task.id }}" type="text" class="chat-input"
-                                           placeholder="Напишите сообщение..."
-                                           onkeypress="if(event.key === 'Enter') sendMessage('{{ task.id }}')">
-
-                                    <label for="chat-file-{{ task.id }}" class="chat-attach-btn"
-                                           title="Прикрепить файл">
-                                        <i class="bi bi-paperclip"></i>
-                                    </label>
-                                    <input type="file" id="chat-file-{{ task.id }}" class="chat-file-input"
-                                           style="display: none;" onchange="handleFileSelect(this, '{{ task.id }}')">
-                                    <button class="chat-send-btn" onclick="sendMessage('{{ task.id }}')">
-                                        <i class="bi bi-send"></i>
-                                    </button>
-                                </div>
-                                <div id="file-preview-{{ task.id }}" class="file-preview" style="display: none;">
-                                    <div class="file-info">
-                                        <i class="bi bi-file-earmark"></i>
-                                        <span id="file-name-{{ task.id }}"></span>
-                                        <span id="file-size-{{ task.id }}"></span>
-                                    </div>
-                                    <button onclick="removeSelectedFile('{{ task.id }}')" class="remove-file-btn">
-                                        <i class="bi bi-x"></i>
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="task-footer">
-                            <div class="assignee">
-                                <i class="bi bi-person-circle"></i>
-                                <span>{{ task.customer.name }} {{ task.customer.surname }}</span>
-                            </div>
-                            <div class="task-actions">
-                                <button onclick="toggleTaskStatus(this, {{ loop.index }});" title="Изменить статус">
-                                    {% if task.status == "STARTED" %}
-                                        <i class="bi bi-pause"></i>
-                                    {% elif task.status == "COMPLETED" %}
-                                        <i class="bi bi-arrow-repeat"></i>
-                                    {% else %}
-                                        <i class="bi bi-play"></i>
-                                    {% endif %}
-                                </button>
-                                <button onclick="if(confirm('Удалить задачу?')) window.location.href='{{ url_for("tasks:delete", task_id=task.id) }}'"
-                                        title="Удалить">
-                                    <i class="bi bi-trash"></i>
-                                </button>
-                            </div>
-                        </div>
+                      </div>
                     </div>
-                {% endfor %}
+                  {% endfor %}
+                </div>
+
+
+                <div class="chat-input-area">
+                  <input id="input-{{ task.id }}" type="text" class="chat-input"
+                         placeholder="Напишите сообщение..."
+                         onkeypress="if(event.key === 'Enter') sendMessage('{{ task.id }}')">
+
+                  <label for="chat-file-{{ task.id }}" class="chat-attach-btn"
+                         title="Прикрепить файл">
+                    <i class="bi bi-paperclip"></i>
+                  </label>
+                  <input type="file" id="chat-file-{{ task.id }}" class="chat-file-input"
+                         style="display: none;" onchange="handleFileSelect(this, '{{ task.id }}')">
+                  <button class="chat-send-btn" onclick="sendMessage('{{ task.id }}')">
+                    <i class="bi bi-send"></i>
+                  </button>
+                </div>
+                <div id="file-preview-{{ task.id }}" class="file-preview" style="display: none;">
+                  <div class="file-info">
+                    <i class="bi bi-file-earmark"></i>
+                    <span id="file-name-{{ task.id }}"></span>
+                    <span id="file-size-{{ task.id }}"></span>
+                  </div>
+                  <button onclick="removeSelectedFile('{{ task.id }}')" class="remove-file-btn">
+                    <i class="bi bi-x"></i>
+                  </button>
+                </div>
+              </div>
             </div>
-        </div>
-    </main>
-    {{ func_tasks(workers, user) }}
+
+            <div class="task-footer">
+              <div class="assignee">
+                <i class="bi bi-person-circle"></i>
+                <span>{{ task.customer.name }} {{ task.customer.surname }}</span>
+              </div>
+              <div class="task-actions">
+                <button onclick="toggleTaskStatus(this, {{ loop.index }});" title="Изменить статус">
+                  {% if task.status == "STARTED" %}
+                    <i class="bi bi-pause"></i>
+                  {% elif task.status == "COMPLETED" %}
+                    <i class="bi bi-arrow-repeat"></i>
+                  {% else %}
+                    <i class="bi bi-play"></i>
+                  {% endif %}
+                </button>
+                <button
+                  onclick="if(confirm('Удалить задачу?')) window.location.href='{{ url_for("tasks:delete", task_id=task.id) }}'"
+                  title="Удалить">
+                  <i class="bi bi-trash"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+  </main>
+  {{ func_tasks(workers, user) }}
 {% endblock %}
 
 {% block script %}
-    <script>
-        // Функция обновления имени файла
-        function updateFileName(input) {
-            const file = input.files[0];
-            const uploadText = document.getElementById('uploadText');
-            const selectedFileBlock = document.getElementById('selectedFileBlock');
-            const fileNameDisplay = document.getElementById('fileNameDisplay');
+  <script>
+      // Функция обновления имени файла
+      function updateFileName(input) {
+          const file = input.files[0];
+          const uploadText = document.getElementById('uploadText');
+          const selectedFileBlock = document.getElementById('selectedFileBlock');
+          const fileNameDisplay = document.getElementById('fileNameDisplay');
 
-            if (file) {
-                uploadText.textContent = 'Файл выбран';
-                fileNameDisplay.textContent = file.name;
-                selectedFileBlock.style.display = 'block';
-            }
-        }
+          if (file) {
+              uploadText.textContent = 'Файл выбран';
+              fileNameDisplay.textContent = file.name;
+              selectedFileBlock.style.display = 'block';
+          }
+      }
 
-        // Функция удаления файла
-        function removeFile() {
-            const fileInput = document.getElementById('rarFile');
-            const uploadText = document.getElementById('uploadText');
-            const selectedFileBlock = document.getElementById('selectedFileBlock');
+      // Функция удаления файла
+      function removeFile() {
+          const fileInput = document.getElementById('rarFile');
+          const uploadText = document.getElementById('uploadText');
+          const selectedFileBlock = document.getElementById('selectedFileBlock');
 
-            fileInput.value = '';
-            uploadText.textContent = 'Выберите RAR архив';
-            selectedFileBlock.style.display = 'none';
-        }
+          fileInput.value = '';
+          uploadText.textContent = 'Выберите RAR архив';
+          selectedFileBlock.style.display = 'none';
+      }
 
-        // Функция закрытия модалки
-        function closeModal() {
-            document.getElementById('taskModal').style.display = 'none';
-            document.getElementById('taskTitle').value = '';
-            document.getElementById('taskDescription').value = '';
-            document.getElementById('taskDeadline').value = '';
-            document.getElementById('taskExecutor').selectedIndex = 0;
-            removeFile();
-        }
+      // Функция закрытия модалки
+      function closeModal() {
+          document.getElementById('taskModal').style.display = 'none';
+          document.getElementById('taskTitle').value = '';
+          document.getElementById('taskDescription').value = '';
+          document.getElementById('taskDeadline').value = '';
+          document.getElementById('taskExecutor').selectedIndex = 0;
+          removeFile();
+      }
 
-        // Функция открытия модалки
-        function openModal() {
-            document.getElementById('taskModal').style.display = 'flex';
-        }
+      // Функция открытия модалки
+      function openModal() {
+          document.getElementById('taskModal').style.display = 'flex';
+      }
 
-        // Закрытие по клику на фон
-        window.onclick = function (event) {
-            const modal = document.getElementById('taskModal');
-            if (event.target == modal) {
-                closeModal();
-            }
-        }
+      // Закрытие по клику на фон
+      window.onclick = function (event) {
+          const modal = document.getElementById('taskModal');
+          if (event.target == modal) {
+              closeModal();
+          }
+      }
 
-        // Функция переключения статуса задачи
-        function toggleTaskStatus(button, taskId) {
-            const taskCard = button.closest('.tasks-card');
-            const statusChip = taskCard.querySelector('.status-chip-mini');
-            const statusDot = statusChip.querySelector('.status-dot');
-            const statusText = statusChip.querySelector('.status-text-mini');
-            const taskTitle = taskCard.querySelector('.tasks-title').textContent;
+      // Функция переключения статуса задачи
+      function toggleTaskStatus(button, taskId) {
+          const taskCard = button.closest('.tasks-card');
+          const statusChip = taskCard.querySelector('.status-chip-mini');
+          const statusDot = statusChip.querySelector('.status-dot');
+          const statusText = statusChip.querySelector('.status-text-mini');
+          const taskTitle = taskCard.querySelector('.tasks-title').textContent;
 
-            let newStatus = '';
+          let newStatus = '';
 
-            if (statusDot.classList.contains('status-not-started')) {
-                statusDot.className = 'status-dot status-in-progress';
-                statusText.textContent = 'В работе';
-                button.innerHTML = '<i class="bi bi-pause"></i>';
-                newStatus = 'STARTED';
-            } else if (statusDot.classList.contains('status-in-progress')) {
-                statusDot.className = 'status-dot status-completed';
-                statusText.textContent = 'Завершена';
-                button.innerHTML = '<i class="bi bi-arrow-repeat"></i>';
-                newStatus = 'COMPLETED';
-            } else {
-                statusDot.className = 'status-dot status-not-started';
-                statusText.textContent = 'Не в работе';
-                button.innerHTML = '<i class="bi bi-play"></i>';
-                newStatus = 'NOT_STARTED';
-            }
+          if (statusDot.classList.contains('status-not-started')) {
+              statusDot.className = 'status-dot status-in-progress';
+              statusText.textContent = 'В работе';
+              button.innerHTML = '<i class="bi bi-pause"></i>';
+              newStatus = 'STARTED';
+          } else if (statusDot.classList.contains('status-in-progress')) {
+              statusDot.className = 'status-dot status-completed';
+              statusText.textContent = 'Завершена';
+              button.innerHTML = '<i class="bi bi-arrow-repeat"></i>';
+              newStatus = 'COMPLETED';
+          } else {
+              statusDot.className = 'status-dot status-not-started';
+              statusText.textContent = 'Не в работе';
+              button.innerHTML = '<i class="bi bi-play"></i>';
+              newStatus = 'NOT_STARTED';
+          }
 
-            const encodedTitle = encodeURIComponent(taskTitle);
+          const encodedTitle = encodeURIComponent(taskTitle);
 
-            fetch(`/tasks/update/${encodedTitle}/${newStatus}`, {
-                method: "POST",
-                headers: {
-                    'Content-Type': 'application/json',
-                }
-            })
-                .then(response => {
-                    if (!response.ok) {
-                        console.error('Ошибка при обновлении статуса');
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    console.log('Статус обновлен:', data);
-                })
-                .catch(error => {
-                    console.error('Ошибка:', error);
-                });
-        }
+          fetch(`/tasks/update/${encodedTitle}/${newStatus}`, {
+              method: "POST",
+              headers: {
+                  'Content-Type': 'application/json',
+              }
+          })
+              .then(response => {
+                  if (!response.ok) {
+                      console.error('Ошибка при обновлении статуса');
+                  }
+                  return response.json();
+              })
+              .then(data => {
+                  console.log('Статус обновлен:', data);
+              })
+              .catch(error => {
+                  console.error('Ошибка:', error);
+              });
+      }
 
-        // Храним активные соединения для каждой задачи
-        const taskSockets = {};
+      // Храним активные соединения для каждой задачи
+      const taskSockets = {};
 
-        // Подключение к WebSocket задачи
-        function connectToTask(taskId) {
-            if (taskSockets[taskId]) return; // Уже подключены
+      // Подключение к WebSocket задачи
+      function connectToTask(taskId) {
+          if (taskSockets[taskId]) return; // Уже подключены
 
-            const ws = new WebSocket(`ws://${window.location.host}/tasks/ws/task/${taskId}`);
+          const ws = new WebSocket(`ws://${window.location.host}/tasks/ws/task/${taskId}`);
 
-            ws.onopen = function () {
-                console.log(`Подключено к задаче ${taskId}`);
-            };
+          ws.onopen = function () {
+              console.log(`Подключено к задаче ${taskId}`);
+          };
 
-            ws.onmessage = function (event) {
-                // Получаем сообщение
-                const data = JSON.parse(event.data);
-                addMessageToChat(taskId, data);
-            };
+          ws.onmessage = function (event) {
+              // Получаем сообщение
+              const data = JSON.parse(event.data);
+              addMessageToChat(taskId, data);
+          };
 
-            ws.onclose = function () {
-                console.log(`Отключено от задачи ${taskId}`);
-                delete taskSockets[taskId];
-            };
+          ws.onclose = function () {
+              console.log(`Отключено от задачи ${taskId}`);
+              delete taskSockets[taskId];
+          };
 
-            taskSockets[taskId] = ws;
-        }
+          taskSockets[taskId] = ws;
+      }
 
-        // Отправка сообщения
-        // Отправка сообщения
-        function sendMessage(taskId) {
-            const input = document.getElementById(`input-${taskId}`);
-            const text = input.value.trim();
-            const file = selectedFiles[taskId];
+      // Отправка сообщения
+      // Отправка сообщения
+      function sendMessage(taskId) {
+          const input = document.getElementById(`input-${taskId}`);
+          const text = input.value.trim();
+          const file = selectedFiles[taskId];
 
-            if (!text && !file) return;
+          if (!text && !file) return;
 
-            // Подключаемся, если еще не подключены
-            if (!taskSockets[taskId]) {
-                connectToTask(taskId);
-            }
+          // Подключаемся, если еще не подключены
+          if (!taskSockets[taskId]) {
+              connectToTask(taskId);
+          }
 
-            // Ждем немного, чтобы соединение установилось
-            setTimeout(async () => {
-                if (taskSockets[taskId] && taskSockets[taskId].readyState === WebSocket.OPEN) {
+          // Ждем немного, чтобы соединение установилось
+          setTimeout(async () => {
+              if (taskSockets[taskId] && taskSockets[taskId].readyState === WebSocket.OPEN) {
 
-                    const message = {
-                        text: text,
-                        author: "{{ user.name }} {{ user.surname }}", // Имя пользователя из шаблона
-                        created_at: new Date().toLocaleTimeString('ru-RU', {hour: '2-digit', minute: '2-digit'}),
-                        task_id: `${taskId}`
-                    };
+                  const message = {
+                      text: text,
+                      author: "{{ user.name }} {{ user.surname }}", // Имя пользователя из шаблона
+                      created_at: new Date().toLocaleTimeString('ru-RU', {hour: '2-digit', minute: '2-digit'}),
+                      task_id: `${taskId}`
+                  };
 
-                    if (file) {
-                        try {
-                            // Конвертируем файл в base64
-                            const base64File = await fileToBase64(file);
-                            message.file = {
-                                name: file.name,
-                                size: file.size,
-                                type: file.type,
-                                content: base64File,
-                                id: Date.now() + '_' + file.name
-                            };
-                        } catch (error) {
-                            console.error('Ошибка конвертации файла:', error);
-                            return;
-                        }
-                    }
+                  if (file) {
+                      try {
+                          // Конвертируем файл в base64
+                          const base64File = await fileToBase64(file);
+                          message.file = {
+                              name: file.name,
+                              size: file.size,
+                              type: file.type,
+                              content: base64File,
+                              id: Date.now() + '_' + file.name
+                          };
+                      } catch (error) {
+                          console.error('Ошибка конвертации файла:', error);
+                          return;
+                      }
+                  }
 
-                    // Отправляем
-                    taskSockets[taskId].send(JSON.stringify(message));
+                  // Отправляем
+                  taskSockets[taskId].send(JSON.stringify(message));
 
-                    // Очищаем input
-                    input.value = '';
-                    removeSelectedFile(taskId);
-                } else {
-                    console.log('Соединение еще не открыто');
-                }
-            }, 100);
-        }
+                  // Очищаем input
+                  input.value = '';
+                  removeSelectedFile(taskId);
+              } else {
+                  console.log('Соединение еще не открыто');
+              }
+          }, 100);
+      }
 
-        // Добавление сообщения в чат
-        function addMessageToChat(taskId, messageData) {
-            const messagesContainer = document.getElementById(`messages-${taskId}`);
-            if (!messagesContainer) return;
+      // Добавление сообщения в чат
+      function addMessageToChat(taskId, messageData) {
+          const messagesContainer = document.getElementById(`messages-${taskId}`);
+          if (!messagesContainer) return;
 
-            const messageDiv = document.createElement('div');
-            messageDiv.className = 'chat-message';
+          const messageDiv = document.createElement('div');
+          messageDiv.className = 'chat-message';
 
-            // Получаем инициалы
-            const initials = messageData.author.split(' ').map(n => n[0]).join('').toUpperCase();
+          // Получаем инициалы
+          const initials = messageData.author.split(' ').map(n => n[0]).join('').toUpperCase();
 
-            let fileHtml = '';
-            if (messageData.file) {
-                const fileIcon = getFileIcon(messageData.file.name);
-                fileHtml = `
+          let fileHtml = '';
+          if (messageData.file) {
+              const fileIcon = getFileIcon(messageData.file.name);
+              fileHtml = `
             <div class="message-file" data-file-id="${messageData.file.id}" data-file-content="${messageData.file.content}" data-file-name="${messageData.file.name}">
                 <i class="bi ${fileIcon}"></i>
                 <span class="file-link" onclick="downloadFileFromMessage(this)">${messageData.file.name}</span>
@@ -985,9 +988,9 @@
                 </button>
             </div>
         `;
-            }
+          }
 
-            messageDiv.innerHTML = `
+          messageDiv.innerHTML = `
         <div class="message-avatar">${initials}</div>
         <div class="message-content">
             <div class="message-header">
@@ -999,117 +1002,117 @@
         </div>
     `;
 
-            messagesContainer.appendChild(messageDiv);
-            messagesContainer.scrollTop = messagesContainer.scrollHeight;
-        }
+          messagesContainer.appendChild(messageDiv);
+          messagesContainer.scrollTop = messagesContainer.scrollHeight;
+      }
 
-        // Обновляем toggleChat для подключения при открытии
-        function toggleChat(element, taskId) {
-            element.classList.toggle('active');
-            const chatContainer = document.getElementById(`chat-${taskId}`);
-            chatContainer.classList.toggle('active');
+      // Обновляем toggleChat для подключения при открытии
+      function toggleChat(element, taskId) {
+          element.classList.toggle('active');
+          const chatContainer = document.getElementById(`chat-${taskId}`);
+          chatContainer.classList.toggle('active');
 
-            // При открытии чата подключаемся к WebSocket
-            if (chatContainer.classList.contains('active')) {
-                connectToTask(taskId);
-            }
-        }
+          // При открытии чата подключаемся к WebSocket
+          if (chatContainer.classList.contains('active')) {
+              connectToTask(taskId);
+          }
+      }
 
-        // Хранилище выбранных файлов для каждой задачи
-        const selectedFiles = {};
+      // Хранилище выбранных файлов для каждой задачи
+      const selectedFiles = {};
 
-        // Обработка выбора файла
-        function handleFileSelect(input, taskId) {
-            const file = input.files[0];
-            if (!file) return;
+      // Обработка выбора файла
+      function handleFileSelect(input, taskId) {
+          const file = input.files[0];
+          if (!file) return;
 
-            // Сохраняем файл
-            selectedFiles[taskId] = file;
+          // Сохраняем файл
+          selectedFiles[taskId] = file;
 
-            // Показываем предпросмотр
-            const preview = document.getElementById(`file-preview-${taskId}`);
-            const fileName = document.getElementById(`file-name-${taskId}`);
-            const fileSize = document.getElementById(`file-size-${taskId}`);
+          // Показываем предпросмотр
+          const preview = document.getElementById(`file-preview-${taskId}`);
+          const fileName = document.getElementById(`file-name-${taskId}`);
+          const fileSize = document.getElementById(`file-size-${taskId}`);
 
-            fileName.textContent = file.name;
-            fileSize.textContent = `(${formatFileSize(file.size)})`;
-            preview.style.display = 'flex';
-        }
+          fileName.textContent = file.name;
+          fileSize.textContent = `(${formatFileSize(file.size)})`;
+          preview.style.display = 'flex';
+      }
 
-        // Форматирование размера файла
-        function formatFileSize(bytes) {
-            if (bytes === 0) return '0 Bytes';
-            const k = 1024;
-            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-            const i = Math.floor(Math.log(bytes) / Math.log(k));
-            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
-        }
+      // Форматирование размера файла
+      function formatFileSize(bytes) {
+          if (bytes === 0) return '0 Bytes';
+          const k = 1024;
+          const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+          const i = Math.floor(Math.log(bytes) / Math.log(k));
+          return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+      }
 
-        // Удаление выбранного файла
-        function removeSelectedFile(taskId) {
-            delete selectedFiles[taskId];
+      // Удаление выбранного файла
+      function removeSelectedFile(taskId) {
+          delete selectedFiles[taskId];
 
-            // Очищаем input
-            const fileInput = document.getElementById(`chat-file-${taskId}`);
-            if (fileInput) fileInput.value = '';
+          // Очищаем input
+          const fileInput = document.getElementById(`chat-file-${taskId}`);
+          if (fileInput) fileInput.value = '';
 
-            // Скрываем предпросмотр
-            const preview = document.getElementById(`file-preview-${taskId}`);
-            if (preview) preview.style.display = 'none';
-        }
+          // Скрываем предпросмотр
+          const preview = document.getElementById(`file-preview-${taskId}`);
+          if (preview) preview.style.display = 'none';
+      }
 
-        // Конвертация файла в base64
-        function fileToBase64(file) {
-            return new Promise((resolve, reject) => {
-                const reader = new FileReader();
-                reader.readAsDataURL(file);
-                reader.onload = () => resolve(reader.result);
-                reader.onerror = error => reject(error);
-            });
-        }
+      // Конвертация файла в base64
+      function fileToBase64(file) {
+          return new Promise((resolve, reject) => {
+              const reader = new FileReader();
+              reader.readAsDataURL(file);
+              reader.onload = () => resolve(reader.result);
+              reader.onerror = error => reject(error);
+          });
+      }
 
-        // Скачивание файла из сообщения
-        function downloadFileFromMessage(element) {
-            let fileDiv;
-            if (element.classList.contains('message-file')) {
-                fileDiv = element;
-            } else {
-                fileDiv = element.closest('.message-file');
-            }
+      // Скачивание файла из сообщения
+      function downloadFileFromMessage(element) {
+          let fileDiv;
+          if (element.classList.contains('message-file')) {
+              fileDiv = element;
+          } else {
+              fileDiv = element.closest('.message-file');
+          }
 
-            if (!fileDiv) return;
+          if (!fileDiv) return;
 
-            const fileContent = fileDiv.dataset.fileContent;
-            const fileName = fileDiv.dataset.fileName;
+          const fileContent = fileDiv.dataset.fileContent;
+          const fileName = fileDiv.dataset.fileName;
 
-            // Ссылка для скачивания
-            const link = document.createElement('a');
-            link.href = fileContent;
-            link.download = fileName;
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-        }
+          // Ссылка для скачивания
+          const link = document.createElement('a');
+          link.href = fileContent;
+          link.download = fileName;
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+      }
 
-        // Получение иконки для типа файла
-        function getFileIcon(filename) {
-            const ext = filename.split('.').pop().toLowerCase();
-            const icons = {
-                'pdf': 'bi-file-pdf',
-                'doc': 'bi-file-word',
-                'docx': 'bi-file-word',
-                'xls': 'bi-file-excel',
-                'xlsx': 'bi-file-excel',
-                'jpg': 'bi-file-image',
-                'jpeg': 'bi-file-image',
-                'png': 'bi-file-image',
-                'gif': 'bi-file-image',
-                'zip': 'bi-file-zip',
-                'rar': 'bi-file-zip',
-                'txt': 'bi-file-text'
-            };
-            return icons[ext] || 'bi-file-earmark';
-        }
+      // Получение иконки для типа файла
+      function getFileIcon(filename) {
+          const ext = filename.split('.').pop().toLowerCase();
+          const icons = {
+              'pdf': 'bi-file-pdf',
+              'doc': 'bi-file-word',
+              'docx': 'bi-file-word',
+              'xls': 'bi-file-excel',
+              'xlsx': 'bi-file-excel',
+              'jpg': 'bi-file-image',
+              'jpeg': 'bi-file-image',
+              'png': 'bi-file-image',
+              'gif': 'bi-file-image',
+              'zip': 'bi-file-zip',
+              'rar': 'bi-file-zip',
+              'txt': 'bi-file-text'
+          };
+          return icons[ext] || 'bi-file-earmark';
+      }
 
-    </script>
+  </script>
 {% endblock %}

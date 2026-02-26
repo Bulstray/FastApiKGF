@@ -6,11 +6,11 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from core.config import settings
 from core.models import db_helper
 from services.programs import ProgramService
-from services.task import TasksFilesService
 from services.users.service import UserService
+from services.task.service import TasksFilesService
 
 
-def get_program_service(
+async def get_program_service(
     session: Annotated[
         AsyncSession,
         Depends(db_helper.session_getter),
@@ -22,7 +22,7 @@ def get_program_service(
     )
 
 
-def get_tasks_service(
+async def get_tasks_service(
     session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
 ) -> TasksFilesService:
     return TasksFilesService(
@@ -31,7 +31,7 @@ def get_tasks_service(
     )
 
 
-def get_user_service(
+async def get_user_service(
     session: Annotated[
         AsyncSession,
         Depends(db_helper.session_getter),

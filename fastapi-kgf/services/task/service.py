@@ -53,11 +53,6 @@ class TasksFilesService:
     async def delete_task(self, id_task: id):
         task = await self.get_task_by_id(id_task)
 
-        for file_in_chat in task.messages:
-            if file_in_chat.file:
-                file = AsyncPath(file_in_chat.file.folder_path)
-                await file.unlink()
-
         await crud_tasks.delete_tasks_in_db(session=self.session, task=task)
 
     async def update_status_in_db(self, title: str, status: str):

@@ -19,6 +19,7 @@ router = APIRouter(prefix="/tenders_search")
 )
 def tenders_search(
     request: Request,
+    is_authenticated: Annotated[UserRead, Depends(require_auth)],
     search: Annotated[str, Query()],
 ) -> HTMLResponse | RedirectResponse:
 
@@ -26,6 +27,7 @@ def tenders_search(
         "tenders": tenders_service.get_tenders_by_keyword(
             keyword=search,
         ),
+        "is_authenticated": is_authenticated,
     }
     return templates.TemplateResponse(
         request=request,

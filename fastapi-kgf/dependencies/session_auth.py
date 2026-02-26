@@ -8,7 +8,7 @@ from core.schemas.user import UserRead
 from storage.redis.session import SessionStorage
 
 
-def get_authenticated_user(
+async def get_authenticated_user(
     request: Request,
 ) -> UserRead | None:
     session_id = request.cookies.get(SESSION_COOKIE_NAME)
@@ -16,13 +16,13 @@ def get_authenticated_user(
     if session_id is None:
         return None
 
-    if (answer := SessionStorage.get_by_session_id(session_id)) is not None:
+    if (answer := await SessionStorage.get_by_session_id(session_id)) is not None:
         return answer
 
     return None
 
 
-def require_auth(
+async def require_auth(
     user: Annotated[UserRead | None, Depends(get_authenticated_user)],
 ) -> UserRead | HTMLResponse:
     if not user:
@@ -34,7 +34,7 @@ def require_auth(
     return user
 
 
-def redirect_if_authenticated(
+async def redirect_if_authenticated(
     user: Annotated[UserRead | None, Depends(get_authenticated_user)],
 ) -> UserRead | None:
     if user:
