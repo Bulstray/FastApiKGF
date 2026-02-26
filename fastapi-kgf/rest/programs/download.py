@@ -5,6 +5,7 @@ from fastapi import Depends, HTTPException, APIRouter
 from starlette import status
 from starlette.responses import RedirectResponse, FileResponse
 
+from dependencies.session_auth import require_auth
 from dependencies.providers import get_program_service
 from services.programs import ProgramService
 
@@ -20,6 +21,10 @@ async def download_program(
     program_service: Annotated[
         ProgramService,
         Depends(get_program_service),
+    ],
+    is_authenticated: Annotated[
+        bool,
+        Depends(require_auth),
     ],
     name: str,
 ) -> RedirectResponse | FileResponse:
