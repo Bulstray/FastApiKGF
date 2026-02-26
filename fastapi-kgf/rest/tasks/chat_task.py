@@ -1,16 +1,18 @@
 import json
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, WebSocket, WebSocketDisconnect
+from fastapi import Depends, APIRouter
+from starlette.websockets import WebSocket, WebSocketDisconnect
 
 from dependencies.message import get_message_service
 from services.messages.connection_service import connectionmanager
 from services.messages.message_service import MessageManager
 
-router = APIRouter()
+
+router = APIRouter(prefix="/ws/task")
 
 
-@router.websocket("/ws/task/{task_id}")
+@router.websocket("/{task_id}", name="chat:task")
 async def websocket_endpoint(
     websocket: WebSocket,
     task_id: int,
@@ -25,7 +27,6 @@ async def websocket_endpoint(
 
             await message_service.add_message_in_db(
                 message_data=message_date,
-                task_id=task_id,
             )
 
             # Рассылаем всем в этой задаче (включая отправителя)

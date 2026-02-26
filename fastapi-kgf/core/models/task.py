@@ -1,9 +1,10 @@
 from typing import TYPE_CHECKING
 
-from sqlalchemy import Enum, ForeignKey, String, Text
+from sqlalchemy import Enum, ForeignKey, String, Text, event
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from core.types.tasks import TaskStatus
+from pathlib import Path
 
 from .base import Base
 from .user import User
@@ -85,3 +86,10 @@ class Task(Base):
         lazy="selectin",
         cascade="all, delete-orphan",
     )
+
+
+@event.listens_for(Task, "after_delete")
+def delete_file_after_delete(mapper, connection, target):
+    folder_file = Path(target.folder_file)
+    if folder_file.exists():
+        folder_file.unlink()

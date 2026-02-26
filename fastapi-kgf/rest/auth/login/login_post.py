@@ -1,66 +1,18 @@
 from typing import Annotated
 
-from fastapi import (
-    APIRouter,
-    Depends,
-    Form,
-    Request,
-    status,
-)
-from fastapi.responses import HTMLResponse, RedirectResponse
+from fastapi import Form, Depends, APIRouter
 from sqlalchemy.ext.asyncio import AsyncSession
+from starlette import status
+from starlette.requests import Request
+from starlette.responses import HTMLResponse, RedirectResponse
 
 from core.config.settings import SESSION_COOKIE_NAME
 from core.models import db_helper
-from core.schemas.user import UserRead
 from dependencies.auth_user import validate_basic_auth_user
-from dependencies.session_auth import redirect_if_authenticated, require_auth
 from services.auth.session_manager import SessionManager
 from templating.jinja_template import templates
 
-router = APIRouter(
-    prefix="/login",
-)
-
-
-@router.get("/", name="login:get")
-async def login_page(
-    request: Request,
-    user: Annotated[
-        UserRead,
-        Depends(redirect_if_authenticated),
-    ],
-) -> HTMLResponse:
-    return templates.TemplateResponse(
-        name="login.html",
-        request=request,
-    )
-
-
-@router.get(
-    "/logout",
-    name="auth:logout",
-    response_model=None,
-)
-async def logout_page(
-    request: Request,
-    user: Annotated[UserRead, Depends(require_auth)],
-    return_url: str | None = None,
-) -> HTMLResponse | RedirectResponse:
-
-    session_id = request.cookies.get(SESSION_COOKIE_NAME)
-
-    if session_id:
-        session_service = SessionManager()
-        session_service.delete_session(session_id)
-
-    redirect = RedirectResponse(
-        url=return_url or "/",
-        status_code=status.HTTP_303_SEE_OTHER,
-    )
-
-    redirect.delete_cookie(SESSION_COOKIE_NAME)
-    return redirect
+router = APIRouter()
 
 
 @router.post(

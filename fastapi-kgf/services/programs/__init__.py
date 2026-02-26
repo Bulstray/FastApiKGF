@@ -3,7 +3,4 @@ __all__ = (
     "ProgramService",
 )
 
-
-from services.files.files import FilesService
-
 from .service import ProgramService

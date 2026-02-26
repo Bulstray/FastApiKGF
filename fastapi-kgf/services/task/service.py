@@ -1,14 +1,10 @@
 from aiopath import AsyncPath
-from fastapi import UploadFile
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from core.config import settings
-from core.models.task import Task
 from core.schemas.tasks import TaskCreate
 from core.schemas.tasks import Task as TaskSchema
-from services.files.files import FilesService
+from services.files import FilesService
 from storage.db import crud_tasks
-from fastapi import UploadFile
 
 
 class TasksFilesService:
@@ -49,17 +45,13 @@ class TasksFilesService:
 
         task = TaskSchema(
             filename=filename,
-            folder_file=folder,
+            folder_file=f"{folder}",
             **task_in.model_dump(),
         )
         await crud_tasks.create_file_in_db(session=self.session, task_in=task)
 
     async def delete_task(self, id_task: id):
         task = await self.get_task_by_id(id_task)
-
-        if task.file:
-            file_path = AsyncPath(rf"{settings.uploads_file_task_dir}\{task.file}")
-            await self.file_service.delete_program_file(file=file_path)
 
         for file_in_chat in task.messages:
             if file_in_chat.file:

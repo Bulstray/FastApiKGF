@@ -539,7 +539,7 @@
                                     <div class="rar-name">{{ task.file }}</div>
                                     <div class="rar-size">14.5 MB</div>
                                 </div>
-                                <a class="download-rar" href="{{ url_for("task:download", name=task.file) }}">
+                                <a class="download-rar" href="{{ url_for("tasks:download", name=task.file) }}">
                                     <i class="bi bi-download"></i>
                                 </a>
                             </div>
@@ -626,7 +626,7 @@
                                         <i class="bi bi-play"></i>
                                     {% endif %}
                                 </button>
-                                <button onclick="if(confirm('Удалить задачу?')) window.location.href='{{ url_for("task:delete", title=task.title) }}'"
+                                <button onclick="if(confirm('Удалить задачу?')) window.location.href='{{ url_for("tasks:delete", title=task.title) }}'"
                                         title="Удалить">
                                     <i class="bi bi-trash"></i>
                                 </button>
@@ -692,11 +692,11 @@
 
         // Функция переключения статуса задачи
         function toggleTaskStatus(button, taskId) {
-            const taskCard = button.closest('.task-card');
+            const taskCard = button.closest('.tasks-card');
             const statusChip = taskCard.querySelector('.status-chip-mini');
             const statusDot = statusChip.querySelector('.status-dot');
             const statusText = statusChip.querySelector('.status-text-mini');
-            const taskTitle = taskCard.querySelector('.task-title').textContent;
+            const taskTitle = taskCard.querySelector('.tasks-title').textContent;
 
             let newStatus = '';
 
@@ -783,7 +783,7 @@
             input.value = '';
 
             // Обновляем счетчик сообщений
-            const taskSection = input.closest('.task-chat-section');
+            const taskSection = input.closest('.tasks-chat-section');
             if (taskSection) {
                 const chatToggle = taskSection.querySelector('.chat-toggle');
                 const badge = chatToggle.querySelector('.chat-badge');

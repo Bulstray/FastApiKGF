@@ -1,39 +1,25 @@
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, Query, Request
-from fastapi.responses import HTMLResponse, RedirectResponse
+from fastapi import Query, Depends, APIRouter
+from starlette.requests import Request
+from starlette.responses import HTMLResponse, RedirectResponse
 
 from core.schemas.user import UserRead
 from dependencies.session_auth import require_auth
 from services.tenders import service as tenders_service
 from templating.jinja_template import templates
 
-router = APIRouter(
-    prefix="/tenders",
-)
-
-
-@router.get("/", name="tenders:page")
-def tenders_page(
-    request: Request,
-) -> HTMLResponse:
-
-    return templates.TemplateResponse(
-        request=request,
-        name="tenders.html",
-        context={"tenders": []},
-    )
+router = APIRouter(prefix="/tenders_search")
 
 
 @router.get(
-    "/tenders_search",
+    "/",
     name="tenders:search",
     response_model=None,
 )
 def tenders_search(
     request: Request,
     search: Annotated[str, Query()],
-    is_auth: Annotated[UserRead, Depends(require_auth)],
 ) -> HTMLResponse | RedirectResponse:
 
     context = {

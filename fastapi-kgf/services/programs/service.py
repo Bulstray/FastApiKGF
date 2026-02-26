@@ -4,8 +4,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from core.models import Program
 from core.schemas import ProgramCreate
-from services.files.files import FilesService
-from services.files.programs.exceptions import (
+from services.files import FilesService
+from services.programs.exceptions import (
     ProgramFileNameAlreadyExistsError,
     ProgramNameAlreadyExistsError,
     ProgramNameDoesNotExistError,
@@ -47,9 +47,11 @@ class ProgramService:
             raise ProgramNameAlreadyExistsError(program_in.name)
 
         try:
+            content = await file.read()
             file_path = await self.file_service.save_program_file(
-                file,
-            )  # Закинуть в background task
+                file=file,
+                content=content,
+            )  # Закинуть в background tasks
         except FileExistsError as exc:
             raise ProgramFileNameAlreadyExistsError(file.filename) from exc
 

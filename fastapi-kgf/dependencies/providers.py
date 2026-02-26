@@ -5,8 +5,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from core.config import settings
 from core.models import db_helper
-from services.files.programs import ProgramService
-from services.files.tasks_files.service import TasksFilesService
+from services.programs import ProgramService
+from services.task import TasksFilesService
 from services.users.service import UserService
 
 

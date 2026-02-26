@@ -676,7 +676,7 @@
                                     <div class="rar-name">{{ task.filename }}</div>
                                     <div class="rar-size">14.5 MB</div>
                                 </div>
-                                <a class="download-rar" href="{{ url_for("task:download", name=task.filename, file_path=task.folder_file) }}">
+                                <a class="download-rar" href="{{ url_for("tasks:download", name=task.filename, file_path=task.folder_file) }}">
                                     <i class="bi bi-download"></i>
                                 </a>
                             </div>
@@ -713,7 +713,7 @@
                                                         <i class="bi bi-file-zip"></i>
                                                         <span class="file-link">{{ message.file.name }}</span>
                                                         <span class="file-size"></span>
-                                                        <a class="download-file-btn" href="{{ url_for('task:download', name=message.file.name, folder_path=message.file.folder_path)}}">
+                                                        <a class="download-file-btn" href="{{ url_for('tasks:download', name=message.file.name, file_path=message.file.folder_path)}}">
                                                             <i class="bi bi-download"></i>
                                                         </a>
                                                     </div>
@@ -767,7 +767,7 @@
                                         <i class="bi bi-play"></i>
                                     {% endif %}
                                 </button>
-                                <button onclick="if(confirm('Удалить задачу?')) window.location.href='{{ url_for("task:delete", task_id=task.id) }}'"
+                                <button onclick="if(confirm('Удалить задачу?')) window.location.href='{{ url_for("tasks:delete", task_id=task.id) }}'"
                                         title="Удалить">
                                     <i class="bi bi-trash"></i>
                                 </button>
@@ -833,11 +833,11 @@
 
         // Функция переключения статуса задачи
         function toggleTaskStatus(button, taskId) {
-            const taskCard = button.closest('.task-card');
+            const taskCard = button.closest('.tasks-card');
             const statusChip = taskCard.querySelector('.status-chip-mini');
             const statusDot = statusChip.querySelector('.status-dot');
             const statusText = statusChip.querySelector('.status-text-mini');
-            const taskTitle = taskCard.querySelector('.task-title').textContent;
+            const taskTitle = taskCard.querySelector('.tasks-title').textContent;
 
             let newStatus = '';
 
@@ -887,7 +887,7 @@
         function connectToTask(taskId) {
             if (taskSockets[taskId]) return; // Уже подключены
 
-            const ws = new WebSocket(`ws://${window.location.host}/ws/task/${taskId}`);
+            const ws = new WebSocket(`ws://${window.location.host}/tasks/ws/task/${taskId}`);
 
             ws.onopen = function () {
                 console.log(`Подключено к задаче ${taskId}`);
@@ -928,7 +928,8 @@
                     const message = {
                         text: text,
                         author: "{{ user.name }} {{ user.surname }}", // Имя пользователя из шаблона
-                        time: new Date().toLocaleTimeString('ru-RU', {hour: '2-digit', minute: '2-digit'})
+                        created_at: new Date().toLocaleTimeString('ru-RU', {hour: '2-digit', minute: '2-digit'}),
+                        task_id: `${taskId}`
                     };
 
                     if (file) {

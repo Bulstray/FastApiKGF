@@ -1,3 +1,4 @@
+import base64
 import uuid
 
 from aiopath import AsyncPath
@@ -10,7 +11,7 @@ class FilesService:
     def __init__(self, uploads_path: AsyncPath) -> None:
         self.upload_path: AsyncPath = uploads_path
 
-    async def save_program_file(self, file: UploadFile, content: bytes) -> str:
+    async def save_program_file(self, file: UploadFile, content: bytes) -> AsyncPath:
 
         if not file.filename:
             msg = "File must have a filename"
@@ -20,19 +21,20 @@ class FilesService:
             self.upload_path / f"{uuid.uuid4().hex}{AsyncPath(file.filename).suffix}"
         )
 
-        if await file_path.exists():
-            msg = f"File {file.filename} already exists"
-            raise FileExistsError(msg)
-
         async with file_path.open("wb") as buffer:
             await buffer.write(content)
 
-        return str(file_path)
+        return file_path
 
-    @staticmethod
-    async def delete_program_file(file: AsyncPath) -> None:
-        if await file.exists():
-            await file.unlink()
+    async def save_program_file_bs64(self, code_file: str, filename: str) -> AsyncPath:
+        content = code_file.split(";base64,")[-1]
+
+        file_path = self.upload_path / f"{uuid.uuid4().hex}{AsyncPath(filename).suffix}"
+
+        async with file_path.open("wb") as file_ctx:
+            await file_ctx.write(base64.b64decode(content))
+
+        return file_path
 
     @staticmethod
     async def get_file_size_kb(file_path: AsyncPath) -> str:
