@@ -43,9 +43,9 @@ async def delete_tasks_in_db(
 
 async def update_status_task(
     session: AsyncSession,
-    title: str,
+    id_task: str,
     status: str,
 ) -> None:
-    stmt = update(Task).where(Task.title == title).values(status=status)
+    stmt = update(Task).where(Task.id == id_task).values(status=status)
     await session.execute(stmt)
     await session.commit()

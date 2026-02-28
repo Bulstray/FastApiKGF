@@ -56,9 +56,9 @@ class TasksFilesService:
 
         await crud_tasks.delete_tasks_in_db(session=self.session, task=task)
 
-    async def update_status_in_db(self, title: str, status: str) -> None:
+    async def update_status_in_db(self, id_task: str, status: str) -> None:
         await crud_tasks.update_status_task(
             session=self.session,
-            title=title,
+            id_task=id_task,
             status=status,
         )
