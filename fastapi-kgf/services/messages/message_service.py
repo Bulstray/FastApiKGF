@@ -15,14 +15,18 @@ class MessageManager:
         self.session = session
         self.file_service = file_service
 
+    async def get_messages_by_id(self, task_id: int) -> list[Message]:
+        return await crud_message.get_message_by_id(
+            self.session,
+            task_id,
+        )
+
     async def add_message_in_db(
         self,
         message_data: dict[str, str],
     ) -> None:
 
         message_in = Message.model_validate(message_data)
-
-        print(message_in)
 
         message_in_db = await crud_message.create_chats_message(
             session=self.session,

@@ -3,9 +3,13 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from core.models import Task
 from core.schemas.tasks import Task as TaskSchema
+from core.schemas.tasks_users import TaskUsersCreate as TaskUsersCreateSchema
 from core.schemas.tasks import TaskCreate
 from services.files import FilesService
 from storage.db import crud_tasks
+from storage.db import crud_task_users
+
+from starlette.datastructures import FormData
 
 
 class TasksFilesService:
@@ -30,26 +34,42 @@ class TasksFilesService:
 
     async def create_task(
         self,
-        task_in: TaskCreate,
+        form: FormData,
         content: bytes,
-    ) -> None:
+    ) -> Task:
 
         folder = None
         filename = None
 
-        if task_in.rar_file.filename:
-            filename = task_in.rar_file.filename
+        task_schema = TaskCreate.model_validate(form)
+
+        if task_schema.rar_file.filename:
+            filename = task_schema.rar_file.filename
             folder = await self.file_service.save_program_file(
-                file=task_in.rar_file,
+                file=task_schema.rar_file,
                 content=content,
             )
 
-        task = TaskSchema(
+        task_model = TaskSchema(
             filename=filename,
             folder_file=f"{folder}",
-            **task_in.model_dump(),
+            **task_schema.model_dump(),
         )
-        await crud_tasks.create_file_in_db(session=self.session, task_in=task)
+
+        task_id = await crud_tasks.create_file_in_db(
+            session=self.session,
+            task_in=task_model,
+        )
+
+        task_users = TaskUsersCreateSchema(
+            task_id=task_id,
+            executor_ids=[int(user_id) for user_id in form.getlist("executor_ids")],
+        )
+
+        await crud_task_users.create_task_users(
+            session=self.session,
+            task_users=task_users,
+        )
 
     async def delete_task(self, id_task: id) -> None:
         task = await self.get_task_by_id(id_task)

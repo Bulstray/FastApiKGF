@@ -6,6 +6,7 @@ from starlette.requests import Request
 from starlette.responses import RedirectResponse
 
 from core.schemas.tasks import TaskCreate
+from core.schemas.tasks_users import TaskUsersCreate
 from dependencies.providers import get_tasks_service
 from services.task import TasksFilesService
 
@@ -19,13 +20,12 @@ async def create_task(
 ) -> RedirectResponse:
 
     async with request.form() as form:
-        task = TaskCreate.model_validate(form)
         content = await form.get("rar_file").read()
 
-    await service.create_task(
-        task_in=task,
-        content=content,
-    )
+        await service.create_task(
+            form=form,
+            content=content,
+        )
 
     return RedirectResponse(
         url="/tasks",

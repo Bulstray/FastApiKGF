@@ -33,11 +33,6 @@ class MessageFile(Base):
         nullable=False,
     )
 
-    message: Mapped[list["Message"]] = relationship(
-        "Message",
-        back_populates="file",
-    )
-
 
 @event.listens_for(MessageFile, "after_delete")
 def delete_file_after_delete(mapper, connection, target):

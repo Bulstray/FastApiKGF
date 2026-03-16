@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING
 
-from sqlalchemy import ForeignKey, String, Text
+from sqlalchemy import ForeignKey, String, Text, Boolean
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from .base import Base
@@ -8,6 +8,8 @@ from .base import Base
 if TYPE_CHECKING:
     from .message_file import MessageFile
     from .task import Task
+    from .message_read_status import MessageReadStatus
+    from .user import User
 
 
 class Message(Base):
@@ -26,29 +28,11 @@ class Message(Base):
         nullable=False,
     )
 
-    author: Mapped[str] = mapped_column(
-        String(100),
-        nullable=False,
-        index=True,
-    )
-
-    initials: Mapped[str] = mapped_column(
-        String(10),
+    author: Mapped[int] = mapped_column(
+        ForeignKey("users.id", ondelete="CASCADE"),
         nullable=False,
     )
 
     created_at: Mapped[str] = mapped_column(
         nullable=False,
-    )
-
-    task: Mapped["Task"] = relationship(
-        "Task",
-        back_populates="messages",
-    )
-
-    file: Mapped["MessageFile"] = relationship(
-        "MessageFile",
-        back_populates="message",
-        lazy="selectin",
-        cascade="all, delete-orphan",
     )

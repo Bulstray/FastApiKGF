@@ -23,13 +23,14 @@ async def get_task_by_id(
 async def create_file_in_db(
     session: AsyncSession,
     task_in: TaskSchema,
-) -> Task:
+) -> int:
     task = Task(**task_in.model_dump())
 
     session.add(task)
     await session.commit()
     await session.refresh(task)
-    return task
+    task_id = task.id
+    return task_id
 
 
 async def delete_tasks_in_db(

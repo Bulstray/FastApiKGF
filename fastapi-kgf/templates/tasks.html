@@ -613,6 +613,24 @@
       opacity: 1;
       visibility: visible;
     }
+
+    .unread-badge {
+      position: absolute;
+      top: -4px;
+      right: -4px;
+      background: #ef4444;
+      color: white;
+      border-radius: 50%;
+      width: 16px;
+      height: 16px;
+      font-size: 0.65rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1.5px solid white;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
   </style>
 {% endblock %}
 
@@ -666,7 +684,7 @@
                   </div>
                   <div class="meta-item">
                     <i class="bi bi-person-up"></i>
-                    <span>Постановщик: <strong>{{ task.executor.name }} {{ task.executor.surname }}</strong></span>
+                    <span>Постановщик: <strong>{{ task.created_by.name }} {{ task.created_by.surname }}</strong></span>
                   </div>
                 </div>
 
@@ -687,9 +705,12 @@
                 {% endif %}
 
                 <div class="task-footer">
-                  <div class="assignee">
-                    <i class="bi bi-person-circle"></i>
-                    <span>{{ task.customer.name }} {{ task.customer.surname }}</span>
+                  <div class="assignee"
+                       style="display: grid; grid-template-columns: 24px 1fr; gap: 4px 8px; align-items: center;">
+                    {% for executor in task.task_users %}
+                      <i class="bi bi-person-circle" style="text-align: center;"></i>
+                      <span>{{ executor.user_executors.name }} {{ executor.user_executors.surname }}</span>
+                    {% endfor %}
                   </div>
                   <div class="task-actions">
                     <button onclick="openTaskChat('{{ task.id }}', '{{ task.title }}', '{{ task.description }}')"
@@ -743,7 +764,7 @@
                   </div>
                   <div class="meta-item">
                     <i class="bi bi-person-up"></i>
-                    <span>Постановщик: <strong>{{ task.executor.name }} {{ task.executor.surname }}</strong></span>
+                    <span>Постановщик: <strong>{{ task.created_by.name }} {{ task.created_by.surname }}</strong></span>
                   </div>
                 </div>
 
@@ -766,7 +787,9 @@
                 <div class="task-footer">
                   <div class="assignee">
                     <i class="bi bi-person-circle"></i>
-                    <span>{{ task.customer.name }} {{ task.customer.surname }}</span>
+                    {% for executor in task.executors %}
+                      <span>{{ executor.name }} {{ executor.surname }}</span>
+                    {% endfor %}
                   </div>
                   <div class="task-actions">
                     <button onclick="openTaskChat('{{ task.id }}', '{{ task.title }}', '{{ task.description }}')"
@@ -820,7 +843,7 @@
                   </div>
                   <div class="meta-item">
                     <i class="bi bi-person-up"></i>
-                    <span>Постановщик: <strong>{{ task.executor.name }} {{ task.executor.surname }}</strong></span>
+                    <span>Постановщик: <strong>{{ task.created_by.name }} {{ task.created_by.surname }}</strong></span>
                   </div>
                 </div>
 
@@ -843,7 +866,9 @@
                 <div class="task-footer">
                   <div class="assignee">
                     <i class="bi bi-person-circle"></i>
-                    <span>{{ task.customer.name }} {{ task.customer.surname }}</span>
+                    {% for executor in task.executors %}
+                      <span>{{ executor.name }} {{ executor.surname }}</span>
+                    {% endfor %}
                   </div>
                   <div class="task-actions">
                     <button onclick="openTaskChat('{{ task.id }}', '{{ task.title }}', '{{ task.description }}')"
@@ -923,6 +948,46 @@
 
 {% block script %}
   <script>
+
+      function updateUnreadBadge(taskId, count) {
+          const taskCard = document.querySelector(`.task-card[data-task-id="${taskId}"]`);
+          if (!taskCard) return;
+
+          const chatButton = taskCard.querySelector('.task-actions button[title="Обсуждение задачи"]');
+          if (!chatButton) return;
+
+          // Удаляем старый бейдж
+          const oldBadge = chatButton.querySelector('.unread-badge');
+          if (oldBadge) oldBadge.remove();
+
+          // Если есть непрочитанные - показываем бейдж
+          if (count > 0) {
+              chatButton.style.position = 'relative';
+              const badge = document.createElement('span');
+              badge.className = 'unread-badge';
+              badge.textContent = count > 9 ? '9+' : count;
+              badge.style.cssText = `
+            position: absolute;
+            top: -4px;
+            right: -4px;
+            background: #ef4444;
+            color: white;
+            border-radius: 50%;
+            width: 16px;
+            height: 16px;
+            font-size: 0.65rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1.5px solid white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        `;
+              chatButton.appendChild(badge);
+          }
+      }
+
+
       // Переменные для чата
       let currentTaskId = null;
       let chatSocket = null;
@@ -1009,15 +1074,8 @@
                   }
                   return response.json();
               })
-              .then(data => {
-                  console.log('Статус обновлен:', data);
-                  // Перезагружаем страницу чтобы обновить колонки
-                  location.reload();
-              })
-              .catch(error => {
-                  console.error('Ошибка:', error);
-              });
       }
+
 
       // Функции для бокового чата
       function openTaskChat(taskId, taskTitle, taskDescription) {
@@ -1030,28 +1088,44 @@
           // Очищаем сообщения
           document.getElementById('chatMessages').innerHTML = '';
 
-          // Загружаем существующие сообщения из БД
-          {% for task in tasks %}
-              if ("{{ task.id }}" == taskId) {
-                  {% for message in task.messages %}
+          // Загружаем ВСЕ сообщения через API
+          fetch(`/tasks/chat/${taskId}`)
+              .then(response => response.json())
+              .then(messages => {
+                  // Показываем все сообщения
+                  messages.forEach(message => {
                       addMessageToSidebar({
-                          author: "{{ message.author }}",
-                          text: "{{ message.text }}",
-                          created_at: "{{ message.created_at }}",
-                          file: {% if message.file %} {
-                              name: "{{ message.file.name }}",
-                              size: "{{ message.file.size }}",
-                              content: "{{ message.file.content }}"
-                          } {% else %} null {% endif %}
+                          author: message.author,
+                          text: message.text,
+                          created_at: message.created_at,
+                          file: message.file ? {
+                              name: message.file.name,
+                              folder_path: message.file.folder_path,
+                              size: message.file.size,
+                          } : null
                       });
-                  {% endfor %}
-              }
-          {% endfor %}
+                  });
+
+                  // Проверяем, есть ли непрочитанные сообщения от других пользователей
+                  const currentUser = "{{ user.name }} {{ user.surname }}";
+                  const hasUnreadFromOthers = messages.some(msg =>
+                      msg.author !== currentUser && msg.is_read === false
+                  );
+
+                  // Если есть чужие непрочитанные - отмечаем их как прочитанные
+                  if (hasUnreadFromOthers) {
+                      fetch(`/tasks/mark_read/${taskId}`, {method: 'POST'});
+                  }
+
+                  // Убираем бейдж с кнопки
+                  updateUnreadBadge(taskId, 0);
+              })
+              .catch(error => console.error('Ошибка загрузки сообщений:', error));
 
           document.getElementById('chatSidebar').classList.add('open');
           document.getElementById('chatOverlay').classList.add('show');
 
-          // Подключаемся к WebSocket
+          // Подключаемся к WebSocket для НОВЫХ сообщений
           if (chatSocket) {
               chatSocket.close();
           }
@@ -1059,11 +1133,22 @@
 
           chatSocket.onmessage = function (event) {
               const data = JSON.parse(event.data);
-              addMessageToSidebar(data);
-          };
+              const currentUser = "{{ user.name }} {{ user.surname }}";
 
-          chatSocket.onclose = function () {
-              console.log('WebSocket закрыт');
+              // Добавляем сообщение в чат
+              addMessageToSidebar(data);
+
+              // Если сообщение от другого пользователя
+              if (data.author !== currentUser) {
+                  if (currentTaskId === taskId) {
+                      // Чат открыт - сразу отмечаем как прочитанное
+                      fetch(`/tasks/mark_read/${taskId}`, {method: 'POST'});
+                  } else {
+                      // Чат закрыт - увеличиваем счетчик
+                      updateUnreadBadge(taskId, 1);
+                  }
+              }
+              // Если сообщение от текущего пользователя - ничего не делаем с is_read
           };
       }
 
@@ -1090,29 +1175,34 @@
           if (messageData.file) {
               const fileIcon = messageData.file.name.toLowerCase().endsWith('.zip') ||
               messageData.file.name.toLowerCase().endsWith('.rar') ? 'bi-file-zip' : 'bi-file-earmark';
+
+              // Формируем правильный URL для скачивания
+              const normalizedPath = messageData.file.folder_path.replace(/\\/g, '/');
+              const downloadUrl = `/tasks/download/${encodeURIComponent(messageData.file.name)}/${encodeURIComponent(normalizedPath)}`;
+
               fileHtml = `
-                  <div class="message-file" data-file-content="${messageData.file.content}" data-file-name="${messageData.file.name}">
-                      <i class="bi ${fileIcon}"></i>
-                      <span class="file-link" onclick="downloadFile(this)">${messageData.file.name}</span>
-                      <span class="file-size">${formatFileSize(messageData.file.size)}</span>
-                      <button class="download-file-btn" onclick="downloadFile(this.parentElement)">
-                          <i class="bi bi-download"></i>
-                      </button>
-                  </div>
-              `;
+            <div class="message-file">
+                <i class="bi ${fileIcon}"></i>
+                <span class="file-link">${messageData.file.name}</span>
+                <span class="file-size">${formatFileSize(messageData.file.size) || ''}</span>
+                <a href="${downloadUrl}" class="download-file-btn" download>
+                    <i class="bi bi-download"></i>
+                </a>
+            </div>
+        `;
           }
 
           messageDiv.innerHTML = `
-              <div class="message-avatar">${initials}</div>
-              <div class="message-content">
-                  <div class="message-header">
-                      <span class="message-author">${messageData.author}</span>
-                      <span class="message-time">${messageData.created_at}</span>
-                  </div>
-                  ${messageData.text ? `<div class="message-text">${messageData.text}</div>` : ''}
-                  ${fileHtml}
-              </div>
-          `;
+        <div class="message-avatar">${initials}</div>
+        <div class="message-content">
+            <div class="message-header">
+                <span class="message-author">${messageData.author}</span>
+                <span class="message-time">${messageData.created_at}</span>
+            </div>
+            ${messageData.text ? `<div class="message-text">${messageData.text}</div>` : ''}
+            ${fileHtml}
+        </div>
+    `;
 
           messagesContainer.appendChild(messageDiv);
           messagesContainer.scrollTop = messagesContainer.scrollHeight;
@@ -1131,17 +1221,18 @@
 
           const message = {
               text: text,
-              author: "{{ user.name }} {{ user.surname }}",
+              author: "{{ user.id }}",
               created_at: new Date().toLocaleTimeString('ru-RU', {hour: '2-digit', minute: '2-digit'}),
               task_id: currentTaskId
+
           };
+
 
           if (selectedFile) {
               const reader = new FileReader();
               reader.onload = function (e) {
                   message.file = {
                       name: selectedFile.name,
-                      size: selectedFile.size,
                       content: e.target.result
                   };
                   chatSocket.send(JSON.stringify(message));
@@ -1180,25 +1271,6 @@
           return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
       }
 
-      function downloadFile(element) {
-          let fileDiv;
-          if (element.classList.contains('message-file')) {
-              fileDiv = element;
-          } else {
-              fileDiv = element.closest('.message-file');
-          }
 
-          if (!fileDiv) return;
-
-          const fileContent = fileDiv.dataset.fileContent;
-          const fileName = fileDiv.dataset.fileName;
-
-          const link = document.createElement('a');
-          link.href = fileContent;
-          link.download = fileName;
-          document.body.appendChild(link);
-          link.click();
-          document.body.removeChild(link);
-      }
   </script>
 {% endblock %}

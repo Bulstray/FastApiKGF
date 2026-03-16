@@ -5,6 +5,7 @@ __all__ = (
     "Program",
     "Task",
     "User",
+    "MessageReadStatus",
     "db_helper",
 )
 
@@ -15,3 +16,4 @@ from .message_file import MessageFile
 from .programs import Program
 from .task import Task
 from .user import User
+from .message_read_status import MessageReadStatus

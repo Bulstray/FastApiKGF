@@ -1,14 +1,15 @@
-from typing import TYPE_CHECKING
-
 from sqlalchemy import Enum, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from core.types import UserRole
 
+from typing import TYPE_CHECKING
+
 from .base import Base
 
 if TYPE_CHECKING:
     from .task import Task
+    from .taks_users import TaskUsers
 
 
 class User(Base):
@@ -50,14 +51,21 @@ class User(Base):
         server_default=UserRole.user,
     )
 
-    executed_tasks: Mapped[list["Task"]] = relationship(
+    creator_user: Mapped["Task"] = relationship(
         "Task",
-        back_populates="executor",
-        foreign_keys="[Task.executor_id]",
+        backref="created_by",
     )
 
-    created_at: Mapped[list["Task"]] = relationship(
-        "Task",
-        back_populates="customer",
-        foreign_keys="[Task.customer_id]",
+    executors_user: Mapped[list["TaskUsers"]] = relationship(
+        "TaskUsers",
+        back_populates="user_executors",
     )
+
+    @property
+    def full_name(self) -> str:
+        """Возвращает полное имя пользователя"""
+        return f"{self.name} {self.surname}".strip()
+
+    @property
+    def initials(self) -> str:
+        return f"{self.name[0]}{self.surname[0]}".upper()

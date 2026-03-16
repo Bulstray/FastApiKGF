@@ -6,7 +6,6 @@ class Task(BaseModel):
     title: str
     description: str
     deadline: str
-    executor_id: int
     customer_id: int
     filename: str | None = None
     folder_file: str | None = None
@@ -20,6 +19,10 @@ class TaskCreate(BaseModel):
     title: str
     description: str
     deadline: str
-    executor_id: int
     customer_id: int
     rar_file: UploadFile
+
+    model_config = ConfigDict(
+        extra="ignore",
+        arbitrary_types_allowed=True,
+    )
