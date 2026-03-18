@@ -1,15 +1,12 @@
 from typing import TYPE_CHECKING
 
-from sqlalchemy import ForeignKey, String, Text, Boolean
+from sqlalchemy import ForeignKey, Text
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from .base import Base
 
 if TYPE_CHECKING:
     from .message_file import MessageFile
-    from .task import Task
-    from .message_read_status import MessageReadStatus
-    from .user import User
 
 
 class Message(Base):
@@ -35,4 +32,11 @@ class Message(Base):
 
     created_at: Mapped[str] = mapped_column(
         nullable=False,
+    )
+
+    file: Mapped["MessageFile"] = relationship(
+        "MessageFile",
+        backref="message",
+        cascade="all, delete-orphan",
+        lazy="selectin",
     )
