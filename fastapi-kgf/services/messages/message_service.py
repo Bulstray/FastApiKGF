@@ -3,7 +3,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from core.models import MessageFile
 from core.schemas.message import Message
 from services.files import FilesService
-from storage.db import crud_message
+from storage.db import crud_message, crud_task_users
 
 
 class MessageManager:
@@ -24,7 +24,7 @@ class MessageManager:
     async def add_message_in_db(
         self,
         message_data: dict[str, str],
-    ) -> None:
+    ) -> str | None:
 
         message_in = Message.model_validate(message_data)
 
@@ -32,6 +32,21 @@ class MessageManager:
             session=self.session,
             message_in=message_in,
         )
+
+        users_in_task = await crud_task_users.get_task_users(
+            session=self.session,
+            task_id=message_in.task_id,
+        )
+
+        for user_id in users_in_task:
+            if message_in.author == user_id:
+                continue
+
+            await crud_message.update_count_unread(
+                session=self.session,
+                task_id=message_in.task_id,
+                users_id=user_id,
+            )
 
         if "file" in message_data:
             file_data = message_data.get("file")
@@ -44,10 +59,18 @@ class MessageManager:
             file = MessageFile(
                 name=file_data.get("name"),
                 folder_path=f"{file_path}",
-                message_id=message_in_db.id,
+                message_id=message_in_db,
             )
 
-            await crud_message.create_file_data_message(
+            file_folder = await crud_message.create_file_data_message(
                 session=self.session,
                 file=file,
             )
+
+            return file_folder.folder_path
+
+    async def get_unread_message(self, user_id: int) -> dict:
+        return await crud_message.get_unread_message(
+            session=self.session,
+            user_id=user_id,
+        )
