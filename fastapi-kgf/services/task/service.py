@@ -1,15 +1,16 @@
+
 from aiopath import AsyncPath
 from sqlalchemy.ext.asyncio import AsyncSession
+from starlette.datastructures import FormData
 
 from core.models import Task
+from core.schemas.message_read_status import MessageReadStatus
 from core.schemas.tasks import Task as TaskSchema
-from core.schemas.tasks_users import TaskUsersCreate as TaskUsersCreateSchema
 from core.schemas.tasks import TaskCreate
+from core.schemas.tasks_users import TaskUsersCreate as TaskUsersCreateSchema
 from services.files import FilesService
-from storage.db import crud_tasks
-from storage.db import crud_task_users
-
-from starlette.datastructures import FormData
+from storage.db import crud_task_users, crud_tasks
+from storage.db.crud_message import add_count_unread_messages
 
 
 class TasksFilesService:
@@ -61,14 +62,26 @@ class TasksFilesService:
             task_in=task_model,
         )
 
+        users_id = [int(user_id) for user_id in form.getlist("executor_ids")] + [
+            task_model.customer_id,
+        ]
+
         task_users = TaskUsersCreateSchema(
             task_id=task_id,
-            executor_ids=[int(user_id) for user_id in form.getlist("executor_ids")],
+            executor_ids=users_id,
         )
 
         await crud_task_users.create_task_users(
             session=self.session,
             task_users=task_users,
+        )
+
+        await add_count_unread_messages(
+            session=self.session,
+            users_id=MessageReadStatus(
+                task_id=task_id,
+                users_id=users_id,
+            ),
         )
 
     async def delete_task(self, id_task: id) -> None:
