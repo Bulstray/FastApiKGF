@@ -1,13 +1,9 @@
 from pathlib import Path
-from typing import TYPE_CHECKING
 
 from sqlalchemy import ForeignKey, String, event
-from sqlalchemy.orm import Mapped, mapped_column, relationship
+from sqlalchemy.orm import Mapped, mapped_column
 
 from core.models import Base
-
-if TYPE_CHECKING:
-    from .message import Message
 
 
 class MessageFile(Base):
