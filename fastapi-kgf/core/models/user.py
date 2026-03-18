@@ -1,15 +1,16 @@
+from typing import TYPE_CHECKING
+
 from sqlalchemy import Enum, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from core.types import UserRole
 
-from typing import TYPE_CHECKING
-
 from .base import Base
 
 if TYPE_CHECKING:
-    from .task import Task
+    from .message import Message
     from .taks_users import TaskUsers
+    from .task import Task
 
 
 class User(Base):
@@ -59,6 +60,12 @@ class User(Base):
     executors_user: Mapped[list["TaskUsers"]] = relationship(
         "TaskUsers",
         back_populates="user_executors",
+    )
+
+    messages: Mapped[list["Message"]] = relationship(
+        "Message",
+        backref="user_message",
+        lazy="selectin",
     )
 
     @property
