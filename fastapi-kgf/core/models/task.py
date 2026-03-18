@@ -1,18 +1,18 @@
+import datetime
 from pathlib import Path
 from typing import TYPE_CHECKING
 
-from sqlalchemy import Enum, ForeignKey, String, Text, event
+from sqlalchemy import Date, Enum, ForeignKey, String, Text, event
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from core.types.tasks import TaskStatus
 
-from .base import Base
-from .user import User
 from ..schemas.tasks import Task
+from .base import Base
 
 if TYPE_CHECKING:
     from .message import Message
-    from .user import User
+    from .message_read_status import MessageReadStatus
     from .taks_users import TaskUsers
 
 
@@ -30,7 +30,8 @@ class Task(Base):
         nullable=False,
     )
 
-    deadline: Mapped[str] = mapped_column(
+    deadline: Mapped[datetime] = mapped_column(
+        Date,
         nullable=False,
         index=True,
     )
@@ -65,6 +66,17 @@ class Task(Base):
         "TaskUsers",
         back_populates="executors",
         lazy="selectin",
+        cascade="all, delete-orphan",
+    )
+
+    messages: Mapped[list["Message"]] = relationship(
+        "Message",
+        cascade="all, delete-orphan",
+    )
+
+    read_status: Mapped["MessageReadStatus"] = relationship(
+        "MessageReadStatus",
+        cascade="all, delete-orphan",
     )
 
 
