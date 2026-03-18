@@ -1,14 +1,13 @@
+from typing import TYPE_CHECKING
+
 from sqlalchemy import ForeignKey
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from .base import Base
 
-from sqlalchemy.orm import relationship, Mapped, mapped_column
-
-from typing import TYPE_CHECKING
-
 if TYPE_CHECKING:
-    from .user import User
     from .task import Task
+    from .user import User
 
 
 class TaskUsers(Base):
