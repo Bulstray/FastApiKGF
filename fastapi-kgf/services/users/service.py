@@ -5,6 +5,7 @@ from core.schemas.user import UserCreate
 from storage.db.crud_user import create_user as crud_create_user
 from storage.db.crud_user import delete_user as crud_delete_user
 from storage.db.crud_user import get_all_users as crud_get_all_users
+from storage.db.crud_user import get_user_by_id as crud_get_user_by_id
 from storage.db.crud_user import (
     get_user_by_username as crud_get_user_by_username,
 )
@@ -25,6 +26,12 @@ class UserService:
         return await crud_get_user_by_username(
             session=self.session,
             username=username.lower(),
+        )
+
+    async def get_user_by_id(self, user_id: int) -> User | None:
+        return await crud_get_user_by_id(
+            self.session,
+            user_id,
         )
 
     async def create_user(self, user_in: UserCreate) -> User | None:

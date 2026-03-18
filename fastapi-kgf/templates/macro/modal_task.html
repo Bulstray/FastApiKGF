@@ -39,7 +39,9 @@
                         <label class="form-label">Исполнители</label>
                         <select name="executor_ids" class="form-select" multiple size="4" required>
                             {% for worker in workers %}
-                                <option value="{{ worker.id }}">{{ worker.name }} {{ worker.surname }}</option>
+                                {% if worker.name != user.name and user.surname != worker.surname %}
+                                    <option value="{{ worker.id }}">{{ worker.name }} {{ worker.surname }}</option>
+                                {% endif %}
                             {% endfor %}
                         </select>
                         <small class="text-muted">Удерживайте Ctrl (Cmd) для выбора нескольких</small>

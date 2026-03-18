@@ -1,3 +1,4 @@
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from core.models.taks_users import TaskUsers
@@ -13,7 +14,14 @@ async def create_task_users(
             TaskUsers(
                 task_id=task_users.task_id,
                 user_id=executor_id,
-            )
+            ),
         )
 
     await session.commit()
+
+
+async def get_task_users(session: AsyncSession, task_id: int) -> list[int] | None:
+    """Получить всех исполнителей задачи"""
+    stmt = select(TaskUsers.user_id).where(TaskUsers.task_id == task_id)
+    result = await session.execute(stmt)
+    return result.scalars().all()

@@ -34,3 +34,7 @@ async def delete_user(session: AsyncSession, username: str) -> None:
     stmt = delete(User).where(username == User.username)
     await session.execute(stmt)
     await session.commit()
+
+
+async def get_user_by_id(session: AsyncSession, user_id: int) -> User | None:
+    return await session.get(User, user_id)
