@@ -17,7 +17,6 @@ async def update_status_task(
     is_auth_user: Annotated[UserRead, Depends(require_auth)],
     service: Annotated[TasksFilesService, Depends(get_tasks_service)],
 ) -> None:
-    print(status_task)
     await service.update_status_in_db(
         id_task=id_task,
         status=status_task,
