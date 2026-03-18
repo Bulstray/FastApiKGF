@@ -1,3 +1,5 @@
+from datetime import date
+
 from fastapi import UploadFile
 from pydantic import BaseModel, ConfigDict
 
@@ -5,7 +7,7 @@ from pydantic import BaseModel, ConfigDict
 class Task(BaseModel):
     title: str
     description: str
-    deadline: str
+    deadline: date
     customer_id: int
     filename: str | None = None
     folder_file: str | None = None
@@ -18,7 +20,7 @@ class TaskCreate(BaseModel):
 
     title: str
     description: str
-    deadline: str
+    deadline: date
     customer_id: int
     rar_file: UploadFile
 
