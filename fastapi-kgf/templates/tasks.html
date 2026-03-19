@@ -747,7 +747,7 @@
                                     <div class="assignee"
                                          style="display: grid; grid-template-columns: 24px 1fr; gap: 4px 8px; align-items: center;">
                                         {% for executor in task.task_users %}
-                                            {% if task.created_by.name != executor.user_executors.name and task.created_by.surname != executor.user_executors.surname %}
+                                            {% if task.created_by.username != executor.user_executors.username %}
                                                 <i class="bi bi-person-circle" style="text-align: center;"></i>
                                                 <span>{{ executor.user_executors.name }} {{ executor.user_executors.surname }}</span>
                                             {% endif %}
@@ -848,7 +848,7 @@
                                     <div class="assignee"
                                          style="display: grid; grid-template-columns: 24px 1fr; gap: 4px 8px; align-items: center;">
                                         {% for executor in task.task_users %}
-                                            {% if task.created_by.name != executor.user_executors.name and task.created_by.surname != executor.user_executors.surname %}
+                                            {% if task.created_by.username != executor.user_executors.username %}
                                                 <i class="bi bi-person-circle" style="text-align: center;"></i>
                                                 <span>{{ executor.user_executors.name }} {{ executor.user_executors.surname }}</span>
                                             {% endif %}
@@ -949,7 +949,7 @@
                                     <div class="assignee"
                                          style="display: grid; grid-template-columns: 24px 1fr; gap: 4px 8px; align-items: center;">
                                         {% for executor in task.task_users %}
-                                            {% if task.created_by.name != executor.user_executors.name and task.created_by.surname != executor.user_executors.surname %}
+                                            {% if task.created_by.username != executor.user_executors.username %}
                                                 <i class="bi bi-person-circle" style="text-align: center;"></i>
                                                 <span>{{ executor.user_executors.name }} {{ executor.user_executors.surname }}</span>
                                             {% endif %}

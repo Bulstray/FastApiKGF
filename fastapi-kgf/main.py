@@ -4,9 +4,23 @@ from fastapi import FastAPI
 from api import router
 from app_lifespan import lifespan
 from rest import router as main_router
+from core.models import db_helper
+
+from sqladmin import Admin
+
+from admin import register_admin_views
+from admin.auth import AdminAuth
 
 app = FastAPI(lifespan=lifespan)
 
+auth_backend = AdminAuth(secret_key="123132131")
+admin = Admin(
+    app,
+    session_maker=db_helper.session_factory,
+    authentication_backend=auth_backend,
+)
+
+register_admin_views(admin)
 app.include_router(router)
 app.include_router(main_router)
 

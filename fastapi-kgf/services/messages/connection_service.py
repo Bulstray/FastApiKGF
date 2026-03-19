@@ -54,7 +54,8 @@ class ConnectionManager:
                     user_id=user_id,
                 )
 
-                users_task.remove(user_id)
+                if user_id in users_task:
+                    users_task.remove(user_id)
 
             await manager.broadcast(users_task, task_id)
 
