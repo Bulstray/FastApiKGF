@@ -1,335 +1,641 @@
-{% macro navbar(auth) %}
-  <nav class="sidebar">
-    <div class="sidebar-brand">
-      <i class="bi bi-code-slash"></i>
-      <span>KGF DevSoft</span>
-    </div>
-
-    <ul class="nav flex-column sidebar-nav">
-      <li class="nav-item">
-        <a class="nav-link" href="{{ url_for("home") }}">
-          <i class="bi bi-house"></i>
-          <span>Главная</span>
-        </a>
-        <a class="nav-link" href="{{ url_for("tasks:page") }}">
-          <i class="bi bi-check2-square"></i>
-          <span>Мои задачи</span>
-        </a>
-        <a class="nav-link" href="{{ url_for("programs:page") }}">
-          <i class="bi bi-grid-fill"></i>
-          <span>Программы</span>
-        </a>
-        <a class="nav-link" href="{{ url_for("tenders:page") }}">
-          <i class="bi bi-briefcase"></i>
-          <span>Тендеры</span>
-        </a>
-      </li>
-    </ul>
-
-    {% if auth %}
-
-      <!-- Авторизованный пользователь -->
-      <div class="sidebar-auth">
-        <div class="user-profile">
-          <div class="user-avatar" id="userMenuToggle">
-            <i class="bi bi-person-check-fill"></i>
-          </div>
-          <div class="user-info">
-            <span class="user-name">{{ auth.name }} {{ auth.surname }}</span>
-            <span class="user-role">{{ auth.role }}</span>
-          </div>
-
-          <!-- Выпадающее меню пользователя -->
-          <div class="user-dropdown" id="userDropdown">
-            <a href="#" class="dropdown-item">
-              <i class="bi bi-person"></i>
-              <span>Мой профиль</span>
-            </a>
-            <a href="#" class="dropdown-item">
-              <i class="bi bi-gear"></i>
-              <span>Настройки</span>
-            </a>
-            <a href="{{ url_for('auth:logout') }}?return_url={{ request.url.path }}" class="dropdown-item logout">
-              <i class="bi bi-box-arrow-right"></i>
-              <span>Выйти</span>
-            </a>
-          </div>
+{% macro navbar(auth, projects) %}
+    <nav class="sidebar">
+        <div class="sidebar-brand">
+            <i class="bi bi-code-slash"></i>
+            <span>KGF DevSoft</span>
         </div>
-      </div>
-    {% else %}
-      <div class="sidebar-login">
-        <a href="{{ url_for('login:get') }}" class="login-btn">
-          <i class="bi bi-person-circle"></i>
-          <span>Войти</span>
-        </a>
-      </div>
-    {% endif %}
-  </nav>
+
+        <ul class="nav flex-column sidebar-nav">
+            <li class="nav-item">
+                <a class="nav-link" href="{{ url_for("home") }}">
+                    <i class="bi bi-house"></i>
+                    <span>Главная</span>
+                </a>
+                <div class="nav-link projects-header">
+                    <i class="bi bi-folder"></i>
+                    <span>Проекты</span>
+                </div>
+
+                <!-- Список проектов -->
+                <ul class="projects-submenu">
+                    {% for project in projects %}
+                        <li class="project-item">
+                            <div class="project-item-wrapper">
+                                <a href="{{ url_for("tasks:page", project_id=project.id) }}" class="project-link">
+                                    <i class="bi bi-folder2"></i>
+                                    <span>{{ project.name }}</span>
+                                </a>
+                                <label for="delete-modal-{{ project.id }}" class="delete-project-btn">
+                                    <i class="bi bi-trash3"></i>
+                                </label>
+                            </div>
+
+                            <!-- Модальное окно для каждого проекта -->
+                            <input type="checkbox" id="delete-modal-{{ project.id }}" class="modal-trigger"
+                                   style="display: none;">
+                            <div class="delete-modal">
+                                <div class="delete-modal-content">
+                                    <div class="delete-modal-header">
+                                        <h3><i class="bi bi-exclamation-triangle"></i> Удалить проект</h3>
+                                        <label for="delete-modal-{{ project.id }}"
+                                               class="modal-close-btn">&times;</label>
+                                    </div>
+                                    <div class="delete-modal-body">
+                                        <p>Вы уверены, что хотите удалить проект <strong>{{ project.name }}</strong>?
+                                        </p>
+                                        <p class="warning-text">Все задачи в этом проекте также будут удалены.</p>
+                                    </div>
+                                    <div class="delete-modal-footer">
+                                        <label for="delete-modal-{{ project.id }}" class="btn-cancel">Отмена</label>
+                                        <form action="/projects/{{ project.id }}/delete" method="post"
+                                              style="display: inline;">
+                                            <button type="submit" class="btn-delete">Удалить</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                    {% endfor %}
+                </ul>
+            <li class="project-item create-project-item">
+                <label for="modal-toggle" class="project-link create-project-btn">
+                    <i class="bi bi-plus-circle"></i>
+                    <span>Создать проект</span>
+                </label>
+            </li>
+            <!-- Закрываем nav-item -->
+        </ul>     <!-- Закрываем sidebar-nav -->
+
+        <!-- БЛОК АВТОРИЗАЦИИ ПЕРЕМЕЩАЕМ СЮДА (ПОСЛЕ ЗАКРЫТИЯ UL) -->
+        {% if auth %}
+            <div class="sidebar-auth">
+                <div class="user-profile">
+                    <div class="user-avatar">
+                        <i class="bi bi-person-check-fill"></i>
+                    </div>
+                    <div class="user-info">
+                        <span class="user-name">{{ auth.name }} {{ auth.surname }}</span>
+                        <span class="user-role">{{ auth.role }}</span>
+                    </div>
+                    <div class="user-dropdown">
+                        <a href="#" class="dropdown-item">
+                            <i class="bi bi-person"></i>
+                            <span>Мой профиль</span>
+                        </a>
+                        <a href="#" class="dropdown-item">
+                            <i class="bi bi-gear"></i>
+                            <span>Настройки</span>
+                        </a>
+                        <a href="{{ url_for('auth:logout') }}?return_url={{ request.url.path }}"
+                           class="dropdown-item logout">
+                            <i class="bi bi-box-arrow-right"></i>
+                            <span>Выйти</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        {% else %}
+            <div class="sidebar-login">
+                <a href="{{ url_for('login:get') }}" class="login-btn">
+                    <i class="bi bi-person-circle"></i>
+                    <span>Войти</span>
+                </a>
+            </div>
+        {% endif %}
+    </nav>
+
+    <!-- Модальное окно создания проекта -->
+    <input type="checkbox" id="modal-toggle" style="display: none;">
+    <div class="modal-overlay">
+        <div class="modal-window">
+            <label for="modal-toggle" class="modal-close">&times;</label>
+            <h3><i class="bi bi-folder-plus"></i> Создать проект</h3>
+            <form action="{{ url_for('project:create') }}" method="post">
+                <input type="text" name="name" placeholder="Название проекта" required>
+                <button type="submit">Создать</button>
+            </form>
+        </div>
+    </div>
 {% endmacro %}
 
 
 {% macro style_navbar() %}
-  <style>
-    .sidebar {
-      background: linear-gradient(180deg, var(--primary-color) 0%, var(--secondary-color) 100%);
-      color: white;
-      min-height: 100vh;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 280px;
-      z-index: 100;
-      box-shadow: 3px 0 15px rgba(0, 0, 0, 0.1);
-      transition: all 0.3s ease;
-      display: flex;
-      flex-direction: column;
-    }
+    <style>
+        .sidebar {
+            background: linear-gradient(180deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: white;
+            min-height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 280px;
+            z-index: 100;
+            box-shadow: 3px 0 15px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+        }
 
-    .sidebar-brand {
-      padding: 1.5rem 1.5rem 2rem;
-      font-weight: 700;
-      font-size: 1.5rem;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    }
+        .sidebar-brand {
+            padding: 1.5rem 1.5rem 2rem;
+            font-weight: 700;
+            font-size: 1.5rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
 
-    .sidebar-brand i {
-      color: var(--accent-color);
-      margin-right: 10px;
-    }
+        .sidebar-brand i {
+            color: var(--accent-color);
+            margin-right: 10px;
+        }
 
-    .sidebar-nav {
-      padding: 1rem 0;
-      flex-grow: 1;
-    }
+        .sidebar-nav {
+            padding: 1rem 0;
+            flex-grow: 1;
+        }
 
-    .nav-item {
-      margin-bottom: 5px;
-    }
+        .nav-item {
+            margin-bottom: 5px;
+        }
 
-    .nav-link {
-      color: rgba(255, 255, 255, 0.8);
-      padding: 0.75rem 1.5rem;
-      border-left: 3px solid transparent;
-      transition: all 0.2s;
-      display: block;
-      text-decoration: none;
-    }
+        .nav-link {
+            color: rgba(255, 255, 255, 0.8);
+            padding: 0.75rem 1.5rem;
+            border-left: 3px solid transparent;
+            transition: all 0.2s;
+            display: block;
+            text-decoration: none;
+        }
 
-    .nav-link:hover, .nav-link.active {
-      color: white;
-      background-color: rgba(255, 255, 255, 0.1);
-      border-left-color: var(--accent-color);
-    }
+        .nav-link:hover, .nav-link.active {
+            color: white;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-left-color: var(--accent-color);
+        }
 
-    .nav-link i {
-      width: 24px;
-      text-align: center;
-      margin-right: 10px;
-    }
+        .nav-link i {
+            width: 24px;
+            text-align: center;
+            margin-right: 10px;
+        }
 
-    /* Стили для авторизованного пользователя */
-    .sidebar-auth {
-      padding: 1rem;
-      border-top: 1px solid rgba(255, 255, 255, 0.1);
-      margin-top: auto;
-    }
+        /* Стили для авторизованного пользователя */
+        .sidebar-auth {
+            padding: 1rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            margin-top: auto;
+        }
 
-    .user-profile {
-      position: relative;
-      display: flex;
-      align-items: center;
-      padding: 0.75rem;
-      border-radius: 8px;
-      background-color: rgba(255, 255, 255, 0.05);
-      cursor: pointer;
-      transition: all 0.3s ease;
-    }
+        .user-profile {
+            position: relative;
+            display: flex;
+            align-items: center;
+            padding: 0.75rem;
+            border-radius: 8px;
+            background-color: rgba(255, 255, 255, 0.05);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
 
-    .user-profile:hover {
-      background-color: rgba(255, 255, 255, 0.1);
-    }
+        .user-profile:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
 
-    .user-avatar {
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      background-color: var(--accent-color);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-right: 12px;
-      font-size: 1.2rem;
-      color: white;
-    }
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--accent-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 12px;
+            font-size: 1.2rem;
+            color: white;
+        }
 
-    .user-info {
-      flex-grow: 1;
-    }
+        .user-info {
+            flex-grow: 1;
+        }
 
-    .user-name {
-      display: block;
-      font-weight: 600;
-      font-size: 0.9rem;
-    }
+        .user-name {
+            display: block;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
 
-    .user-role {
-      display: block;
-      font-size: 0.8rem;
-      color: rgba(255, 255, 255, 0.7);
-    }
+        .user-role {
+            display: block;
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
 
-    /* Выпадающее меню */
-    .user-dropdown {
-      position: absolute;
-      bottom: 100%;
-      left: 0;
-      right: 0;
-      background: white;
-      border-radius: 8px;
-      box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
-      opacity: 0;
-      visibility: hidden;
-      transform: translateY(10px);
-      transition: all 0.3s ease;
-      z-index: 1000;
-      margin-bottom: 10px;
-    }
+        /* Выпадающее меню */
+        .user-dropdown {
+            position: absolute;
+            bottom: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(10px);
+            transition: all 0.3s ease;
+            z-index: 1000;
+            margin-bottom: 10px;
+        }
 
-    .user-profile:hover .user-dropdown {
-      opacity: 1;
-      visibility: visible;
-      transform: translateY(0);
-    }
+        .user-profile:hover .user-dropdown {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
 
-    .dropdown-item {
-      display: flex;
-      align-items: center;
-      padding: 0.75rem 1rem;
-      color: #333;
-      text-decoration: none;
-      transition: all 0.2s;
-      border-bottom: 1px solid #f0f0f0;
-    }
+        .dropdown-item {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem 1rem;
+            color: #333;
+            text-decoration: none;
+            transition: all 0.2s;
+            border-bottom: 1px solid #f0f0f0;
+        }
 
-    .dropdown-item:last-child {
-      border-bottom: none;
-    }
+        .dropdown-item:last-child {
+            border-bottom: none;
+        }
 
-    .dropdown-item:hover {
-      background-color: #f8f9fa;
-      color: var(--primary-color);
-    }
+        .dropdown-item:hover {
+            background-color: #f8f9fa;
+            color: var(--primary-color);
+        }
 
-    .dropdown-item i {
-      width: 24px;
-      margin-right: 10px;
-      color: #666;
-    }
+        .dropdown-item i {
+            width: 24px;
+            margin-right: 10px;
+            color: #666;
+        }
 
-    .dropdown-item:hover i {
-      color: var(--primary-color);
-    }
+        .dropdown-item:hover i {
+            color: var(--primary-color);
+        }
 
-    .dropdown-divider {
-      height: 1px;
-      background-color: #f0f0f0;
-      margin: 0.5rem 0;
-    }
+        .dropdown-divider {
+            height: 1px;
+            background-color: #f0f0f0;
+            margin: 0.5rem 0;
+        }
 
-    .dropdown-item.logout {
-      color: #dc3545;
-    }
+        .dropdown-item.logout {
+            color: #dc3545;
+        }
 
-    .dropdown-item.logout i {
-      color: #dc3545;
-    }
+        .dropdown-item.logout i {
+            color: #dc3545;
+        }
 
-    .dropdown-item.logout:hover {
-      background-color: #fff5f5;
-    }
+        .dropdown-item.logout:hover {
+            background-color: #fff5f5;
+        }
 
-    .sidebar-login {
-      padding: 1.5rem;
-      border-top: 1px solid rgba(255, 255, 255, 0.1);
-      margin-top: auto;
-    }
+        .sidebar-login {
+            padding: 1.5rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            margin-top: auto;
+        }
 
-    .login-btn {
-      display: flex;
-      align-items: center;
-      color: white;
-      background-color: rgba(255, 255, 255, 0.15);
-      padding: 0.75rem 1.5rem;
-      border-radius: 8px;
-      text-decoration: none;
-      transition: all 0.3s ease;
-      border: 1px solid rgba(255, 255, 255, 0.2);
-    }
+        .login-btn {
+            display: flex;
+            align-items: center;
+            color: white;
+            background-color: rgba(255, 255, 255, 0.15);
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
 
-    .login-btn:hover {
-      background-color: rgba(255, 255, 255, 0.25);
-      transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-      color: white;
-      text-decoration: none;
-    }
+        .login-btn:hover {
+            background-color: rgba(255, 255, 255, 0.25);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            color: white;
+            text-decoration: none;
+        }
 
-    .login-btn i {
-      font-size: 1.2rem;
-      margin-right: 10px;
-      color: var(--accent-color);
-    }
+        .login-btn i {
+            font-size: 1.2rem;
+            margin-right: 10px;
+            color: var(--accent-color);
+        }
 
-    .login-btn span {
-      font-weight: 500;
-    }
+        .login-btn span {
+            font-weight: 500;
+        }
 
-    @media (max-width: 992px) {
-      .sidebar {
-        width: 70px;
-        overflow: hidden;
-      }
+        @media (max-width: 992px) {
+            .sidebar {
+                width: 70px;
+                overflow: hidden;
+            }
 
-      .sidebar:hover {
-        width: 280px;
-      }
+            .sidebar:hover {
+                width: 280px;
+            }
 
-      .sidebar-brand span,
-      .nav-link span,
-      .user-name,
-      .user-role {
-        opacity: 0;
-        transition: opacity 0.3s;
-        white-space: nowrap;
-      }
+            .sidebar-brand span,
+            .nav-link span,
+            .user-name,
+            .user-role {
+                opacity: 0;
+                transition: opacity 0.3s;
+                white-space: nowrap;
+            }
 
-      .sidebar:hover .sidebar-brand span,
-      .sidebar:hover .nav-link span,
-      .sidebar:hover .user-name,
-      .sidebar:hover .user-role {
-        opacity: 1;
-      }
+            .sidebar:hover .sidebar-brand span,
+            .sidebar:hover .nav-link span,
+            .sidebar:hover .user-name,
+            .sidebar:hover .user-role {
+                opacity: 1;
+            }
 
-      .user-dropdown {
-        position: fixed;
-        left: 70px;
-        bottom: auto;
-        top: auto;
-        width: 200px;
-      }
+            .user-dropdown {
+                position: fixed;
+                left: 70px;
+                bottom: auto;
+                top: auto;
+                width: 200px;
+            }
 
-      .sidebar:hover .user-dropdown {
-        left: 0;
-        position: absolute;
-      }
+            .sidebar:hover .user-dropdown {
+                left: 0;
+                position: absolute;
+            }
 
-      .login-btn {
-        justify-content: center;
-      }
+            .login-btn {
+                justify-content: center;
+            }
 
-      .sidebar:hover .login-btn {
-        justify-content: flex-start;
-      }
-    }
-  </style>
+            .sidebar:hover .login-btn {
+                justify-content: flex-start;
+            }
+        }
+
+        /* Стили для списка проектов - только эти */
+        .projects-submenu {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .project-item {
+            margin: 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .project-link {
+            display: flex;
+            align-items: center;
+            padding: 0.6rem 1.5rem 0.6rem 3rem;
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            font-size: 0.85rem;
+        }
+
+        .project-link:hover {
+            color: white;
+            background-color: rgba(255, 255, 255, 0.1);
+            padding-left: 3.2rem;
+        }
+
+        .project-link i {
+            width: 24px;
+            margin-right: 8px;
+        }
+
+        .create-project-item {
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            margin-top: 8px;
+        }
+
+        .create-project-btn {
+            background: none;
+            border: none;
+            width: 100%;
+            cursor: pointer;
+        }
+
+        #modal-toggle {
+            display: none;
+        }
+
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+        }
+
+        #modal-toggle:checked + .modal-overlay {
+            display: flex;
+        }
+
+        .modal-window {
+            background: white;
+            border-radius: 24px;
+            max-width: 400px;
+            width: 90%;
+            padding: 1.5rem;
+            position: relative;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .modal-window input {
+            width: 100%;
+            padding: 0.7rem;
+            margin: 1rem 0;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+        }
+
+        .modal-window button {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            border: none;
+            padding: 0.6rem 1.5rem;
+            border-radius: 40px;
+            color: white;
+            cursor: pointer;
+        }
+
+        /* Стили для элемента проекта с кнопкой удаления */
+        .project-item {
+            position: relative;
+        }
+
+        .project-item-wrapper {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-right: 0.5rem;
+        }
+
+        .project-link {
+            flex: 1;
+            padding: 0.6rem 1.5rem 0.6rem 3rem;
+        }
+
+        .delete-project-btn {
+            background: none;
+            border: none;
+            color: rgba(255, 255, 255, 0.5);
+            cursor: pointer;
+            padding: 6px 8px;
+            border-radius: 6px;
+            transition: all 0.2s;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .delete-project-btn:hover {
+            color: #ef4444;
+            background-color: rgba(239, 68, 68, 0.2);
+        }
+
+        /* Модальное окно удаления */
+        .modal-trigger {
+            display: none;
+        }
+
+        .delete-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(4px);
+            z-index: 2000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-trigger:checked + .delete-modal {
+            display: flex;
+        }
+
+        .delete-modal-content {
+            background: white;
+            border-radius: 24px;
+            max-width: 400px;
+            width: 90%;
+            animation: modalFadeIn 0.2s ease;
+        }
+
+        .delete-modal-header {
+            padding: 1.2rem 1.5rem;
+            border-bottom: 1px solid #fee2e2;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .delete-modal-header h3 {
+            margin: 0;
+            font-size: 1.2rem;
+            color: #dc2626;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .modal-close-btn {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #94a3b8;
+            line-height: 1;
+        }
+
+        .modal-close-btn:hover {
+            color: #dc2626;
+        }
+
+        .delete-modal-body {
+            padding: 1.5rem;
+        }
+
+        .delete-modal-body p {
+            margin-bottom: 0.8rem;
+            color: #334155;
+        }
+
+        .warning-text {
+            color: #f59e0b;
+            font-size: 0.85rem;
+        }
+
+        .delete-modal-footer {
+            padding: 1rem 1.5rem 1.5rem;
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+        }
+
+        .btn-cancel {
+            background: #007cf8;
+            border: none;
+            padding: 0.6rem 1.2rem;
+            border-radius: 40px;
+            font-weight: 500;
+            cursor: pointer;
+            font-size: 0.9rem;
+            display: inline-block;
+        }
+
+        .btn-delete {
+            background: #dc2626;
+            border: none;
+            padding: 0.6rem 1.2rem;
+            border-radius: 40px;
+            color: white;
+            font-weight: 500;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+        }
+
+        .btn-delete:hover {
+            background: #b91c1c;
+            transform: translateY(-1px);
+        }
+
+        @keyframes modalFadeIn {
+            from {
+                opacity: 0;
+                transform: scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+    </style>
 {% endmacro %}

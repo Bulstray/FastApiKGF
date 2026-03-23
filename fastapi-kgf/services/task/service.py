@@ -1,4 +1,3 @@
-
 from aiopath import AsyncPath
 from sqlalchemy.ext.asyncio import AsyncSession
 from starlette.datastructures import FormData
@@ -94,4 +93,10 @@ class TasksFilesService:
             session=self.session,
             id_task=id_task,
             status=status,
+        )
+
+    async def get_tasks_by_project_id(self, project_id: int) -> list[Task]:
+        return await crud_tasks.get_tasks_by_project_id(
+            self.session,
+            project_id,
         )

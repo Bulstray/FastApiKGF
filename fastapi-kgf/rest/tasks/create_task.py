@@ -11,9 +11,10 @@ from services.task import TasksFilesService
 router = APIRouter()
 
 
-@router.post("/", name="tasks:post")
+@router.post("/{project_id}", name="tasks:post")
 async def create_task(
     request: Request,
+    project_id: int,
     service: Annotated[TasksFilesService, Depends(get_tasks_service)],
 ) -> RedirectResponse:
 
@@ -26,6 +27,6 @@ async def create_task(
         )
 
     return RedirectResponse(
-        url="/tasks",
+        url=f"/tasks/{project_id}",
         status_code=status.HTTP_303_SEE_OTHER,
     )

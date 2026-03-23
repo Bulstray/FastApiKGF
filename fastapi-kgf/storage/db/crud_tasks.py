@@ -50,3 +50,12 @@ async def update_status_task(
     stmt = update(Task).where(Task.id == id_task).values(status=status)
     await session.execute(stmt)
     await session.commit()
+
+
+async def get_tasks_by_project_id(
+    session: AsyncSession,
+    project_id: int,
+):
+    stmt = select(Task).where(Task.project_id == project_id)
+    result = await session.scalars(stmt)
+    return list(result.all())

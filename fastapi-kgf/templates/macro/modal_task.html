@@ -1,7 +1,7 @@
 {% macro func_tasks(workers, user) %}
 
     <div class="modal" id="taskModal">
-        <form id="taskForm" action="/tasks" method="post" enctype="multipart/form-data">
+        <form id="taskForm" action="{{ url_for('tasks:post', project_id=project_id) }}" method="post" enctype="multipart/form-data">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5>
@@ -11,6 +11,7 @@
                     <button class="close-btn" onclick="closeModal()">&times;</button>
                 </div>
                 <div class="modal-body">
+                    <input type="hidden" name="project_id" value="{{ project_id }}">
                     <div class="mb-2">
                         <label class="form-label">Название</label>
                         <input type="text" name="title" class="form-control" placeholder="Введите название задачи"

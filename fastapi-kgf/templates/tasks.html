@@ -662,13 +662,13 @@
 
 {% block main %}
     <main class="main-content">
-        {{ navbar(user) }}
+        {{ navbar(user, projects) }}
         <div class="tasks-container">
             <!-- Хедер -->
             <div class="tasks-header">
                 <h1 class="tasks-title">
                     <i class="bi bi-check-circle"></i>
-                    Задачи
+                    {{ project.name }}
                 </h1>
                 <button class="create-task-btn" onclick="openModal()">
                     <i class="bi bi-plus-lg"></i>

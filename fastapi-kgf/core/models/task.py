@@ -14,6 +14,7 @@ if TYPE_CHECKING:
     from .message import Message
     from .message_read_status import MessageReadStatus
     from .taks_users import TaskUsers
+    from .projects import Project
 
 
 class Task(Base):
@@ -74,9 +75,20 @@ class Task(Base):
         cascade="all, delete-orphan",
     )
 
-    read_status: Mapped["MessageReadStatus"] = relationship(
+    read_status: Mapped[list["MessageReadStatus"]] = relationship(
         "MessageReadStatus",
         cascade="all, delete-orphan",
+        back_populates="task",
+    )
+
+    project_id: Mapped[int] = mapped_column(
+        ForeignKey("projects.id", ondelete="CASCADE"),
+        nullable=False,
+    )
+
+    project_id_relationship: Mapped["Project"] = relationship(
+        "Project",
+        back_populates="tasks",
     )
 
 

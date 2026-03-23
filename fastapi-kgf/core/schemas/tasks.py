@@ -11,6 +11,7 @@ class Task(BaseModel):
     customer_id: int
     filename: str | None = None
     folder_file: str | None = None
+    project_id: int
 
     model_config = ConfigDict(extra="ignore")
 
@@ -23,6 +24,7 @@ class TaskCreate(BaseModel):
     deadline: date
     customer_id: int
     rar_file: UploadFile
+    project_id: int
 
     model_config = ConfigDict(
         extra="ignore",
