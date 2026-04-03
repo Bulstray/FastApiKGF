@@ -22,7 +22,6 @@ class Task(Base):
 
     title: Mapped[str] = mapped_column(
         String(200),
-        unique=True,
         nullable=False,
         index=True,
     )
