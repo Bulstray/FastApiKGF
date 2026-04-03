@@ -20,7 +20,7 @@ async def create_task_users(
     await session.commit()
 
 
-async def get_task_users(session: AsyncSession, task_id: int) -> list[int] | None:
+async def get_task_users(session: AsyncSession, task_id: int) -> list[int]:
     """Получить всех исполнителей задачи"""
     stmt = select(TaskUsers.user_id).where(TaskUsers.task_id == task_id)
     result = await session.execute(stmt)

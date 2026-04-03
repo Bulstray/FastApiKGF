@@ -2,7 +2,7 @@ import uuid
 
 from core.models import User
 from core.schemas.user import UserRead
-from storage.redis.session import SessionStorage
+from storage.redis import session
 
 
 class SessionManager:
@@ -11,7 +11,7 @@ class SessionManager:
 
         session_id = uuid.uuid4().hex
 
-        await SessionStorage.save_session(
+        await session.save_session(
             session_id=f"{session_id}",
             user=UserRead.model_validate(user),
         )
@@ -21,6 +21,6 @@ class SessionManager:
     @staticmethod
     async def delete_session(session_id: str) -> None:
 
-        await SessionStorage.delete_by_session_id(
+        await session.delete_by_session_id(
             session_id=session_id,
         )

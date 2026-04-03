@@ -17,7 +17,7 @@ class Project(Base):
 
     tasks: Mapped["Task"] = relationship(
         "Task",
-        back_populates="project_id_relationship",
+        back_populates="project",
         lazy="selectin",
         cascade="all, delete-orphan",
     )

@@ -763,12 +763,12 @@
                                                 <span class="unread-badge">{{ unread_messages[task.id] }}</span>
                                             {% endif %}
                                         </div>
-                                        <button onclick="toggleTaskStatus(this, '{{ task.id }}');"
+                                        <button onclick="ActionTask('update','{{ task.id }}');"
                                                 title="Изменить статус">
                                             <i class="bi bi-play"></i>
                                         </button>
                                         <button
-                                                onclick="if(confirm('Удалить задачу?')) window.location.href='{{ url_for("tasks:delete", task_id=task.id) }}'"
+                                                onclick="ActionTask('delete', '{{ task.id }}');"
                                                 title="Удалить">
                                             <i class="bi bi-trash"></i>
                                         </button>
@@ -864,12 +864,12 @@
                                                 <span class="unread-badge">{{ unread_messages[task.id] }}</span>
                                             {% endif %}
                                         </div>
-                                        <button onclick="toggleTaskStatus(this, '{{ task.id }}');"
+                                        <button onclick="ActionTask('update','{{ task.id }}');"
                                                 title="Изменить статус">
                                             <i class="bi bi-pause"></i>
                                         </button>
                                         <button
-                                                onclick="if(confirm('Удалить задачу?')) window.location.href='{{ url_for("tasks:delete", task_id=task.id) }}'"
+                                                onclick="ActionTask('delete', '{{ task.id }}');"
                                                 title="Удалить">
                                             <i class="bi bi-trash"></i>
                                         </button>
@@ -965,12 +965,12 @@
                                                 <span class="unread-badge">{{ unread_messages[task.id] }}</span>
                                             {% endif %}
                                         </div>
-                                        <button onclick="toggleTaskStatus(this, '{{ task.id }}');"
+                                        <button onclick="ActionTask('update','{{ task.id }}');"
                                                 title="Изменить статус">
                                             <i class="bi bi-arrow-repeat"></i>
                                         </button>
                                         <button
-                                                onclick="if(confirm('Удалить задачу?')) window.location.href='{{ url_for("tasks:delete", task_id=task.id) }}'"
+                                                onclick="ActionTask('delete', '{{ task.id }}');"
                                                 title="Удалить">
                                             <i class="bi bi-trash"></i>
                                         </button>
@@ -981,6 +981,27 @@
                     </div>
                 </div>
             </div>
+        </div>
+        <div id="notExecutorToast" style="
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    background: #fee2e2;
+    color: #c92a2a;
+    padding: 12px 20px;
+    border-radius: 12px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 1100;
+    transform: translateX(400px);
+    transition: transform 0.3s ease;
+    border-left: 4px solid #c92a2a;">
+            <i class="bi bi-exclamation-triangle-fill"></i>
+            <span>Вы не являетесь исполнителем этой задачи</span>
         </div>
     </main>
 
@@ -1044,6 +1065,7 @@
         let currentTaskId = null;
         let chatSocket = null;
         let selectedFile = null;
+        let taskActionSocket = null;
 
 
         function removeFile() {
@@ -1076,43 +1098,93 @@
             }
         }
 
-        function toggleTaskStatus(button, taskId) {
-            const taskCard = button.closest('.task-card');
+        function showNotExecutorToast() {
+            const toast = document.getElementById('notExecutorToast');
+            if (!toast) return;
+
+            // Показываем плашку
+            toast.style.transform = 'translateX(0)';
+
+            // Скрываем через 3 секунды
+            setTimeout(() => {
+                toast.style.transform = 'translateX(400px)';
+            }, 3000);
+        }
+
+        function toggleTaskStatus(taskId) {
+            // Находим карточку задачи по data-task-id
+            const taskCard = document.querySelector(`.task-card[data-task-id="${taskId}"]`);
+            if (!taskCard) {
+                console.error('Карточка задачи не найдена');
+                return;
+            }
+
+            // Находим кнопку изменения статуса (вторую кнопку в task-actions)
+            const buttons = taskCard.querySelectorAll('.task-actions button');
+            const statusButton = buttons[1]; // вторая кнопка - статус
+
             const statusChip = taskCard.querySelector('.status-chip-mini');
             const statusDot = statusChip.querySelector('.status-dot');
             const statusText = statusChip.querySelector('.status-text-mini');
 
-            let newStatus = '';
+            let targetColumn = '';
 
+            // Сохраняем исходную колонку для обновления счетчика
+            const sourceColumn = taskCard.parentElement;
+            const sourceColumnId = sourceColumn.id;
+
+            // Определяем новый статус и целевую колонку
             if (statusDot.classList.contains('status-not-started')) {
                 statusDot.className = 'status-dot status-in-progress';
                 statusText.textContent = 'В работе';
-                button.innerHTML = '<i class="bi bi-pause"></i>';
-                newStatus = 'STARTED';
+                if (statusButton) statusButton.innerHTML = '<i class="bi bi-pause"></i>';
+                targetColumn = 'in-progress-column';
             } else if (statusDot.classList.contains('status-in-progress')) {
                 statusDot.className = 'status-dot status-completed';
                 statusText.textContent = 'Завершена';
-                button.innerHTML = '<i class="bi bi-arrow-repeat"></i>';
-                newStatus = 'COMPLETED';
+                if (statusButton) statusButton.innerHTML = '<i class="bi bi-arrow-repeat"></i>';
+                targetColumn = 'completed-column';
             } else {
                 statusDot.className = 'status-dot status-not-started';
                 statusText.textContent = 'Не в работе';
-                button.innerHTML = '<i class="bi bi-play"></i>';
-                newStatus = 'NOT_STARTED';
+                if (statusButton) statusButton.innerHTML = '<i class="bi bi-play"></i>';
+                targetColumn = 'not-started-column';
             }
 
-            fetch(`/tasks/update/status/${taskId}/${newStatus}`, {
-                method: "POST",
-                headers: {
-                    'Content-Type': 'application/json',
+            // Перемещаем карточку в новую колонку
+            const targetColumnElement = document.getElementById(targetColumn);
+            targetColumnElement.appendChild(taskCard);
+
+            // Обновляем счетчики для исходной и целевой колонок
+            updateSingleColumnCounter(sourceColumnId);
+            updateSingleColumnCounter(targetColumn);
+
+            // Анимация появления
+            taskCard.style.opacity = '0';
+            taskCard.style.transform = 'translateY(10px)';
+            setTimeout(() => {
+                taskCard.style.transition = 'all 0.3s ease';
+                taskCard.style.opacity = '1';
+                taskCard.style.transform = 'translateY(0)';
+            }, 10);
+        }
+
+        // Функция для обновления счетчика одной колонки
+        function updateSingleColumnCounter(columnId) {
+            const column = document.getElementById(columnId);
+            if (!column) return;
+
+            const cards = column.querySelectorAll('.task-card');
+            const count = cards.length;
+
+            // Находим заголовок колонки
+            const boardColumn = column.closest('.board-column');
+            if (boardColumn) {
+                const counterSpan = boardColumn.querySelector('.column-header .count');
+                if (counterSpan) {
+                    counterSpan.textContent = count;
                 }
-            })
-                .then(response => {
-                    if (!response.ok) {
-                        console.error('Ошибка при обновлении статуса');
-                    }
-                    return response.json();
-                })
+            }
         }
 
 
@@ -1243,9 +1315,48 @@
 
         }
 
+        function initTaskAction() {
+            const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+            taskActionSocket = new WebSocket(`${protocol}//${window.location.host}/tasks/ws/action/{{ project.id }}`);
+
+            taskActionSocket.onmessage = function (event) {
+                const data = JSON.parse(event.data);
+
+                if (data.action === "update") {
+                    toggleTaskStatus(data.task_id)
+                } else if (data.action === "delete") {
+                    deleteTask(data.task_id)
+                }
+            }
+        }
+
+        function ActionTask(action, task_id) {
+            let message;
+
+            if (action === 'update') {
+                message = {
+                    "action": action,
+                    "task_id": task_id
+                };
+            } else if (action === 'delete') {
+                if (!confirm('Удалить задачу?')) return;
+                message = {
+                    'action': action,
+                    'task_id': task_id
+                };
+            }
+
+            if (message) {
+                taskActionSocket.send(JSON.stringify(message));
+            }
+        }
+
+
         document.addEventListener('DOMContentLoaded', function () {
             window.notificationSocket = initNotification();
+            window.taskActionSocket = initTaskAction();
         });
+
 
         function closeTaskChat() {
             document.getElementById('chatSidebar').classList.remove('open');
@@ -1359,6 +1470,28 @@
             const sizes = ['Bytes', 'KB', 'MB', 'GB'];
             const i = Math.floor(Math.log(bytes) / Math.log(k));
             return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+
+        function deleteTask(taskId) {
+
+
+            // Находим карточку задачи
+            const taskCard = document.querySelector(`.task-card[data-task-id="${taskId}"]`);
+            if (!taskCard) return;
+
+            // Сохраняем ID колонки для обновления счетчика
+            const sourceColumn = taskCard.parentElement;
+            const sourceColumnId = sourceColumn.id;
+
+            // Добавляем анимацию исчезновения
+            taskCard.style.transition = 'all 0.3s ease';
+            taskCard.style.opacity = '0';
+            taskCard.style.transform = 'scale(0.8)';
+
+            taskCard.remove();
+
+            // Обновляем счетчик в колонке
+            updateSingleColumnCounter(sourceColumnId);
         }
 
 

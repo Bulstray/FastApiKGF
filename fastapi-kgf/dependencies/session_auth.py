@@ -1,26 +1,25 @@
 from typing import Annotated
 
-from fastapi import Depends, HTTPException, Request, status
+from fastapi import Depends, HTTPException, status, Request
 from fastapi.responses import HTMLResponse
+from fastapi.security import APIKeyCookie
 
 from core.config.settings import SESSION_COOKIE_NAME
 from core.schemas.user import UserRead
-from storage.redis.session import SessionStorage
+from storage.redis import session
+
+
+cookie_scheme = APIKeyCookie(name=SESSION_COOKIE_NAME, auto_error=False)
 
 
 async def get_authenticated_user(
+    session_id: Annotated[
+        str | None,
+        Depends(cookie_scheme),
+    ],
     request: Request,
 ) -> UserRead | None:
-    session_id = request.cookies.get(SESSION_COOKIE_NAME)
-
-    if session_id is None:
-        return None
-
-    if (
-        answer := await SessionStorage.get_by_session_id(
-            session_id,
-        )
-    ) is not None:
+    if session_id and (answer := await session.get_by_session_id(session_id)):
         return answer
 
     return None

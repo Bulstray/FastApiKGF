@@ -1,8 +1,10 @@
-from sqlalchemy import select, update
+from sqlalchemy import select, update, case, delete
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from core.models import Task
+from core.models import Task, TaskUsers, MessageReadStatus
 from core.schemas.tasks import Task as TaskSchema
+
+from core.types.tasks import TaskStatus
 
 
 async def get_all_tasks(
@@ -20,17 +22,30 @@ async def get_task_by_id(
     return await session.get(Task, task_id)
 
 
-async def create_file_in_db(
+async def add_task(
     session: AsyncSession,
     task_in: TaskSchema,
-) -> int:
-    task = Task(**task_in.model_dump())
+    user_ids: list[int],
+) -> None:
+    task_model = Task(**task_in.model_dump())
+    session.add(task_model)
 
-    session.add(task)
+    await session.flush()
+
+    task_users = [
+        TaskUsers(task_id=task_model.id, user_id=user_id) for user_id in user_ids
+    ]
+
+    session.add_all(task_users)
+
+    unread_statuses = [
+        MessageReadStatus(task_id=task_model.id, user_id=user_id)
+        for user_id in user_ids
+    ]
+
+    session.add_all(unread_statuses)
+
     await session.commit()
-    await session.refresh(task)
-    task_id = task.id
-    return task_id
 
 
 async def delete_tasks_in_db(
@@ -42,12 +57,30 @@ async def delete_tasks_in_db(
     await session.commit()
 
 
+async def delete_task_by_id(
+    session: AsyncSession,
+    task_id: int,
+) -> None:
+    task = await session.get(Task, task_id)
+    if task:
+        await delete_tasks_in_db(session, task)
+
+
 async def update_status_task(
     session: AsyncSession,
-    id_task: str,
-    status: str,
+    id_task: int,
 ) -> None:
-    stmt = update(Task).where(Task.id == id_task).values(status=status)
+    stmt = (
+        update(Task)
+        .where(Task.id == id_task)
+        .values(
+            status=case(
+                (Task.status == TaskStatus.NOT_STARTED, TaskStatus.STARTED),
+                (Task.status == TaskStatus.STARTED, TaskStatus.COMPLETED),
+                (Task.status == TaskStatus.COMPLETED, TaskStatus.NOT_STARTED),
+            )
+        )
+    )
     await session.execute(stmt)
     await session.commit()
 

@@ -46,7 +46,9 @@ async def get_message_by_id(
     return list(result.all())
 
 
-async def update_mark_read_message(session: AsyncSession, task_id: int, user_id: int):
+async def update_mark_read_message(
+    session: AsyncSession, task_id: int, user_id: int
+) -> None:
     message = (
         update(MessageReadStatus)
         .where(
@@ -61,27 +63,11 @@ async def update_mark_read_message(session: AsyncSession, task_id: int, user_id:
     await session.commit()
 
 
-async def count_unread_messages(
-    session: AsyncSession,
-    user_id: int,
-):
-    stmt = select(MessageReadStatus.task_id, func.count(MessageReadStatus.id)).where(
-        and_(
-            MessageReadStatus.is_read == False,
-            MessageReadStatus.user_id == user_id,
-        ),
-    )
-    result = await session.execute(stmt)
-
-    counts = {task_id: count for task_id, count in result.all()}
-    return counts
-
-
 async def update_count_unread(
     session: AsyncSession,
     task_id: int,
     users_id: int,
-):
+) -> None:
     stmt = (
         update(MessageReadStatus)
         .where(
@@ -99,23 +85,9 @@ async def update_count_unread(
 async def get_unread_message(
     session: AsyncSession,
     user_id: int,
-):
+) -> dict[int, int]:
     stmt = select(MessageReadStatus.task_id, MessageReadStatus.count).where(
         MessageReadStatus.user_id == user_id,
     )
     result = await session.execute(stmt)
     return {task_message.task_id: task_message.count for task_message in result.all()}
-
-
-async def add_count_unread_messages(
-    session: AsyncSession,
-    users_id: MessageReadStatusSchema,
-):
-    for user_id in users_id.users_id:
-        session.add(
-            MessageReadStatus(
-                user_id=user_id,
-                task_id=users_id.task_id,
-            ),
-        )
-    await session.commit()

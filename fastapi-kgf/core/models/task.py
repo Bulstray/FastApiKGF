@@ -86,7 +86,7 @@ class Task(Base):
         nullable=False,
     )
 
-    project_id_relationship: Mapped["Project"] = relationship(
+    project: Mapped["Project"] = relationship(
         "Project",
         back_populates="tasks",
     )

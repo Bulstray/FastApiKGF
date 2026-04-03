@@ -4,7 +4,7 @@ from core.models import Project
 from core.schemas.projects import ProjectCreate, ProjectRead
 
 
-async def get_projects(session: AsyncSession):
+async def get_projects(session: AsyncSession) -> list[Project]:
     stmt = select(Project).order_by(Project.id)
     result = await session.scalars(stmt)
     return list(result.all())
@@ -23,11 +23,11 @@ async def create_project(
 async def get_project_by_id(
     session: AsyncSession,
     project_id: int,
-):
+) -> Project | None:
     return await session.get(Project, project_id)
 
 
-async def delete_project(session: AsyncSession, project_id: int):
+async def delete_project(session: AsyncSession, project_id: int) -> None:
     # Находим проект по id
     project = await session.get(Project, project_id)
 

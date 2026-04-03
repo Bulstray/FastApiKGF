@@ -19,14 +19,6 @@ FIELD_USER = [
 ]
 
 
-async def auth_admin(request: Request) -> bool:
-    user = await get_authenticated_user(request=request)
-    if user is None:
-        return False
-
-    return user.role == UserRole.admin
-
-
 class UserAdmin(ModelView, model=User):
     column_list = FIELD_USER
     form_columns = FIELD_USER
@@ -34,11 +26,12 @@ class UserAdmin(ModelView, model=User):
 
     async def on_model_change(
         self,
-        data: dict,
+        data: dict[str, Any],
         model: Any,
         is_created: bool,
         request: Request,
     ) -> None:
         raw_password = data.get("hashed_password")
-        if is_created or raw_password != model.hashed_password:
-            data.update(hashed_password=hash_password(raw_password))
+        if raw_password is not None and isinstance(raw_password, str):
+            if is_created or raw_password != model.hashed_password:
+                data.update(hashed_password=hash_password(raw_password))

@@ -1,14 +1,17 @@
 import datetime
+import json
 from typing import TYPE_CHECKING, Annotated
 
 from fastapi import APIRouter, Depends, Request
 from fastapi.responses import HTMLResponse
+from starlette.websockets import WebSocket, WebSocketDisconnect
 
 from dependencies.message import get_message_service
 from dependencies.providers import get_tasks_service, get_user_service
 from dependencies.session_auth import require_auth
 from dependencies.projects import get_project_service
 from templating.jinja_template import templates
+from services.tasks_page.connection_manager import manager
 
 if TYPE_CHECKING:
     from core.schemas.user import UserRead
@@ -52,3 +55,20 @@ async def tasks_page(
         request=request,
         context=context,
     )
+
+
+@router.websocket("/ws/action/{project_id}")
+async def action_tasks(websocket: WebSocket, project_id: int):
+    await manager.connect(websocket, project_id)
+    try:
+        while True:
+            data = await websocket.receive_text()
+            json_data = json.loads(data)
+            await manager.broadcast(
+                project_id,
+                task_id=json_data["task_id"],
+                method=json_data["action"],
+            )
+
+    except Exception:
+        manager.disconnect(project_id, websocket)

@@ -116,7 +116,7 @@ async def mark_read(
     task_id: int,
     user_id: int,
     session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
-):
+) -> None:
     await crud_message.update_mark_read_message(
         session=session,
         task_id=task_id,
@@ -124,16 +124,8 @@ async def mark_read(
     )
 
 
-@router.get("/unread", name="message:unread")
-async def get_unread(
-    session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
-):
-    res = await crud_message.count_unread_messages(session)
-    return res
-
-
 @router.websocket("/ws/notifications/{user_id}")
-async def websocket_notifications(websocket: WebSocket, user_id: int):
+async def websocket_notifications(websocket: WebSocket, user_id: int) -> None:
     await manager.connect(websocket, user_id)
     try:
         while True:

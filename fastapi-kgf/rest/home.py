@@ -18,7 +18,7 @@ router = APIRouter()
 async def home(
     request: Request,
     is_authenticated: Annotated[
-        UserRead,
+        UserRead | None,
         Depends(get_authenticated_user),
     ],
     projects_service: Annotated[

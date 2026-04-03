@@ -9,6 +9,7 @@ from core.config.settings import SESSION_COOKIE_NAME
 from core.schemas.user import UserRead
 from dependencies.session_auth import require_auth
 from services.auth.session_manager import SessionManager
+from storage.redis.session import delete_by_session_id
 
 router = APIRouter(prefix="/logout")
 
@@ -35,4 +36,5 @@ async def logout_page(
     )
 
     redirect.delete_cookie(SESSION_COOKIE_NAME)
+    await delete_by_session_id(session_id)
     return redirect

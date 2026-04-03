@@ -5,9 +5,9 @@ class ConnectionManager:
     def __init__(self) -> None:
         self.active_connections: dict[int, WebSocket] = {}
 
-    async def connect(self, websocket: WebSocket, project_id) -> None:
+    async def connect(self, websocket: WebSocket, user_id: int) -> None:
         await websocket.accept()
-        self.active_connections.update({project_id: websocket})
+        self.active_connections.update({user_id: websocket})
 
     def disconnect(self, user_id: int) -> None:
         try:

@@ -1,12 +1,13 @@
 from typing import Annotated
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, UploadFile
 from starlette import status
 from starlette.requests import Request
 from starlette.responses import RedirectResponse
 
 from dependencies.providers import get_tasks_service
 from services.task import TasksFilesService
+from typing import cast
 
 router = APIRouter()
 
@@ -19,7 +20,7 @@ async def create_task(
 ) -> RedirectResponse:
 
     async with request.form() as form:
-        content = await form.get("rar_file").read()
+        content = cast(UploadFile, form.get("rar_file")).read()
 
         await service.create_task(
             form=form,

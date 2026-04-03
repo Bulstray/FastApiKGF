@@ -1,9 +1,9 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from core.models import MessageFile
-from core.schemas.message import Message
+from core.models import MessageFile, Message
 from services.files import FilesService
 from storage.db import crud_message, crud_task_users
+from core.schemas.message import Message as MessageSchema
 
 
 class MessageManager:
@@ -26,7 +26,7 @@ class MessageManager:
         message_data: dict[str, str],
     ) -> str | None:
 
-        message_in = Message.model_validate(message_data)
+        message_in = MessageSchema.model_validate(message_data)
 
         message_in_db = await crud_message.create_chats_message(
             session=self.session,
@@ -48,8 +48,7 @@ class MessageManager:
                 users_id=user_id,
             )
 
-        if "file" in message_data:
-            file_data = message_data.get("file")
+        if file_data := message_data.get("file"):
 
             file_path = await self.file_service.save_program_file_bs64(
                 code_file=file_data.get("content"),
