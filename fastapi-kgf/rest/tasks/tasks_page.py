@@ -71,4 +71,4 @@ async def action_tasks(websocket: WebSocket, project_id: int):
             )
 
     except Exception:
-        manager.disconnect(project_id, websocket)
+        await manager.disconnect(project_id, websocket)

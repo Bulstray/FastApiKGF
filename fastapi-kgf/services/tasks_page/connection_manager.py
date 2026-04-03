@@ -21,11 +21,14 @@ class ConnectionManager:
             self.active_connections[project_id] = []
         self.active_connections[project_id].append(websocket)
 
-    def disconnect(self, project_id: int, websocket: WebSocket) -> None:
+    async def disconnect(self, project_id: int, websocket: WebSocket) -> None:
         try:
             self.active_connections[project_id].remove(websocket)
         except KeyError:
             pass
+
+    async def delete_project_id(self, project_id: int) -> None:
+        pass
 
     async def broadcast(
         self,
