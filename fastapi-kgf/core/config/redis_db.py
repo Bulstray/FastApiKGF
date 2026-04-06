@@ -1,9 +1,13 @@
 from pydantic import BaseModel
+import os
+
+REDIS_HOST = os.getenv("REDIS_HOST", "localhost")
+REDIS_PORT = int(os.getenv("REDIS_PORT", 6378))
 
 
 class RedisConnectionConfig(BaseModel):
-    host: str = "localhost"
-    port: int = 6378
+    host: str = REDIS_HOST
+    port: int = REDIS_PORT
 
 
 class RedisDatabaseConfig(BaseModel):

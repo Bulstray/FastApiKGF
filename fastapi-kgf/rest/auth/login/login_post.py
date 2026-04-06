@@ -9,7 +9,7 @@ from starlette.responses import HTMLResponse, RedirectResponse
 from core.config.settings import SESSION_COOKIE_NAME
 from core.models import db_helper
 from dependencies.auth_user import validate_basic_auth_user
-from services.auth.session_manager import SessionManager
+from services.auth.session_manager import create_session
 from templating.jinja_template import templates
 
 router = APIRouter()
@@ -43,7 +43,7 @@ async def login_submit(
             status_code=status.HTTP_401_UNAUTHORIZED,
         )
 
-    session_id = await SessionManager.create_session(user=user)
+    session_id = await create_session(user=user)
 
     redirect = RedirectResponse(
         url="/",

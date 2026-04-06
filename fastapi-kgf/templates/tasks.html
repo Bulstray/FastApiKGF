@@ -1171,6 +1171,7 @@
 
         // Функция для обновления счетчика одной колонки
         function updateSingleColumnCounter(columnId) {
+
             const column = document.getElementById(columnId);
             if (!column) return;
 
@@ -1209,6 +1210,8 @@
                     'Content-Type': 'application/json',
                 }
             })
+
+            stopBlinkingTitle();
 
             const taskCard = document.querySelector(`.task-card[data-task-id="${taskId}"]`);
             if (!taskCard) return;
@@ -1270,6 +1273,7 @@
 
         }
 
+
         // Функция для увеличения счетчика непрочитанных сообщений
         function incrementUnreadCounter(taskId) {
             // Находим карточку задачи по taskId
@@ -1292,16 +1296,46 @@
                 } else {
                     badge.textContent = currentCount + 1;
                 }
+                startBlinkingTitle();
             } else {
                 // Если бейджа нет - создаем новый с классом unread-badge
                 badge = document.createElement('span');
                 badge.className = 'unread-badge';
                 badge.textContent = '1';
                 buttonContainer.appendChild(badge);
+                startBlinkingTitle();
             }
 
             console.log(`✅ Счетчик для задачи ${taskId} увеличен`);
         }
+
+        let originalTitle = document.title;
+        let blinkInterval = null;
+
+        function startBlinkingTitle() {
+            // Если мигание уже запущено - не запускаем заново
+            if (blinkInterval) return;
+
+            let showMessage = true;
+
+            blinkInterval = setInterval(() => {
+                if (showMessage) {
+                    document.title = 'Новое сообщение';
+                } else {
+                    document.title = originalTitle;
+                }
+                showMessage = !showMessage;
+            }, 600); // Меняем каждые 0.6 секунды
+        }
+
+        function stopBlinkingTitle() {
+            if (blinkInterval) {
+                clearInterval(blinkInterval);
+                blinkInterval = null;
+                document.title = originalTitle;
+            }
+        }
+
 
         function initNotification() {
             const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';

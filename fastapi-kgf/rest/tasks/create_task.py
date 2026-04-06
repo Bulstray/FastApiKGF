@@ -31,7 +31,7 @@ async def create_task(
         )
 
     async with request.form() as form:
-        content = cast(UploadFile, form.get("rar_file")).read()
+        content = await cast(UploadFile, form.get("rar_file")).read()
 
         await service.create_task(
             form=form,

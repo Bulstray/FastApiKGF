@@ -8,7 +8,7 @@ from starlette.responses import HTMLResponse, RedirectResponse
 from core.config.settings import SESSION_COOKIE_NAME
 from core.schemas.user import UserRead
 from dependencies.session_auth import require_auth
-from services.auth.session_manager import SessionManager
+from services.auth.session_manager import delete_session
 from storage.redis.session import delete_by_session_id
 
 router = APIRouter(prefix="/logout")
@@ -27,8 +27,7 @@ async def logout_page(
     session_id = request.cookies.get(SESSION_COOKIE_NAME)
 
     if session_id:
-        session_service = SessionManager()
-        await session_service.delete_session(session_id)
+        await delete_session(session_id)
 
     redirect = RedirectResponse(
         url=return_url or "/",
