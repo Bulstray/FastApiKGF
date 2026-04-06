@@ -2,8 +2,9 @@ import datetime
 import json
 from typing import TYPE_CHECKING, Annotated
 
-from fastapi import APIRouter, Depends, Request
+from fastapi import APIRouter, Depends, Request, status
 from fastapi.responses import HTMLResponse
+from starlette.responses import RedirectResponse
 from starlette.websockets import WebSocket, WebSocketDisconnect
 
 from dependencies.message import get_message_service
@@ -23,7 +24,7 @@ if TYPE_CHECKING:
 router = APIRouter()
 
 
-@router.get("/{project_id}", name="tasks:page")
+@router.get("/{project_id}", name="tasks:page", response_model=None)
 async def tasks_page(
     request: Request,
     project_id: int,
@@ -32,12 +33,18 @@ async def tasks_page(
     tasks_service: Annotated["TasksFilesService", Depends(get_tasks_service)],
     message_service: Annotated["MessageManager", Depends(get_message_service)],
     project_service: Annotated["ProjectService", Depends(get_project_service)],
-) -> HTMLResponse:
+) -> HTMLResponse | RedirectResponse:
     unread_messages = await message_service.get_unread_message(is_auth_user.id)
     workers = await user_service.get_all_users()
     tasks = await tasks_service.get_tasks_by_project_id(project_id)
     projects = await project_service.get_all_projects()
     project = await project_service.get_project_by_id(project_id)
+
+    if project is None:
+        return RedirectResponse(
+            url="/",
+            status_code=status.HTTP_303_SEE_OTHER,
+        )
 
     context = {
         "workers": workers,
