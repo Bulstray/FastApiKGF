@@ -27,7 +27,6 @@ class Message(Base):
 
     author: Mapped[int] = mapped_column(
         ForeignKey("users.id", ondelete="CASCADE"),
-        nullable=False,
     )
 
     created_at: Mapped[str] = mapped_column(
