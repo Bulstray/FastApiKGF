@@ -15,8 +15,8 @@ class MessageManager:
         self.session = session
         self.file_service = file_service
 
-    async def get_messages_by_id(self, task_id: int) -> list[Message]:
-        return await crud_message.get_message_by_id(
+    async def get_messages_for_task(self, task_id: int) -> list[Message]:
+        return await crud_message.get_messages_for_task(
             self.session,
             task_id,
         )

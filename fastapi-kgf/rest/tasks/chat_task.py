@@ -80,9 +80,7 @@ async def get_messages_by_id(
     message_service: Annotated[MessageManager, Depends(get_message_service)],
 ):
 
-    messages = await message_service.get_messages_by_id(
-        task_id,
-    )
+    messages = await message_service.get_messages_for_task(task_id)
 
     messages_dict = []
 

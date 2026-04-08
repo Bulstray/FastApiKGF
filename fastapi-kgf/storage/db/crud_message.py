@@ -31,14 +31,14 @@ async def create_file_data_message(
     return file
 
 
-async def get_message_by_id(
+async def get_messages_for_task(
     session: AsyncSession,
     task_id: int,
 ) -> list[Message]:
     message = (
         select(Message)
         .where(Message.task_id == task_id)
-        .order_by(Message.task_id)
+        .order_by(Message.id)
         .options(selectinload(Message.user_message))
     )
 
