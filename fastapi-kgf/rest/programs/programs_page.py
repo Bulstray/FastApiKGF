@@ -9,6 +9,9 @@ from dependencies.providers import get_program_service
 from dependencies.session_auth import require_auth
 from services.programs import ProgramService
 from templating.jinja_template import templates
+from services.projects.service import ProjectService
+from dependencies.projects import get_project_service
+
 
 router = APIRouter()
 
@@ -24,10 +27,15 @@ async def programs_page(
         UserRead,
         Depends(require_auth),
     ],
+    projects_service: Annotated[
+        ProjectService,
+        Depends(get_project_service),
+    ],
 ) -> HTMLResponse:
     """Render programs listing page."""
 
     programs = await program_service.get_all_programs()
+    projects = await projects_service.get_all_projects()
 
     programs_schemas = [
         ProgramRead.model_validate(
@@ -42,5 +50,6 @@ async def programs_page(
         context={
             "programs": programs_schemas,
             "is_authenticated": is_authenticated,
+            "projects": projects,
         },
     )
