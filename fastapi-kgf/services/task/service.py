@@ -8,7 +8,9 @@ from core.schemas.message_read_status import MessageReadStatus
 from core.schemas.tasks import Task as TaskSchema
 from core.schemas.tasks import TaskCreate
 from services.files import FilesService
-from storage.db import crud_task_users, crud_tasks
+from storage.db import crud_tasks, crud_user
+
+from malling.send_email import send_email
 
 
 class TasksFilesService:
@@ -58,6 +60,11 @@ class TasksFilesService:
         users_ids = [int(user_id) for user_id in form.getlist("executor_ids")] + [
             task_model.customer_id,
         ]
+
+        # send message to email
+        for user_id in users_ids[:-1]:
+            user = await crud_user.get_user_by_id(self.session, user_id)
+            await send_email(user.email, task_schema)
 
         await crud_tasks.add_task(
             session=self.session,

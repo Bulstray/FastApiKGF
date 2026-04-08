@@ -473,6 +473,7 @@ dependencies = [
     { name = "pyjwt", extra = ["crypto"] },
     { name = "redis" },
     { name = "requests" },
+    { name = "secure-smtplib" },
     { name = "sqladmin", extra = ["full"] },
     { name = "sqlalchemy", extra = ["asyncio"] },
     { name = "types-defusedxml" },
@@ -498,6 +499,7 @@ requires-dist = [
     { name = "pyjwt", extras = ["crypto"], specifier = ">=2.11.0" },
     { name = "redis", specifier = ">=7.1.1" },
     { name = "requests", specifier = ">=2.32.5" },
+    { name = "secure-smtplib", specifier = ">=0.1.1" },
     { name = "sqladmin", extras = ["full"], specifier = ">=0.23.0" },
     { name = "sqlalchemy", extras = ["asyncio"], specifier = ">=2.0.46" },
     { name = "types-defusedxml", specifier = ">=0.7.0.20250822" },
@@ -1234,6 +1236,15 @@ wheels = [
     { url = "https://files.pythonhosted.org/packages/6a/c5/abd840d4132fd51a12f594934af5eba1d5d27298a6f5b5d6c3be45301caf/ruff-0.14.13-py3-none-win32.whl", hash = "sha256:ef720f529aec113968b45dfdb838ac8934e519711da53a0456038a0efecbd680", size = 12919024, upload-time = "2026-01-15T20:14:43.647Z" },
     { url = "https://files.pythonhosted.org/packages/c2/55/6384b0b8ce731b6e2ade2b5449bf07c0e4c31e8a2e68ea65b3bafadcecc5/ruff-0.14.13-py3-none-win_amd64.whl", hash = "sha256:6070bd026e409734b9257e03e3ef18c6e1a216f0435c6751d7a8ec69cb59abef", size = 14097887, upload-time = "2026-01-15T20:15:01.48Z" },
     { url = "https://files.pythonhosted.org/packages/4d/e1/7348090988095e4e39560cfc2f7555b1b2a7357deba19167b600fdf5215d/ruff-0.14.13-py3-none-win_arm64.whl", hash = "sha256:7ab819e14f1ad9fe39f246cfcc435880ef7a9390d81a2b6ac7e01039083dd247", size = 13080224, upload-time = "2026-01-15T20:14:45.853Z" },
+]
+
+[[package]]
+name = "secure-smtplib"
+version = "0.1.1"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/1f/86/30df3f748dd43c064bed3059f116a32adc71622087b1d4eb379e2fb663f7/secure-smtplib-0.1.1.tar.gz", hash = "sha256:3d4903f6612626ccd9b77ef05313cb3c3952a59a4d756cda2377b272fabad8b9", size = 5912, upload-time = "2015-04-07T14:44:42.839Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/1c/bd/3c602fbfa16cad120e93e4b0286d89aad0ec2ce163cdf5410a6ce4cadba5/secure_smtplib-0.1.1-py2.py3-none-any.whl", hash = "sha256:645ea0a341f306fa3307c8fe1169765c417ff363db9946fa69f3669a9b718069", size = 3384, upload-time = "2015-04-07T14:44:45.188Z" },
 ]
 
 [[package]]
