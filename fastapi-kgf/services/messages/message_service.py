@@ -16,6 +16,15 @@ class MessageManager:
         self.file_service = file_service
 
     async def get_messages_for_task(self, task_id: int) -> list[Message]:
+        """
+        Получить все сообщения для указанной задачи.
+
+        Args:
+            task_id: ID задачи
+
+        Returns:
+            Список сообщений для задачи
+        """
         return await crud_message.get_messages_for_task(
             self.session,
             task_id,
@@ -23,8 +32,17 @@ class MessageManager:
 
     async def add_message_in_db(
         self,
-        message_data: dict[str, str],
+        message_data: dict[str, str | bytes],
     ) -> str | None:
+        """
+        Создать сообщение с опциональным файлом и обновить счётчики непрочитанных сообщений.
+
+        Args:
+            message_data: Данные сообщения, включая опциональные данные файла
+
+        Returns:
+            Словарь с ID сообщения и путём к файлу (если файл был загружен)
+        """
 
         message_in = MessageSchema.model_validate(message_data)
 
