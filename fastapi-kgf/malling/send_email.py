@@ -20,6 +20,7 @@ async def send_email(
     msg = f"""
     {subject.title}
     {subject.description}
+    http://192.168.1.75:8000/tasks/{subject.project_id}
     """
 
     message.attach(MIMEText(msg, "plain"))
