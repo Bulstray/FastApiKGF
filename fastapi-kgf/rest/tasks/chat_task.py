@@ -133,3 +133,14 @@ async def websocket_notifications(websocket: WebSocket, user_id: int) -> None:
 
     except WebSocketDisconnect:
         manager.disconnect(user_id=user_id)
+
+
+@router.get("/user_tasks/{task_id}")
+async def get_users_for_task(
+    task_id: int,
+    session: Annotated[
+        AsyncSession,
+        Depends(db_helper.session_getter),
+    ],
+):
+    return await crud_task_users.get_task_users(session, task_id)
