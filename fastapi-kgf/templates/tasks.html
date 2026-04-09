@@ -1367,6 +1367,13 @@
         function ActionTask(action, task_id) {
             let message;
 
+            const response = fetch(`tasks/user_tasks/${task_id}`);
+
+            const users = response.json();
+
+            const currentUserId = {{ user.id }};
+
+
             if (action === 'update') {
                 message = {
                     "action": action,
