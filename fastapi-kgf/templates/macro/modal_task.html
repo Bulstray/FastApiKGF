@@ -1,7 +1,8 @@
 {% macro func_tasks(workers, user) %}
 
     <div class="modal" id="taskModal">
-        <form id="taskForm" action="{{ url_for('tasks:post', project_id=project_id) }}" method="post" enctype="multipart/form-data">
+        <form id="taskForm" action="{{ url_for('tasks:post', project_id=project_id) }}" method="post"
+              enctype="multipart/form-data">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5>
@@ -23,10 +24,18 @@
                                   required></textarea>
                     </div>
                     <div class="row mb-2">
-                        <div class="col-md-6">
-                            <label class="form-label">Срок</label>
-                            <input type="date" name="deadline" class="form-control" required>
-                        </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Срок</label>
+                                <input type="date"
+                                       name="deadline"
+                                       class="form-control"
+                                       min="{{ today }}"
+                                       required>
+                            </div>
+                            <div id="weekendWarning" class="weekend-warning" style="display: none;">
+                                <i class="bi bi-calendar-week"></i>
+                                <span>Вы выбрали выходной день</span>
+                            </div>
                         <div class="col-md-6">
                             <label class="form-label">Постановщик</label>
                             <input type="text" class="form-control"
