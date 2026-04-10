@@ -36,7 +36,7 @@ async def tasks_page(
 ) -> HTMLResponse | RedirectResponse:
     unread_messages = await message_service.get_unread_message(is_auth_user.id)
     workers = await user_service.get_all_users()
-    tasks = await tasks_service.get_tasks_by_project_id(project_id)
+    tasks = await tasks_service.get_tasks_by_project_id(project_id, is_auth_user.id)
     projects = await project_service.get_all_projects()
     project = await project_service.get_project_by_id(project_id)
 
