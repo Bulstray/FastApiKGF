@@ -85,8 +85,11 @@ class TasksFilesService:
             id_task=id_task,
         )
 
-    async def get_tasks_by_project_id(self, project_id: int) -> list[Task]:
+    async def get_tasks_by_project_id(
+        self, project_id: int, user_id: int
+    ) -> list[Task]:
         return await crud_tasks.get_tasks_by_project_id(
             self.session,
             project_id,
+            user_id,
         )

@@ -1,4 +1,4 @@
-from sqlalchemy import select, update, case, delete
+from sqlalchemy import select, update, case, delete, and_
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from core.models import Task, TaskUsers, MessageReadStatus
@@ -88,7 +88,17 @@ async def update_status_task(
 async def get_tasks_by_project_id(
     session: AsyncSession,
     project_id: int,
+    user_id: int,
 ):
-    stmt = select(Task).where(Task.project_id == project_id)
+    stmt = (
+        select(Task)
+        .join(TaskUsers, Task.id == TaskUsers.task_id)
+        .where(
+            and_(
+                Task.project_id == project_id,
+                TaskUsers.user_id == user_id,
+            )
+        )
+    )
     result = await session.scalars(stmt)
     return list(result.all())

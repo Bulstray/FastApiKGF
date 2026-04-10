@@ -13,7 +13,7 @@ from services.messages.connection_service import connectionmanager
 from services.messages.message_service import MessageManager
 from services.notification.connection_manager import manager
 from services.users.service import UserService
-from storage.db import crud_message
+from storage.db import crud_message, crud_task_users
 from utils.file_size import get_file_size
 
 router = APIRouter()
@@ -131,3 +131,14 @@ async def websocket_notifications(websocket: WebSocket, user_id: int) -> None:
 
     except WebSocketDisconnect:
         manager.disconnect(user_id=user_id)
+
+
+@router.get("/user_tasks/{task_id}")
+async def get_users_for_task(
+    task_id: int,
+    session: Annotated[
+        AsyncSession,
+        Depends(db_helper.session_getter),
+    ],
+):
+    return await crud_task_users.get_task_users(session, task_id)
