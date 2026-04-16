@@ -12,7 +12,6 @@ from services.tasks_page.connection_manager import manager
 router = APIRouter()
 
 
-
 @router.post("/{project_id}/delete")
 async def delete_project(
     project_id: int,
