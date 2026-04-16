@@ -7,7 +7,7 @@ from starlette.requests import Request
 from starlette.responses import HTMLResponse, RedirectResponse
 
 from core.config.settings import SESSION_COOKIE_NAME
-from core.models import db_helper
+from core.models import User
 from dependencies.auth_user import validate_basic_auth_user
 from services.auth.session_manager import create_session
 from templating.jinja_template import templates
@@ -22,28 +22,19 @@ router = APIRouter()
 )
 async def login_submit(
     request: Request,
-    username: Annotated[str, Form(...)],
-    password: Annotated[str, Form(...)],
-    session: Annotated[
-        AsyncSession,
-        Depends(db_helper.session_getter),
+    session_id: Annotated[
+        str | None,
+        Depends(validate_basic_auth_user),
     ],
 ) -> HTMLResponse | RedirectResponse:
-    user = await validate_basic_auth_user(
-        username=username,
-        password=password,
-        session=session,
-    )
 
-    if user is None:
+    if session_id is None:
         return templates.TemplateResponse(
             name="login.html",
             request=request,
             context={"error": "Неверный логин или пароль"},
             status_code=status.HTTP_401_UNAUTHORIZED,
         )
-
-    session_id = await create_session(user=user)
 
     redirect = RedirectResponse(
         url="/",
