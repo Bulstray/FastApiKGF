@@ -9,7 +9,7 @@ from dependencies.providers import get_tasks_service
 from dependencies.session_auth import require_auth
 from services.task import TasksFilesService
 
-router = APIRouter()
+router = APIRouter(prefix="/delete_task")
 
 
 @router.get("/{task_id}", name="tasks:delete")
