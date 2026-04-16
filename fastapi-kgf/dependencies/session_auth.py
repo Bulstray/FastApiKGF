@@ -33,6 +33,13 @@ async def get_current_user(
 ) -> UserRead:
     return await session.get_by_session_id(session_id)
 
+
+async def get_cookie_for_websocket(
+    websocket: WebSocket, session_id: Annotated[str | None, Cookie()]
+):
+    print(session_id)
+
+
 async def require_auth(
     user: Annotated[UserRead | None, Depends(get_authenticated_user)],
 ) -> UserRead | HTMLResponse:
