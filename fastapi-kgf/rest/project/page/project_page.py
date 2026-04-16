@@ -11,7 +11,7 @@ from core.schemas.user import UserRead
 from dependencies.message import get_message_service
 from dependencies.projects import get_project_service
 from dependencies.providers import get_user_service, get_tasks_service
-from dependencies.session_auth import require_auth, get_current_user
+from dependencies.session_auth import get_current_user
 from services.messages.message_service import MessageManager
 from services.projects.service import ProjectService
 from services.task import TasksFilesService
