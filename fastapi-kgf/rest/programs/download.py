@@ -2,14 +2,11 @@ from typing import Annotated
 
 from aiopath import AsyncPath
 from fastapi import APIRouter, Depends, HTTPException
-from fastapi.responses import HTMLResponse
 from starlette import status
 from starlette.responses import FileResponse, RedirectResponse
 
-from core.schemas.user import UserRead
 
 from dependencies.providers import get_program_service
-from dependencies.session_auth import require_auth
 from services.programs import ProgramService
 
 router = APIRouter()
@@ -24,10 +21,6 @@ async def download_program(
     program_service: Annotated[
         ProgramService,
         Depends(get_program_service),
-    ],
-    _: Annotated[
-        UserRead | HTMLResponse,
-        Depends(require_auth),
     ],
     name: str,
 ) -> RedirectResponse | FileResponse:
