@@ -14,7 +14,7 @@ router = APIRouter()
 @router.get("/", name="login:get")
 async def login_page(
     request: Request,
-    is_auth: Annotated[
+    _: Annotated[
         UserRead,
         Depends(redirect_if_authenticated),
     ],

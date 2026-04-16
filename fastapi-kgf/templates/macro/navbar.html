@@ -22,7 +22,7 @@
                     {% for project in projects %}
                         <li class="project-item">
                             <div class="project-item-wrapper">
-                                <a href="{{ url_for("tasks:page", project_id=project.id) }}" class="project-link">
+                                <a href="{{ url_for("project:page", project_id=project.id) }}" class="project-link">
                                     <i class="bi bi-folder2"></i>
                                     <span>{{ project.name }}</span>
                                 </a>

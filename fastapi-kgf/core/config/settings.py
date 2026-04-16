@@ -12,7 +12,7 @@ from .superuser import SuperUserConfig
 
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
-SESSION_COOKIE_NAME = "web-app-session-id"
+SESSION_COOKIE_NAME = "web_app_session_id"
 
 
 class Settings(BaseSettings):

@@ -6,7 +6,7 @@ from fastapi.responses import HTMLResponse
 from core.schemas import ProgramRead
 from core.schemas.user import UserRead
 from dependencies.providers import get_program_service
-from dependencies.session_auth import require_auth
+from dependencies.session_auth import get_current_user
 from services.programs import ProgramService
 from templating.jinja_template import templates
 from services.projects.service import ProjectService
@@ -25,7 +25,7 @@ async def programs_page(
     ],
     is_authenticated: Annotated[
         UserRead,
-        Depends(require_auth),
+        Depends(get_current_user),
     ],
     projects_service: Annotated[
         ProjectService,
