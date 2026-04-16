@@ -25,6 +25,14 @@ async def get_authenticated_user(
     return None
 
 
+async def get_current_user(
+    session_id: Annotated[
+        str,
+        Depends(cookie_scheme),
+    ],
+) -> UserRead:
+    return await session.get_by_session_id(session_id)
+
 async def require_auth(
     user: Annotated[UserRead | None, Depends(get_authenticated_user)],
 ) -> UserRead | HTMLResponse:
