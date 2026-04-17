@@ -9,7 +9,7 @@ from storage.db.crud_task_users import get_task_users
 class ConnectionManager:
     def __init__(self) -> None:
         # Словарь для соединений по комнатам (task_id)
-        self.active_connections: dict[int, list[int, WebSocket]] = {}
+        self.active_connections: dict[int, tuple[int, WebSocket]] = {}
 
     async def connect(
         self,
@@ -18,9 +18,10 @@ class ConnectionManager:
         user_id: int,
     ) -> None:
         await websocket.accept()
-        if task_id not in self.active_connections:
-            self.active_connections[task_id] = []
-        self.active_connections[task_id].append([user_id, websocket])
+        if task_id in self.active_connections:
+            self.active_connections[task_id] += [(user_id, websocket)]
+        else:
+            self.active_connections[task_id] = [(user_id, websocket)]
 
     def disconnect(
         self,
@@ -28,10 +29,14 @@ class ConnectionManager:
         task_id: int,
         user_id: int,
     ) -> None:
-        if task_id in self.active_connections:
-            self.active_connections[task_id].remove([user_id, websocket])
-            if not self.active_connections[task_id]:
-                del self.active_connections[task_id]
+        try:
+            self.active_connections[task_id].remove((user_id, websocket))
+        except ValueError:
+            return None
+
+        else:
+            if self.active_connections[task_id]:
+                self.active_connections.pop(task_id)
 
     async def broadcast(
         self,
@@ -54,8 +59,7 @@ class ConnectionManager:
                     user_id=user_id,
                 )
 
-                if user_id in users_task:
-                    users_task.remove(user_id)
+                users_task.remove(user_id)
 
             await manager.broadcast(users_task, task_id)
 
