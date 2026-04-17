@@ -18,7 +18,7 @@ router = APIRouter()
 async def get_messages_by_id(
     task_id: int,
     message_service: Annotated[MessageManager, Depends(get_message_service)],
-):
+) -> dict[str, str | dict[str, str]]:
 
     messages = await message_service.get_messages_by_id(
         task_id,
