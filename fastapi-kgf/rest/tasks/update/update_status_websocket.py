@@ -12,7 +12,7 @@ router = APIRouter()
 
 
 @router.websocket("/ws/action/{project_id}")
-async def action_tasks(websocket: WebSocket, project_id: int):
+async def action_tasks(websocket: WebSocket, project_id: int) -> None:
     await manager.connect(websocket, project_id)
     try:
         while True:
