@@ -14,6 +14,7 @@ cookie_scheme = APIKeyCookie(name=SESSION_COOKIE_NAME, auto_error=False)
 
 
 async def get_authenticated_user(
+    request: Request,
     session_id: Annotated[
         str | None,
         Depends(cookie_scheme),
