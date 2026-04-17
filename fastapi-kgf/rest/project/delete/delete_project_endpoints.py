@@ -19,7 +19,7 @@ async def delete_project(
         "ProjectService",
         Depends(get_project_service),
     ],
-):
+) -> RedirectResponse:
     await service.delete_project(project_id)
     await manager.delete_project_id(project_id)
 
