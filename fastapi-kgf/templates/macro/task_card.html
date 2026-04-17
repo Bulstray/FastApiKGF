@@ -61,7 +61,6 @@
                             </div>
                             <div class="rar-info">
                                 <div class="rar-name">{{ task.filename }}</div>
-                                <div class="rar-size">14.5 MB</div>
                             </div>
                             <a class="download-rar"
                                href="{{ url_for("tasks:download", name=task.filename, file_path=task.folder_file) }}">
