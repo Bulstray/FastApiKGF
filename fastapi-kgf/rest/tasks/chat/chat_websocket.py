@@ -37,12 +37,16 @@ async def websocket_endpoint(
 
             file_folder = await message_service.add_message_in_db(message_date)
 
-            user_name = await user.awaitable_attrs.name
-            user_surname = await user.awaitable_attrs.surname
+            if user:
+                user_name = await user.awaitable_attrs.name
+                user_surname = await user.awaitable_attrs.surname
 
-            # Формируем нужные строки
-            full_name = f"{user_name} {user_surname}".strip()
-            initials = f"{user_name[0]}{user_surname[0]}".upper()
+                # Формируем нужные строки
+                full_name = f"{user_name} {user_surname}".strip()
+                initials = f"{user_name[0]}{user_surname[0]}".upper()
+            else:
+                full_name = "No Name"
+                initials = "NN"
 
             # Обновляем данные для рассылки
             message_date.update(
