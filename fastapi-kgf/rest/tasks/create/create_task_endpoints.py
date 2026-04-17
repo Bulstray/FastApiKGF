@@ -39,6 +39,6 @@ async def create_task(
         )
 
     return RedirectResponse(
-        url=f"/tasks/{project_id}",
+        url=f"/projects/{project_id}",
         status_code=status.HTTP_303_SEE_OTHER,
     )
