@@ -3,417 +3,419 @@
                         "COMPLETED": ("status-completed", "completed-column", "bi bi-arrow-repeat", "Завершена")
 } %}
 
-{% macro task_card(status, tasks, today) %}
-    {% set task_id, column, icon, text = status_format[status] %}
+{% macro task_card(status, tasks, today, user) %}
+  {% set task_id, column, icon, text = status_format[status] %}
 
-    <div class="board-column">
-        <div class="column-header">
-            <h2>
-                <span class="status-dot {{ task_id }}"></span>
-                {{ text }}
-            </h2>
-            <span class="count">{{ tasks|selectattr('status', 'equalto', status)|list|length }}</span>
-        </div>
-        <div class="column-content" id="{{ column }}">
-            {% for task in tasks if task.status == status %}
-                <!-- Карточка задачи -->
-                <div class="task-card" data-task-id="{{ task.id }}">
-                    <div class="task-header">
-                        <div class="task-title-group">
-                            <h3 class="task-title">{{ task.title }}</h3>
-                            <div class="status-chip-mini">
-                                <span class="status-dot {{ task_id }}"></span>
-                                <span class="status-text-mini">{{ text }}</span>
-                            </div>
-                        </div>
-                        {% set deadline = (task.deadline - today).days %}
-                        {% if deadline == 1 %}
-                            <span class="deadline-badge deadline-red"><i
-                                    class="bi bi-clock"></i>{{ deadline }} д</span>
-                        {% elif deadline == 2 %}
-                            <span class="deadline-badge deadline-yellow"><i
-                                    class="bi bi-clock"></i>{{ deadline }} д</span>
-                        {% elif deadline >= 3 %}
-                            <span class="deadline-badge deadline-green"><i
-                                    class="bi bi-clock"></i>{{ deadline }} д</span>
-                        {% else %}
-                            <span class="deadline-badge deadline-red"><i class="bi bi-clock"></i>Просрочена</span>
-                        {% endif %}
-
-                    </div>
-                    <p class="task-description">{{ task.description }}</p>
-
-                    <div class="task-meta">
-                        <div class="meta-item">
-                            <i class="bi bi-calendar"></i>
-                            <span>Срок: {{ task.deadline }}</span>
-                        </div>
-                        <div class="meta-item">
-                            <i class="bi bi-person-up"></i>
-                            <span>Постановщик: <strong>{{ task.created_by.name }} {{ task.created_by.surname }}</strong></span>
-                        </div>
-                    </div>
-
-                    {% if task.filename %}
-                        <div class="task-rar">
-                            <div class="rar-icon">
-                                <i class="bi bi-file-zip"></i>
-                            </div>
-                            <div class="rar-info">
-                                <div class="rar-name">{{ task.filename }}</div>
-{#                                <div class="rar-size">14.5 MB</div>#}
-                            </div>
-                            <a class="download-rar"
-                               href="{{ url_for("tasks:download", name=task.filename, file_path=task.folder_file) }}">
-                                <i class="bi bi-download"></i>
-                            </a>
-                        </div>
-                    {% endif %}
-
-                    <div class="task-footer">
-                        <div class="assignee"
-                             style="display: grid; grid-template-columns: 24px 1fr; gap: 4px 8px; align-items: center;">
-                            {% for executor in task.task_users %}
-                                {% if task.created_by.username != executor.user_executors.username %}
-                                    <i class="bi bi-person-circle" style="text-align: center;"></i>
-                                    <span>{{ executor.user_executors.name }} {{ executor.user_executors.surname }}</span>
-                                {% endif %}
-                            {% endfor %}
-                        </div>
-                        <div class="task-actions">
-                            <div style="position: relative; display: inline-block;">
-                                <button onclick="openTaskChat('{{ task.id }}', '{{ task.title }}', '{{ task.description }}')"
-                                        title="Обсуждение задачи">
-                                    <i class="bi bi-chat-dots"></i>
-                                </button>
-                                {% if unread_messages[task.id] %}
-                                    <span class="unread-badge">{{ unread_messages[task.id] }}</span>
-                                {% endif %}
-                            </div>
-                            <button onclick="ActionTask('update','{{ task.id }}');"
-                                    title="Изменить статус">
-                                <i class="{{ icon }}"></i>
-                            </button>
-                            <button
-                                    onclick="ActionTask('delete', '{{ task.id }}');"
-                                    title="Удалить">
-                                <i class="bi bi-trash"></i>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            {% endfor %}
-        </div>
+  <div class="board-column">
+    <div class="column-header">
+      <h2>
+        <span class="status-dot {{ task_id }}"></span>
+        {{ text }}
+      </h2>
+      <span class="count">{{ tasks|selectattr('status', 'equalto', status)|list|length }}</span>
     </div>
+    <div class="column-content" id="{{ column }}">
+      {% for task in tasks if task.status == status %}
+        <!-- Карточка задачи -->
+        <div class="task-card" data-task-id="{{ task.id }}">
+          <div class="task-header">
+            <div class="task-title-group">
+              <h3 class="task-title">{{ task.title }}</h3>
+              <div class="status-chip-mini">
+                <span class="status-dot {{ task_id }}"></span>
+                <span class="status-text-mini">{{ text }}</span>
+              </div>
+            </div>
+            {% set deadline = (task.deadline - today).days %}
+            {% if deadline == 1 %}
+              <span class="deadline-badge deadline-red"><i
+                class="bi bi-clock"></i>{{ deadline }} д</span>
+            {% elif deadline == 2 %}
+              <span class="deadline-badge deadline-yellow"><i
+                class="bi bi-clock"></i>{{ deadline }} д</span>
+            {% elif deadline >= 3 %}
+              <span class="deadline-badge deadline-green"><i
+                class="bi bi-clock"></i>{{ deadline }} д</span>
+            {% else %}
+              <span class="deadline-badge deadline-red"><i class="bi bi-clock"></i>Просрочена</span>
+            {% endif %}
+
+          </div>
+          <p class="task-description">{{ task.description }}</p>
+
+          <div class="task-meta">
+            <div class="meta-item">
+              <i class="bi bi-calendar"></i>
+              <span>Срок: {{ task.deadline }}</span>
+            </div>
+            <div class="meta-item">
+              <i class="bi bi-person-up"></i>
+              <span>Постановщик: <strong>{{ task.created_by.name }} {{ task.created_by.surname }}</strong></span>
+            </div>
+          </div>
+
+          {% if task.filename %}
+            <div class="task-rar">
+              <div class="rar-icon">
+                <i class="bi bi-file-zip"></i>
+              </div>
+              <div class="rar-info">
+                <div class="rar-name">{{ task.filename }}</div>
+                {#                                <div class="rar-size">14.5 MB</div>#}
+              </div>
+              <a class="download-rar"
+                 href="{{ url_for("tasks:download", name=task.filename, file_path=task.folder_file) }}">
+                <i class="bi bi-download"></i>
+              </a>
+            </div>
+          {% endif %}
+
+          <div class="task-footer">
+            <div class="assignee"
+                 style="display: grid; grid-template-columns: 24px 1fr; gap: 4px 8px; align-items: center;">
+              {% for executor in task.task_users %}
+                {% if task.created_by.username != executor.user_executors.username %}
+                  <i class="bi bi-person-circle" style="text-align: center;"></i>
+                  <span>{{ executor.user_executors.name }} {{ executor.user_executors.surname }}</span>
+                {% endif %}
+              {% endfor %}
+            </div>
+            <div class="task-actions">
+              <div style="position: relative; display: inline-block;">
+                <button onclick="openTaskChat('{{ task.id }}', '{{ task.title }}', '{{ task.description }}')"
+                        title="Обсуждение задачи">
+                  <i class="bi bi-chat-dots"></i>
+                </button>
+                {% if unread_messages[task.id] %}
+                  <span class="unread-badge">{{ unread_messages[task.id] }}</span>
+                {% endif %}
+              </div>
+              <button onclick="ActionTask('update','{{ task.id }}');"
+                      title="Изменить статус">
+                <i class="{{ icon }}"></i>
+              </button>
+            {% if task.customer_id == user.id %}
+                <button
+                  onclick="ActionTask('delete', '{{ task.id }}');"
+                  title="Удалить">
+                  <i class="bi bi-trash"></i>
+                </button>
+            {% endif %}
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
 
 {% endmacro %}
 
 
 {% macro css_task_card() %}
-    <style>
-        .board-column {
-            flex: 1;
-            background: #f8fafc;
-            border-radius: 24px;
-            padding: 1rem;
-            min-width: 0;
-        }
+  <style>
+      .board-column {
+          flex: 1;
+          background: #f8fafc;
+          border-radius: 24px;
+          padding: 1rem;
+          min-width: 0;
+      }
 
-        .column-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0.5rem 1rem;
-            margin-bottom: 1rem;
-        }
+      .column-header {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          padding: 0.5rem 1rem;
+          margin-bottom: 1rem;
+      }
 
-        .column-header h2 {
-            font-size: 1rem;
-            font-weight: 600;
-            color: var(--primary-dark);
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            margin: 0;
-        }
+      .column-header h2 {
+          font-size: 1rem;
+          font-weight: 600;
+          color: var(--primary-dark);
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          margin: 0;
+      }
 
-        .column-header .count {
-            background: white;
-            padding: 0.25rem 0.75rem;
-            border-radius: 30px;
-            font-size: 0.85rem;
-            color: var(--primary-dark);
-            font-weight: 600;
-        }
+      .column-header .count {
+          background: white;
+          padding: 0.25rem 0.75rem;
+          border-radius: 30px;
+          font-size: 0.85rem;
+          color: var(--primary-dark);
+          font-weight: 600;
+      }
 
-        .column-content {
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-        }
+      .column-content {
+          display: flex;
+          flex-direction: column;
+          gap: 1rem;
+      }
 
-        /* Карточка задачи */
-        .task-card {
-            background-color: #ffffff;
-            border-radius: 20px;
-            padding: 1rem;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
-            transition: all 0.2s;
-            border: 1px solid #e2e8f0;
-            display: flex;
-            flex-direction: column;
-        }
+      /* Карточка задачи */
+      .task-card {
+          background-color: #ffffff;
+          border-radius: 20px;
+          padding: 1rem;
+          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+          transition: all 0.2s;
+          border: 1px solid #e2e8f0;
+          display: flex;
+          flex-direction: column;
+      }
 
-        .task-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.06);
-        }
+      .task-card:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 8px 16px rgba(0, 0, 0, 0.06);
+      }
 
-        .task-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 0.75rem;
-        }
+      .task-header {
+          display: flex;
+          justify-content: space-between;
+          align-items: flex-start;
+          margin-bottom: 0.75rem;
+      }
 
-        .task-title-group {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            flex-wrap: wrap;
-        }
+      .task-title-group {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          flex-wrap: wrap;
+      }
 
-        .task-title {
-            font-size: 1rem;
-            font-weight: 700;
-            color: var(--primary-dark);
-            margin: 0;
-        }
+      .task-title {
+          font-size: 1rem;
+          font-weight: 700;
+          color: var(--primary-dark);
+          margin: 0;
+      }
 
-        /* Статус */
-        .status-chip-mini {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            padding: 0.2rem 0.8rem 0.2rem 0.6rem;
-            border-radius: 30px;
-            font-size: 0.8rem;
-            font-weight: 600;
-            background: #f8fafc;
-            border: 1px solid #e2e8f0;
-            cursor: default;
-        }
+      /* Статус */
+      .status-chip-mini {
+          display: inline-flex;
+          align-items: center;
+          gap: 6px;
+          padding: 0.2rem 0.8rem 0.2rem 0.6rem;
+          border-radius: 30px;
+          font-size: 0.8rem;
+          font-weight: 600;
+          background: #f8fafc;
+          border: 1px solid #e2e8f0;
+          cursor: default;
+      }
 
-        .status-text-mini {
-            line-height: 1.2;
-        }
+      .status-text-mini {
+          line-height: 1.2;
+      }
 
-        .status-dot {
-            display: inline-block;
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-        }
+      .status-dot {
+          display: inline-block;
+          width: 8px;
+          height: 8px;
+          border-radius: 50%;
+      }
 
-        .status-not-started {
-            background: #94a3b8;
-        }
+      .status-not-started {
+          background: #94a3b8;
+      }
 
-        .status-in-progress {
-            background: #3b82f6;
-        }
+      .status-in-progress {
+          background: #3b82f6;
+      }
 
-        .status-completed {
-            background: #10b981;
-        }
+      .status-completed {
+          background: #10b981;
+      }
 
-        /* Дедлайн бейджи */
-        .deadline-badge {
-            padding: 0.2rem 0.8rem 0.2rem 0.5rem;
-            border-radius: 40px;
-            font-size: 0.75rem;
-            font-weight: 500;
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            border-width: 1px;
-            border-style: solid;
-            transition: all 0.2s ease;
-        }
+      /* Дедлайн бейджи */
+      .deadline-badge {
+          padding: 0.2rem 0.8rem 0.2rem 0.5rem;
+          border-radius: 40px;
+          font-size: 0.75rem;
+          font-weight: 500;
+          display: inline-flex;
+          align-items: center;
+          gap: 6px;
+          border-width: 1px;
+          border-style: solid;
+          transition: all 0.2s ease;
+      }
 
-        .deadline-badge:hover {
-            transform: translateY(-1px);
-            filter: brightness(0.95);
-        }
+      .deadline-badge:hover {
+          transform: translateY(-1px);
+          filter: brightness(0.95);
+      }
 
-        .deadline-red {
-            background: #ffe9e9;
-            color: #c92a2a;
-            border-color: #ffc9c9;
-        }
+      .deadline-red {
+          background: #ffe9e9;
+          color: #c92a2a;
+          border-color: #ffc9c9;
+      }
 
-        .deadline-yellow {
-            background: #fff3d9;
-            color: #b45f06;
-            border-color: #ffe0a3;
-        }
+      .deadline-yellow {
+          background: #fff3d9;
+          color: #b45f06;
+          border-color: #ffe0a3;
+      }
 
-        .deadline-green {
-            background: #e3f5e3;
-            color: #2b5e2b;
-            border-color: #b8e0b8;
-        }
+      .deadline-green {
+          background: #e3f5e3;
+          color: #2b5e2b;
+          border-color: #b8e0b8;
+      }
 
-        /* Описание задачи */
-        .task-description {
-            color: #64748b;
-            margin-bottom: 1rem;
-            line-height: 1.4;
-            font-size: 0.9rem;
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-        }
+      /* Описание задачи */
+      .task-description {
+          color: #64748b;
+          margin-bottom: 1rem;
+          line-height: 1.4;
+          font-size: 0.9rem;
+          display: -webkit-box;
+          -webkit-line-clamp: 2;
+          -webkit-box-orient: vertical;
+          overflow: hidden;
+      }
 
-        /* Мета-информация */
-        .task-meta {
-            display: flex;
-            flex-direction: column;
-            gap: 0.4rem;
-            margin-bottom: 0.75rem;
-        }
+      /* Мета-информация */
+      .task-meta {
+          display: flex;
+          flex-direction: column;
+          gap: 0.4rem;
+          margin-bottom: 0.75rem;
+      }
 
-        .meta-item {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            color: #64748b;
-            font-size: 0.8rem;
-        }
+      .meta-item {
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+          color: #64748b;
+          font-size: 0.8rem;
+      }
 
-        .meta-item i {
-            color: var(--accent-purple);
-            width: 16px;
-            font-size: 0.9rem;
-        }
+      .meta-item i {
+          color: var(--accent-purple);
+          width: 16px;
+          font-size: 0.9rem;
+      }
 
-        /* RAR блок */
-        .task-rar {
-            background: linear-gradient(135deg, #fafbff, #ffffff);
-            border: 1px solid #eef2f6;
-            border-radius: 12px;
-            padding: 0.75rem;
-            margin: 0.5rem 0;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
+      /* RAR блок */
+      .task-rar {
+          background: linear-gradient(135deg, #fafbff, #ffffff);
+          border: 1px solid #eef2f6;
+          border-radius: 12px;
+          padding: 0.75rem;
+          margin: 0.5rem 0;
+          display: flex;
+          align-items: center;
+          gap: 8px;
+      }
 
-        .rar-icon {
-            width: 32px;
-            height: 32px;
-            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 1rem;
-        }
+      .rar-icon {
+          width: 32px;
+          height: 32px;
+          background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+          border-radius: 8px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          color: white;
+          font-size: 1rem;
+      }
 
-        .rar-info {
-            flex: 1;
-        }
+      .rar-info {
+          flex: 1;
+      }
 
-        .rar-name {
-            font-weight: 600;
-            color: var(--primary-dark);
-            font-size: 0.8rem;
-        }
+      .rar-name {
+          font-weight: 600;
+          color: var(--primary-dark);
+          font-size: 0.8rem;
+      }
 
-        .rar-size {
-            font-size: 0.7rem;
-            color: var(--text-light);
-        }
+      .rar-size {
+          font-size: 0.7rem;
+          color: var(--text-light);
+      }
 
-        .download-rar {
-            color: var(--accent-purple);
-            font-size: 1rem;
-            cursor: pointer;
-            padding: 4px;
-            text-decoration: none;
-        }
+      .download-rar {
+          color: var(--accent-purple);
+          font-size: 1rem;
+          cursor: pointer;
+          padding: 4px;
+          text-decoration: none;
+      }
 
-        .download-rar:hover {
-            opacity: 0.8;
-        }
+      .download-rar:hover {
+          opacity: 0.8;
+      }
 
-        /* Футер карточки */
-        .task-footer {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-top: 0.5rem;
-            padding-top: 0.75rem;
-            border-top: 1px solid #eef2f6;
-        }
+      /* Футер карточки */
+      .task-footer {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          margin-top: 0.5rem;
+          padding-top: 0.75rem;
+          border-top: 1px solid #eef2f6;
+      }
 
-        .assignee {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            color: var(--primary-dark);
-            font-weight: 500;
-            font-size: 0.8rem;
-        }
+      .assignee {
+          display: flex;
+          align-items: center;
+          gap: 6px;
+          color: var(--primary-dark);
+          font-weight: 500;
+          font-size: 0.8rem;
+      }
 
-        .assignee i {
-            color: var(--accent-purple);
-            font-size: 0.9rem;
-        }
+      .assignee i {
+          color: var(--accent-purple);
+          font-size: 0.9rem;
+      }
 
-        /* Кнопки действий */
-        .task-actions {
-            display: flex;
-            gap: 4px;
-        }
+      /* Кнопки действий */
+      .task-actions {
+          display: flex;
+          gap: 4px;
+      }
 
-        .task-actions button {
-            background: none;
-            border: none;
-            color: #94a3b8;
-            font-size: 1rem;
-            padding: 4px 6px;
-            cursor: pointer;
-            transition: all 0.2s;
-            border-radius: 6px;
-        }
+      .task-actions button {
+          background: none;
+          border: none;
+          color: #94a3b8;
+          font-size: 1rem;
+          padding: 4px 6px;
+          cursor: pointer;
+          transition: all 0.2s;
+          border-radius: 6px;
+      }
 
-        .task-actions button:hover {
-            color: var(--accent-purple);
-            background: #f1f5f9;
-        }
+      .task-actions button:hover {
+          color: var(--accent-purple);
+          background: #f1f5f9;
+      }
 
-        /* Бейдж непрочитанных сообщений */
-        .unread-badge {
-            position: absolute;
-            top: -4px;
-            right: -4px;
-            background: #ef4444;
-            color: white;
-            border-radius: 50%;
-            width: 16px;
-            height: 16px;
-            font-size: 0.65rem;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border: 1.5px solid white;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
+      /* Бейдж непрочитанных сообщений */
+      .unread-badge {
+          position: absolute;
+          top: -4px;
+          right: -4px;
+          background: #ef4444;
+          color: white;
+          border-radius: 50%;
+          width: 16px;
+          height: 16px;
+          font-size: 0.65rem;
+          font-weight: 600;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          border: 1.5px solid white;
+          box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
 
-    </style>
+  </style>
 
 {% endmacro %}

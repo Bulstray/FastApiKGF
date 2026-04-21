@@ -407,13 +407,13 @@
             <!-- Доска с тремя колонками -->
             <div class="board-container">
                 <!-- Колонка "Не в работе" -->
-                {{ task_card("NOT_STARTED", tasks, today) }}
+                {{ task_card("NOT_STARTED", tasks, today, user) }}
 
                 <!-- Колонка "В работе" -->
-                {{ task_card("STARTED", tasks, today) }}
+                {{ task_card("STARTED", tasks, today, user) }}
 
                 <!-- Колонка "Завершена" -->
-                {{ task_card("COMPLETED", tasks, today) }}
+                {{ task_card("COMPLETED", tasks, today, user) }}
             </div>
         </div>
         <div id="notExecutorToast" style="
@@ -854,7 +854,7 @@
             <div class="message-file">
                 <i class="bi bi-file-zip"></i>
                 <span class="file-link">${messageData.file.name}</span>
-                <span class="file-size">${formatFileSize(messageData.file.size) || ''}</span>
+                <span class="file-size">${messageData.file.size}</span>
                 <a href="${downloadUrl}" class="download-file-btn" download>
                     <i class="bi bi-download"></i>
                 </a>
