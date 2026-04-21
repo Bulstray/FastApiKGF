@@ -31,7 +31,7 @@ class ConnectionManager:
     ) -> None:
         try:
             self.active_connections[task_id].remove((user_id, websocket))
-        except ValueError:
+        except (ValueError, KeyError):
             return None
 
         else:
