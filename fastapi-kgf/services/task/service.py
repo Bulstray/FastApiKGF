@@ -1,11 +1,9 @@
 from aiopath import AsyncPath
-from fastapi import BackgroundTasks
 from sqlalchemy.ext.asyncio import AsyncSession
 from starlette.datastructures import FormData
 
 from core.models import Task
-from core.schemas.message_read_status import MessageReadStatus
-from core.schemas.tasks import Task as TaskSchema
+from core.schemas import TaskRead
 from core.schemas.tasks import TaskCreate
 from services.files import FilesService
 from storage.db import crud_tasks, crud_user
@@ -51,7 +49,7 @@ class TasksFilesService:
                 content=content,
             )
 
-        task_model = TaskSchema(
+        task_model = TaskRead(
             filename=filename,
             folder_file=f"{folder}",
             **task_schema.model_dump(),
