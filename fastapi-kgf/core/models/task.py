@@ -7,7 +7,6 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from core.types.tasks import TaskStatus
 
-from ..schemas.tasks import Task
 from .base import Base
 
 if TYPE_CHECKING:
