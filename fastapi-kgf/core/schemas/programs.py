@@ -20,13 +20,14 @@ AuthorName = Annotated[
 
 
 class ProgramBase(BaseModel):
+    """Base model for programs"""
     name: NameString
     description: DescriptionString
     author: AuthorName
 
 
 class ProgramRead(ProgramBase):
-    """Модель для чтения данных о программе"""
+    """A model for reading data about program"""
 
     file_size: str
 
@@ -34,4 +35,4 @@ class ProgramRead(ProgramBase):
 
 
 class ProgramCreate(ProgramBase):
-    """Модель для создания данных о программе"""
+    """A model for creating a program"""
