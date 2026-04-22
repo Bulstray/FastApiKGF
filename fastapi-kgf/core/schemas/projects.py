@@ -2,11 +2,12 @@ from pydantic import BaseModel
 
 
 class ProjectBase(BaseModel):
+    """Base model for project"""
     name: str
 
 
 class ProjectRead(BaseModel):
-    """Модель для чтения проекта"""
+    """A model for reading a project"""
 
     id: int
 
@@ -15,4 +16,4 @@ class ProjectRead(BaseModel):
 
 
 class ProjectCreate(ProjectBase):
-    """Модель для создания проекта"""
+    """A model for creating a project"""
