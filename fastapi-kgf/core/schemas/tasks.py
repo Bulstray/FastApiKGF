@@ -6,6 +6,7 @@ from pydantic import BaseModel, ConfigDict
 
 class TaskBase(BaseModel):
     """The base class for task"""
+
     title: str
     description: str
     deadline: date
@@ -22,6 +23,7 @@ class TaskRead(TaskBase):
 
 class TaskCreate(TaskBase):
     """Модель для создания задания"""
+
     rar_file: UploadFile
 
     model_config = ConfigDict(
