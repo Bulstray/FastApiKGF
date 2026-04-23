@@ -22,7 +22,10 @@ class ConnectionManager:
             pass
 
     async def delete_project_id(self, project_id: int) -> None:
-        self.active_connections.pop(project_id)
+        try:
+            self.active_connections.pop(project_id)
+        except KeyError:
+            pass
 
     async def broadcast(
         self,
