@@ -31,7 +31,7 @@ async def websocket_endpoint(
             data = await websocket.receive_text()
             message_date = json.loads(data)
 
-            user = await user_service.get_user_by_id(
+            user = await user_service.get_by_id(
                 int(message_date["author"]),
             )
 
