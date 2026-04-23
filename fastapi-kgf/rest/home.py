@@ -27,7 +27,7 @@ async def home(
         Depends(get_project_service),
     ],
 ) -> HTMLResponse:
-    projects = await projects_service.get_all_projects()
+    projects = await projects_service.get_all()
 
     return templates.TemplateResponse(
         request=request,
