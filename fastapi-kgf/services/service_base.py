@@ -10,8 +10,9 @@ class BaseService:
 
     def __init__(self, session: AsyncSession, model: Model) -> None:
         """Initialize the repository with a database connection."""
+        self.session = session
         self.base_crud: BaseCRUD = BaseCRUD(
-            session=session,
+            session=self.session,
             model=model,
         )
 
