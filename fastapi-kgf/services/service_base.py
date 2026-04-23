@@ -1,8 +1,8 @@
 from sqlalchemy.ext.asyncio.session import AsyncSession
 
-from storage.db.base import BaseCRUD
+from storage.db.base_crud import BaseCRUD
 
-from core.types import Model
+from core.types.model import Model
 
 
 class BaseService:
@@ -21,3 +21,11 @@ class BaseService:
     async def get_all(self):
         """Get all records from table"""
         return await self.base_crud.get_all()
+
+    async def delete_by_id(self, id_: int) -> None:
+        """Delete record from table"""
+        await self.base_crud.delete_by_id(id_)
+
+    async def create(self, model: Model):
+        """Create a new record in DB"""
+        return await self.base_crud.create(model)
