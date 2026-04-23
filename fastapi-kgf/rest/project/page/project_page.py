@@ -32,8 +32,8 @@ async def _build_context(
     count_unread_message = await message_service.get_unread_message(user.id)
     workers_list = await user_service.get_all()
     tasks_for_users = await tasks_service.get_tasks_by_project_id(project_id, user.id)
-    projects = await project_service.get_all_projects()
-    project = await project_service.get_project_by_id(project_id)
+    projects = await project_service.get_all()
+    project = await project_service.get_by_id(project_id)
 
     return {
         "workers": workers_list,
