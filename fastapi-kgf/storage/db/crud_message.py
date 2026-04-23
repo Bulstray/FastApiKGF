@@ -13,7 +13,7 @@ async def create_chats_message(
     session: AsyncSession,
     message_in: MessageSchema,
 ) -> int:
-    message = Message(**message_in.model_dump())
+    message = Message(**message_in.model_dump(exclude={"file"}))
     session.add(message)
     await session.flush()
     message_id = message.id
