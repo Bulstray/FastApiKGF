@@ -3,7 +3,7 @@ from pydantic import BaseModel, ConfigDict
 
 class MessageFile(BaseModel):
     name: str
-    content: bytes
+    content: str
 
 
 class MessageBase(BaseModel):
