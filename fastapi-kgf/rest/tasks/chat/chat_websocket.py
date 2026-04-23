@@ -30,35 +30,38 @@ async def websocket_endpoint(
         while True:
             # Получаем сообщение от клиента
             data = await websocket.receive_text()
-            message_date = json.loads(data)
-            message_schema = Message.model_validate(message_date)
-
-            user = await user_service.get_by_id(
-                message_schema.author,
+            message_schema = Message.model_validate(
+                json.loads(data),
             )
 
-            user_schema = UserRead.model_validate(user)
+            user = UserRead.model_validate(
+                await user_service.get_by_id(
+                    message_schema.author,
+                )
+            )
 
-            file_folder = await message_service.add_message_in_db(message_date)
+            file_folder = await message_service.process_message(message_schema)
 
             # Обновляем данные для рассылки
-            message_date.update(
-                initials=user_schema.initials,
-                author=user_schema.full_name,
+            message_data = message_schema.model_dump(exclude={"file"})
+            message_data.update(
+                {
+                    "author": user.full_name,
+                    "initials": user.initials,
+                }
             )
 
-            if file_folder:
-                message_date["file"].pop("content")
-                message_date.update(
+            if message_schema.file:
+                message_data.update(
                     file={
-                        "name": message_date["file"]["name"],
+                        "name": message_schema.file.name,
                         "folder_path": file_folder,
                     },
                 )
 
             # Рассылаем всем в этой задаче (включая отправителя)
             await message_manager.broadcast(
-                json.dumps(message_date),
+                json.dumps(message_data),
                 task_id,
                 session,
             )
