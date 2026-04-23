@@ -16,6 +16,7 @@ PasswordBytes = Annotated[str, AfterValidator(hash_password)]
 
 class UserBase(BaseModel):
     """The base model user"""
+
     username: str
     hashed_password: PasswordBytes
     role: UserRole = UserRole.user
@@ -31,7 +32,16 @@ class UserBase(BaseModel):
 
 class UserRead(UserBase):
     """Model for user read"""
+
     id: int
+
+    @property
+    def full_name(self) -> str:
+        return f"{self.name.capitalize()} {self.surname.capitalize()}"
+
+    @property
+    def initials(self) -> str:
+        return f"{self.name[0]}{self.surname[0]}".upper()
 
     model_config = ConfigDict(
         from_attributes=True,
