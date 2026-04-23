@@ -12,7 +12,6 @@ from templating.jinja_template import templates
 from services.projects.service import ProjectService
 from dependencies.projects import get_project_service
 
-
 router = APIRouter()
 
 
@@ -35,7 +34,7 @@ async def programs_page(
     """Render programs listing page."""
 
     programs = await program_service.get_all_programs()
-    projects = await projects_service.get_all_projects()
+    projects = await projects_service.get_all()
 
     programs_schemas = [
         ProgramRead.model_validate(

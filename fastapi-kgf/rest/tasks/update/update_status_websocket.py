@@ -1,14 +1,18 @@
 import json
 
-from starlette.websockets import WebSocket, WebSocketDisconnect
-from fastapi import APIRouter
+from fastapi import (
+    APIRouter,
+    WebSocketException,
+    WebSocket,
+    WebSocketDisconnect,
+)
 from services.tasks_page.connection_manager import manager
 
 router = APIRouter()
 
 
 @router.websocket("/ws/action/{project_id}")
-async def action_tasks(websocket: WebSocket, project_id: int):
+async def action_tasks(websocket: WebSocket, project_id: int) -> None:
     await manager.connect(websocket, project_id)
     try:
         while True:
@@ -20,5 +24,5 @@ async def action_tasks(websocket: WebSocket, project_id: int):
                 method=json_data["action"],
             )
 
-    except WebSocketDisconnect:
+    except (WebSocketDisconnect, WebSocketException):
         await manager.disconnect(project_id, websocket)

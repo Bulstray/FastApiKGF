@@ -2,7 +2,7 @@ from sqlalchemy import select, update, case, delete, and_
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from core.models import Task, TaskUsers, MessageReadStatus
-from core.schemas.tasks import Task as TaskSchema
+from core.schemas import TaskRead
 
 from core.types.tasks import TaskStatus
 
@@ -24,7 +24,7 @@ async def get_task_by_id(
 
 async def add_task(
     session: AsyncSession,
-    task_in: TaskSchema,
+    task_in: TaskRead,
     user_ids: list[int],
 ) -> None:
     task_model = Task(**task_in.model_dump())

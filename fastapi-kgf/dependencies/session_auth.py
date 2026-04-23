@@ -1,19 +1,22 @@
 from typing import Annotated
 
 from fastapi import Depends, HTTPException, status, Request, Cookie
-from fastapi.responses import HTMLResponse
 from fastapi.security import APIKeyCookie
 from starlette.websockets import WebSocket
 
 from core.config.settings import SESSION_COOKIE_NAME
-from core.schemas.user import UserRead
+from core.schemas import UserRead
 from storage.redis import session
 from core.schemas.cookie import Cookies
 
-cookie_scheme = APIKeyCookie(name=SESSION_COOKIE_NAME, auto_error=False)
+cookie_scheme = APIKeyCookie(
+    name=SESSION_COOKIE_NAME,
+    auto_error=False,
+)
 
 
 async def get_authenticated_user(
+    request: Request,
     session_id: Annotated[
         str | None,
         Depends(cookie_scheme),

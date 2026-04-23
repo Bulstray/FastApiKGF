@@ -19,10 +19,9 @@ async def logout_page(
         None,
         Depends(delete_session),
     ],
-    return_url: str | None = None,
 ) -> RedirectResponse:
 
     return RedirectResponse(
-        url=return_url or "/",
+        url="/login",
         status_code=status.HTTP_303_SEE_OTHER,
     )

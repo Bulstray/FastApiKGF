@@ -4,10 +4,11 @@ from core.types.platform import Platform
 
 
 class BaseTender(BaseModel):
+    """The base model for tenders"""
     platform: Platform
     name: str
     pub_date: str
 
 
 class Tender(BaseTender):
-    """Модель для хранения данных о тенедере"""
+    """A model for data storage"""

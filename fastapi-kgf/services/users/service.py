@@ -1,52 +1,12 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from core.models.user import User
-from core.schemas.user import UserCreate
-from storage.db.crud_user import create_user as crud_create_user
-from storage.db.crud_user import delete_user as crud_delete_user
-from storage.db.crud_user import get_all_users as crud_get_all_users
-from storage.db.crud_user import get_user_by_id as crud_get_user_by_id
-from storage.db.crud_user import (
-    get_user_by_username as crud_get_user_by_username,
-)
-
-from .exception import UserAlreadyExistsErorr
-
-USER_ALREADY_EXISTS_ERROR_MSG = "User already exists"
+from core.models import User
+from services.service_base import BaseService
 
 
-class UserService:
+class UserService(BaseService):
+    """Service for users."""
+
     def __init__(self, session: AsyncSession) -> None:
-        self.session = session
-
-    async def get_all_users(self) -> list[User]:
-        return await crud_get_all_users(session=self.session)
-
-    async def get_user_by_name(self, username: str) -> User | None:
-        return await crud_get_user_by_username(
-            session=self.session,
-            username=username.lower(),
-        )
-
-    async def get_user_by_id(self, user_id: int) -> User | None:
-        return await crud_get_user_by_id(
-            self.session,
-            user_id,
-        )
-
-    async def create_user(self, user_in: UserCreate) -> User | None:
-        user = User(**user_in.model_dump())
-
-        if await self.get_user_by_name(username=user.username):
-            raise UserAlreadyExistsErorr(USER_ALREADY_EXISTS_ERROR_MSG)
-
-        return await crud_create_user(
-            session=self.session,
-            user=user,
-        )
-
-    async def delete_user(self, username: str) -> None:
-        return await crud_delete_user(
-            session=self.session,
-            username=username.lower(),
-        )
+        """Initialize the service with a database connection and user class"""
+        super().__init__(session, User)

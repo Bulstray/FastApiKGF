@@ -23,7 +23,7 @@ async def create_task(
     project_service: Annotated[ProjectService, Depends(get_project_service)],
 ) -> RedirectResponse:
 
-    project = await project_service.get_project_by_id(project_id)
+    project = await project_service.get_by_id(project_id)
     if project is None:
         return RedirectResponse(
             url="/",
@@ -39,6 +39,6 @@ async def create_task(
         )
 
     return RedirectResponse(
-        url=f"/tasks/{project_id}",
+        url=f"/projects/{project_id}",
         status_code=status.HTTP_303_SEE_OTHER,
     )

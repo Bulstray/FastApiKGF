@@ -18,13 +18,13 @@ router = APIRouter()
 async def get_messages_by_id(
     task_id: int,
     message_service: Annotated[MessageManager, Depends(get_message_service)],
-):
+) -> list[dict[str, str | int | dict[str, str]]]:
 
     messages = await message_service.get_messages_by_id(
         task_id,
     )
 
-    messages_dict = []
+    messages_list = []
 
     for message in messages:
         msg = {
@@ -46,9 +46,9 @@ async def get_messages_by_id(
                 },
             )
 
-        messages_dict.append(msg)
+        messages_list.append(msg)
 
-    return messages_dict
+    return messages_list
 
 
 @router.post("/mark_read/{task_id}/{user_id}", name="message:mark_read")

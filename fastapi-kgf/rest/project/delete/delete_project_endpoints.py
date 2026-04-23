@@ -8,19 +8,18 @@ from dependencies.projects import get_project_service
 from services.projects.service import ProjectService
 from services.tasks_page.connection_manager import manager
 
-
 router = APIRouter()
 
 
 @router.post("/{project_id}/delete")
 async def delete_project(
     project_id: int,
-    service: Annotated[
+    project_service: Annotated[
         "ProjectService",
         Depends(get_project_service),
     ],
-):
-    await service.delete_project(project_id)
+) -> RedirectResponse:
+    await project_service.delete_by_id(project_id)
     await manager.delete_project_id(project_id)
 
     return RedirectResponse(

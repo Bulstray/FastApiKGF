@@ -23,7 +23,7 @@ class ConnectionManager:
         else:
             self.active_connections[task_id] = [(user_id, websocket)]
 
-    def disconnect(
+    async def disconnect(
         self,
         websocket: WebSocket,
         task_id: int,
@@ -64,4 +64,4 @@ class ConnectionManager:
             await manager.broadcast(users_task, task_id)
 
 
-connectionmanager = ConnectionManager()
+message_manager = ConnectionManager()

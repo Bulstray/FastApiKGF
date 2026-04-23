@@ -1,9 +1,6 @@
-from starlette.websockets import WebSocket, WebSocketDisconnect
+from fastapi import APIRouter, WebSocketException, WebSocket, WebSocketDisconnect
 
-from fastapi import APIRouter, Request, Cookie
-from core.schemas.cookie import Cookies
 from services.notification.connection_manager import manager
-from typing import Annotated
 
 router = APIRouter()
 
@@ -18,5 +15,5 @@ async def websocket_notifications(
         while True:
             await websocket.receive_text()
 
-    except WebSocketDisconnect:
+    except (WebSocketDisconnect, WebSocketException):
         manager.disconnect(user_id=user_id)

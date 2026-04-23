@@ -1,5 +1,5 @@
 import uuid
-from fastapi import Request, Response, Depends
+from fastapi import Depends
 
 from typing import Annotated
 
@@ -17,10 +17,7 @@ async def create_session(user: User) -> str:
 
 
 async def delete_session(
-    session_id: Annotated[
-        str | None,
-        Depends(cookie_scheme),
-    ],
+    session_id: Annotated[str | None, Depends(cookie_scheme)],
 ) -> None:
 
     if session_id:
