@@ -20,25 +20,13 @@ class TasksFilesService:
         self.session = session
         self.file_service = FilesService(uploads_path=uploads_path)
 
-    async def get_tasks(self) -> list[Task]:
-        return await crud_tasks.get_all_tasks(
-            session=self.session,
-        )
-
-    async def get_task_by_id(self, task_id: int) -> Task | None:
-        return await crud_tasks.get_task_by_id(
-            session=self.session,
-            task_id=task_id,
-        )
-
     async def create_task(
         self,
         form: FormData,
         content: bytes,
     ) -> None:
 
-        folder = None
-        filename = None
+        folder, filename = None, None
 
         task_schema = TaskCreate.model_validate(form)
 
@@ -68,19 +56,6 @@ class TasksFilesService:
             session=self.session,
             task_in=task_model,
             user_ids=users_ids,
-        )
-
-    async def delete_task(self, id_task: id) -> Task:
-        task = await self.get_task_by_id(id_task)
-
-        await crud_tasks.delete_tasks_in_db(session=self.session, task=task)
-
-        return task
-
-    async def update_status_in_db(self, id_task: int) -> None:
-        await crud_tasks.update_status_task(
-            session=self.session,
-            id_task=id_task,
         )
 
     async def get_tasks_by_project_id(
