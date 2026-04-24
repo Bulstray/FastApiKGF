@@ -1,5 +1,4 @@
-from typing import Annotated, TYPE_CHECKING
-import logging
+from typing import Annotated
 
 from fastapi import APIRouter, Depends
 from fastapi.requests import Request
@@ -10,8 +9,8 @@ from core.schemas.user import UserRead
 from dependencies.session_auth import get_current_user
 from templating.jinja_template import templates
 
-if TYPE_CHECKING:
-    from services.projects.service import ProjectService
+from services.projects.service import ProjectService
+
 router = APIRouter()
 
 
@@ -23,7 +22,7 @@ async def home(
         Depends(get_current_user),
     ],
     projects_service: Annotated[
-        "ProjectService",
+        ProjectService,
         Depends(get_project_service),
     ],
 ) -> HTMLResponse:
