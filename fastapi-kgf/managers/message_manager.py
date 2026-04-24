@@ -1,7 +1,7 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 from starlette.websockets import WebSocket
 
-from services.notification.connection_manager import manager
+from .notification_manager import notification_manager
 from storage.db.crud_message import update_mark_read_message
 from storage.db.crud_task_users import get_task_users
 
@@ -18,10 +18,10 @@ class ConnectionManager:
         user_id: int,
     ) -> None:
         await websocket.accept()
-        if task_id in self.active_connections:
-            self.active_connections[task_id] += [(user_id, websocket)]
-        else:
-            self.active_connections[task_id] = [(user_id, websocket)]
+
+        self.active_connections[task_id] = self.active_connections.get(task_id, []) + [
+            (user_id, websocket)
+        ]
 
     async def disconnect(
         self,
@@ -33,7 +33,6 @@ class ConnectionManager:
             self.active_connections[task_id].remove((user_id, websocket))
         except (ValueError, KeyError):
             return None
-
         else:
             if self.active_connections[task_id]:
                 self.active_connections.pop(task_id)
@@ -44,8 +43,6 @@ class ConnectionManager:
         task_id: int,
         session: AsyncSession,
     ) -> None:
-        """Отправить сообщение всем в задаче"""
-
         users_task = await get_task_users(session, task_id)
 
         if task_id in self.active_connections:
@@ -61,7 +58,7 @@ class ConnectionManager:
 
                 users_task.remove(user_id)
 
-            await manager.broadcast(users_task, task_id)
+            await notification_manager.broadcast(users_task, task_id)
 
 
 message_manager = ConnectionManager()
