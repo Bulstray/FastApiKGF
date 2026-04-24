@@ -1,6 +1,11 @@
-from fastapi import APIRouter, WebSocketException, WebSocket, WebSocketDisconnect
+from fastapi import (
+    APIRouter,
+    WebSocketException,
+    WebSocket,
+    WebSocketDisconnect,
+)
 
-from services.notification.connection_manager import manager
+from managers.notification_manager import notification_manager
 
 router = APIRouter()
 
@@ -10,10 +15,10 @@ async def websocket_notifications(
     websocket: WebSocket,
     user_id: int,
 ) -> None:
-    await manager.connect(websocket, user_id)
+    await notification_manager.connect(websocket, user_id)
     try:
         while True:
             await websocket.receive_text()
 
     except (WebSocketDisconnect, WebSocketException):
-        manager.disconnect(user_id=user_id)
+        notification_manager.disconnect(user_id=user_id)
