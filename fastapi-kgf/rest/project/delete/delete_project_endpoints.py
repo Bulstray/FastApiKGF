@@ -6,7 +6,7 @@ from starlette.responses import RedirectResponse
 
 from dependencies.projects import get_project_service
 from services.projects.service import ProjectService
-from services.tasks_page.connection_manager import manager
+from managers.task_event_manager import task_event_manager
 
 router = APIRouter()
 
@@ -20,7 +20,7 @@ async def delete_project(
     ],
 ) -> RedirectResponse:
     await project_service.delete_by_id(project_id)
-    await manager.delete_project_id(project_id)
+    await task_event_manager.delete_project_id(project_id)
 
     return RedirectResponse(
         url="/",
