@@ -6,7 +6,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from starlette.websockets import WebSocket, WebSocketDisconnect
 
 from core.models import db_helper
-from core.schemas import Message, UserRead
+from core.schemas import UserRead
 from dependencies.message import get_message_service
 from dependencies.providers import get_user_service
 from managers.message_manager import message_manager
@@ -30,34 +30,19 @@ async def websocket_endpoint(
         while True:
             # Получаем сообщение от клиента
             data = await websocket.receive_text()
-            message_schema = Message.model_validate(
-                json.loads(data),
-            )
+
+            message_data = await message_service.process_message(data)
 
             user = UserRead.model_validate(
                 await user_service.get_by_id(
-                    message_schema.author,
+                    message_data["author"],
                 )
             )
 
-            file_folder = await message_service.process_message(message_schema)
-
-            # Обновляем данные для рассылки
-            message_data = message_schema.model_dump(exclude={"file"})
             message_data.update(
-                {
-                    "author": user.full_name,
-                    "initials": user.initials,
-                }
+                author=user.full_name,
+                initials=user.initials,
             )
-
-            if message_schema.file:
-                message_data.update(
-                    file={
-                        "name": message_schema.file.name,
-                        "folder_path": file_folder,
-                    },
-                )
 
             # Рассылаем всем в этой задаче (включая отправителя)
             await message_manager.broadcast(
