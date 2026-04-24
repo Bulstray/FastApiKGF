@@ -8,7 +8,7 @@ redis_tenders = Redis(
     host=settings.redis.connection.host,
     port=settings.redis.connection.port,
     db=settings.redis.database.tenders,
-    decode_responses=True,
+    decode_responses=settings.redis.decode_response,
 )
 
 
