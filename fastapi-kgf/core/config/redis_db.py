@@ -14,6 +14,7 @@ class RedisDatabaseConfig(BaseModel):
     default: int = 0
     sessions: int = 1
     tenders: int = 2
+    chat_message: int = 3
 
 
 class RedisCollectionConfig(BaseModel):
@@ -25,3 +26,4 @@ class RedisConfig(BaseModel):
     connection: RedisConnectionConfig = RedisConnectionConfig()
     database: RedisDatabaseConfig = RedisDatabaseConfig()
     collections_name: RedisCollectionConfig = RedisCollectionConfig()
+    decode_response: bool = True
