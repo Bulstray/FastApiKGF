@@ -1,15 +1,14 @@
-import bcrypt
-
 from typing import Annotated
+
+import bcrypt
 from fastapi import Depends, Request
 
-
 from core.models import User
+from core.schemas import UserLogin
+from services.auth.session_manager import create_session
 from services.users.service import UserService
 
 from .user import get_user_service
-
-from services.auth.session_manager import create_session
 
 
 async def validate_basic_auth_user(
@@ -20,15 +19,17 @@ async def validate_basic_auth_user(
     ],
 ) -> str | None:
     async with request.form() as form_data:
-        is_user: None | User = await user_service.get_user_by_username(
-            username=form_data["username"],
-        )
+        user = UserLogin.model_validate(form_data)
 
-        if is_user and bcrypt.checkpw(
-            password=form_data["password"].encode("utf-8"),
-            hashed_password=is_user.hashed_password.encode("utf-8"),
-        ):
+    is_user: None | User = await user_service.get_user_by_username(
+        username=user.username,
+    )
 
-            return await create_session(is_user)
+    if is_user and bcrypt.checkpw(
+        password=user.password.encode("utf-8"),
+        hashed_password=is_user.hashed_password.encode("utf-8"),
+    ):
 
-        return None
+        return await create_session(is_user)
+
+    return None
