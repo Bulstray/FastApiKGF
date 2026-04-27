@@ -5,7 +5,6 @@ from fastapi import APIRouter, Depends, HTTPException
 from starlette import status
 from starlette.responses import FileResponse, RedirectResponse
 
-
 from dependencies.providers import get_program_service
 from services.programs import ProgramService
 
