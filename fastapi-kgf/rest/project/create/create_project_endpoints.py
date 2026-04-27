@@ -1,12 +1,11 @@
 from typing import Annotated
 
-from fastapi import Depends, APIRouter
+from fastapi import APIRouter, Depends
 from starlette import status
 from starlette.requests import Request
 from starlette.responses import RedirectResponse
 
 from dependencies.projects import get_project_service
-
 from services.projects.service import ProjectService
 
 router = APIRouter()
