@@ -1,12 +1,12 @@
 from typing import Annotated
 
-from fastapi import Depends, APIRouter
+from fastapi import APIRouter, Depends
 from starlette import status
 from starlette.responses import RedirectResponse
 
 from dependencies.projects import get_project_service
-from services.projects.service import ProjectService
 from managers.task_event_manager import task_event_manager
+from services.projects.service import ProjectService
 
 router = APIRouter()
 
@@ -15,7 +15,7 @@ router = APIRouter()
 async def delete_project(
     project_id: int,
     project_service: Annotated[
-        "ProjectService",
+        ProjectService,
         Depends(get_project_service),
     ],
 ) -> RedirectResponse:
