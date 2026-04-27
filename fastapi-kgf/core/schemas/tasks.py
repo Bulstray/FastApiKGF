@@ -1,7 +1,7 @@
 from datetime import date
 
 from fastapi import UploadFile
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, field_validator
 
 
 class TaskBase(BaseModel):
