@@ -1,6 +1,6 @@
 from typing import Annotated, cast
 
-from fastapi import Depends, UploadFile
+from fastapi import APIRouter, Depends, UploadFile
 from starlette import status
 from starlette.requests import Request
 from starlette.responses import RedirectResponse
@@ -9,8 +9,6 @@ from dependencies.projects import get_project_service
 from dependencies.providers import get_tasks_service
 from services.projects.service import ProjectService
 from services.task import TasksFilesService
-
-from fastapi import APIRouter
 
 router = APIRouter()
 
@@ -31,7 +29,7 @@ async def create_task(
         )
 
     async with request.form() as form:
-        content = await cast(UploadFile, form.get("rar_file")).read()
+        content = await cast("UploadFile", form.get("rar_file")).read()
 
         await service.create_task(
             form=form,
