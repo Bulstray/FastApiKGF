@@ -34,7 +34,7 @@ class ConnectionManager:
         except (ValueError, KeyError):
             return None
         else:
-            if self.active_connections[task_id]:
+            if not self.active_connections[task_id]:
                 self.active_connections.pop(task_id)
 
     async def broadcast(
