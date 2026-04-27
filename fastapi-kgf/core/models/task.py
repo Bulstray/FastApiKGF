@@ -12,8 +12,8 @@ from .base import Base
 if TYPE_CHECKING:
     from .message import Message
     from .message_read_status import MessageReadStatus
-    from .taks_users import TaskUsers
     from .projects import Project
+    from .taks_users import TaskUsers
 
 
 class Task(Base):
