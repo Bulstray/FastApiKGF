@@ -1,7 +1,7 @@
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
-from core.schemas.tasks import Task
+from core.schemas import TaskRead
 
 import smtplib
 
@@ -12,6 +12,8 @@ async def send_email(
     recipient: str,
     subject: Task,
 ):
+    subject: TaskRead,
+) -> None:
     message = MIMEMultipart()
     message["From"] = settings.superuser.email
     message["To"] = recipient
