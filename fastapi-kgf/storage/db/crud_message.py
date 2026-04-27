@@ -3,14 +3,15 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
 from core.models import Message, MessageReadStatus
+
 from .base_crud import BaseCRUD
 
 
 class MessageStorage(BaseCRUD):
-    def __init__(self, session: AsyncSession):
+    def __init__(self, session: AsyncSession) -> None:
         super().__init__(session, Message)
 
-    async def get_unread_message(self, user_id: int):
+    async def get_unread_message(self, user_id: int) -> dict[int, int]:
         stmt = select(
             MessageReadStatus.task_id,
             MessageReadStatus.count,
