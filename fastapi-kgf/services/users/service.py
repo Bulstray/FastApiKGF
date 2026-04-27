@@ -1,10 +1,10 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from core.models import User
-from services.service_base import BaseService
+from storage.db.base_crud import BaseCRUD
 
 
-class UserService(BaseService):
+class UserService(BaseCRUD):
     """Service for users."""
 
     def __init__(self, session: AsyncSession) -> None:
