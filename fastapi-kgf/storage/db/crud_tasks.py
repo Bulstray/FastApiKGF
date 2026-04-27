@@ -1,45 +1,33 @@
-from sqlalchemy import select, update, case, delete, and_
+from sqlalchemy import select, update, case, and_
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from core.models import Task, TaskUsers, MessageReadStatus
-from core.schemas import TaskRead
+from core.models import Task, TaskUsers
 
 from core.types.tasks import TaskStatus
+from .base_crud import BaseCRUD
 
 
-async def add_task(
-    session: AsyncSession,
-    task_in: TaskRead,
-    user_ids: list[int],
-) -> None:
-    task_model = Task(**task_in.model_dump())
-    session.add(task_model)
+class TaskStorage(BaseCRUD):
+    def __init__(self, session):
+        super().__init__(session, Task)
 
-    await session.flush()
-
-    task_users = [
-        TaskUsers(task_id=task_model.id, user_id=user_id) for user_id in user_ids
-    ]
-
-    session.add_all(task_users)
-
-    unread_statuses = [
-        MessageReadStatus(task_id=task_model.id, user_id=user_id)
-        for user_id in user_ids
-    ]
-
-    session.add_all(unread_statuses)
-
-    await session.commit()
-
-
-async def delete_tasks_in_db(
-    session: AsyncSession,
-    task: Task,
-) -> None:
-    # Сначала получаем объект
-    await session.delete(task)  # ORM-удаление
-    await session.commit()
+    async def get_user_tasks_by_project_id(
+        self,
+        project_id,
+        user_id,
+    ) -> list[Task]:
+        stmt = (
+            select(Task)
+            .join(TaskUsers, Task.id == TaskUsers.task_id)
+            .where(
+                and_(
+                    Task.project_id == project_id,
+                    TaskUsers.user_id == user_id,
+                )
+            )
+        )
+        result = await self.session.scalars(stmt)
+        return list(result.all())
 
 
 async def delete_task_by_id(
@@ -48,7 +36,8 @@ async def delete_task_by_id(
 ) -> None:
     task = await session.get(Task, task_id)
     if task:
-        await delete_tasks_in_db(session, task)
+        await session.delete(task)  # ORM-удаление
+        await session.commit()
 
 
 async def update_status_task(
