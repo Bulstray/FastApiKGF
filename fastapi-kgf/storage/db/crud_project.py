@@ -1,7 +1,8 @@
-from .base_crud import BaseCRUD
-
 from sqlalchemy.ext.asyncio import AsyncSession
+
 from core.models import Project
+
+from .base_crud import BaseCRUD
 
 
 class ProjectStorage(BaseCRUD):
