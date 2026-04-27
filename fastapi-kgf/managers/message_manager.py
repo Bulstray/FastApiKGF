@@ -1,9 +1,10 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 from starlette.websockets import WebSocket
 
-from .notification_manager import notification_manager
 from storage.db.crud_message import update_mark_read_message
 from storage.db.crud_task_users import get_task_users
+
+from .notification_manager import notification_manager
 
 
 class ConnectionManager:
@@ -20,7 +21,7 @@ class ConnectionManager:
         await websocket.accept()
 
         self.active_connections[task_id] = self.active_connections.get(task_id, []) + [
-            (user_id, websocket)
+            (user_id, websocket),
         ]
 
     async def disconnect(
@@ -32,7 +33,7 @@ class ConnectionManager:
         try:
             self.active_connections[task_id].remove((user_id, websocket))
         except (ValueError, KeyError):
-            return None
+            return
         else:
             if not self.active_connections[task_id]:
                 self.active_connections.pop(task_id)
