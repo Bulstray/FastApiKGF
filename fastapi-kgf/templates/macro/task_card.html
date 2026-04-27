@@ -60,7 +60,7 @@
                 <i class="bi bi-file-zip"></i>
               </div>
               <div class="rar-info">
-                <div class="rar-name">{{ task.filename }}</div>
+                <div class="rar-name" title="{{ task.filename }}">{{ task.filename }}</div>
                 {#                                <div class="rar-size">14.5 MB</div>#}
               </div>
               <a class="download-rar"
@@ -94,13 +94,13 @@
                       title="Изменить статус">
                 <i class="{{ icon }}"></i>
               </button>
-            {% if task.customer_id == user.id %}
+              {% if task.customer_id == user.id %}
                 <button
                   onclick="ActionTask('delete', '{{ task.id }}');"
                   title="Удалить">
                   <i class="bi bi-trash"></i>
                 </button>
-            {% endif %}
+              {% endif %}
             </div>
           </div>
         </div>
@@ -310,6 +310,8 @@
           display: flex;
           align-items: center;
           gap: 8px;
+          max-width: 100%;
+          overflow: hidden;
       }
 
       .rar-icon {
@@ -322,16 +324,22 @@
           justify-content: center;
           color: white;
           font-size: 1rem;
+          flex-shrink: 0;
       }
 
       .rar-info {
           flex: 1;
+          min-width: 0; /* КРИТИЧЕСКИ ВАЖНО */
+          overflow: hidden;
       }
 
       .rar-name {
           font-weight: 600;
           color: var(--primary-dark);
           font-size: 0.8rem;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
       }
 
       .rar-size {
@@ -345,6 +353,7 @@
           cursor: pointer;
           padding: 4px;
           text-decoration: none;
+          flex-shrink: 0; /* Кнопка не сжимается */
       }
 
       .download-rar:hover {
