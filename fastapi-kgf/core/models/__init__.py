@@ -4,11 +4,11 @@ __all__ = (
     "MessageFile",
     "MessageReadStatus",
     "Program",
-    "Task",
-    "User",
     "Project",
-    "db_helper",
+    "Task",
     "TaskUsers",
+    "User",
+    "db_helper",
 )
 
 from .base import Base
@@ -17,7 +17,7 @@ from .message import Message
 from .message_file import MessageFile
 from .message_read_status import MessageReadStatus
 from .programs import Program
-from .task import Task
-from .user import User
 from .projects import Project
 from .taks_users import TaskUsers
+from .task import Task
+from .user import User
