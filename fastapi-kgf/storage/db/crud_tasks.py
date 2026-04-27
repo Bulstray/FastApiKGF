@@ -1,20 +1,20 @@
-from sqlalchemy import select, update, case, and_
+from sqlalchemy import and_, case, select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from core.models import Task, TaskUsers
-
 from core.types.tasks import TaskStatus
+
 from .base_crud import BaseCRUD
 
 
 class TaskStorage(BaseCRUD):
-    def __init__(self, session):
+    def __init__(self, session: AsyncSession) -> None:
         super().__init__(session, Task)
 
     async def get_user_tasks_by_project_id(
         self,
-        project_id,
-        user_id,
+        project_id: int,
+        user_id: int,
     ) -> list[Task]:
         stmt = (
             select(Task)
@@ -23,7 +23,7 @@ class TaskStorage(BaseCRUD):
                 and_(
                     Task.project_id == project_id,
                     TaskUsers.user_id == user_id,
-                )
+                ),
             )
         )
         result = await self.session.scalars(stmt)
@@ -52,7 +52,7 @@ async def update_status_task(
                 (Task.status == TaskStatus.NOT_STARTED, TaskStatus.STARTED),
                 (Task.status == TaskStatus.STARTED, TaskStatus.COMPLETED),
                 (Task.status == TaskStatus.COMPLETED, TaskStatus.NOT_STARTED),
-            )
+            ),
         )
     )
     await session.execute(stmt)
@@ -63,7 +63,7 @@ async def get_tasks_by_project_id(
     session: AsyncSession,
     project_id: int,
     user_id: int,
-):
+) -> list[Task]:
     stmt = (
         select(Task)
         .join(TaskUsers, Task.id == TaskUsers.task_id)
@@ -71,7 +71,7 @@ async def get_tasks_by_project_id(
             and_(
                 Task.project_id == project_id,
                 TaskUsers.user_id == user_id,
-            )
+            ),
         )
     )
     result = await session.scalars(stmt)
