@@ -1,6 +1,5 @@
-from typing import TYPE_CHECKING
-
 from pathlib import Path
+from typing import TYPE_CHECKING
 
 from sqlalchemy import ForeignKey, String, event
 from sqlalchemy.orm import Mapped, mapped_column, relationship
