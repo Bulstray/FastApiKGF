@@ -7,7 +7,6 @@ from .base import Base
 
 if TYPE_CHECKING:
     from .message_file import MessageFile
-    from .user import User
 
 
 class Message(Base):
