@@ -10,8 +10,6 @@ from core.config import settings
 
 async def send_email(
     recipient: str,
-    subject: Task,
-):
     subject: TaskRead,
 ) -> None:
     message = MIMEMultipart()
