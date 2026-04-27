@@ -1,3 +1,3 @@
-from core.models import User, Project
+from core.models import Project, User, Task
 
-Model = User | Project
+Model = User | Project | Task
