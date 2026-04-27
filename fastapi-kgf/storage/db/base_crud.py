@@ -1,5 +1,5 @@
-from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from core.types.model import Model
 
@@ -8,7 +8,8 @@ class BaseCRUD:
     """Base CRUD class for all models"""
 
     def __init__(self, session: AsyncSession, model: Model) -> None:
-        """Initialize the base crud with a database connection and an ORM object."""
+        """Initialize the base crud with
+        a database connection and an ORM object."""
         self.session = session
         self.model = model
 
@@ -25,7 +26,7 @@ class BaseCRUD:
     async def delete_by_id(self, id_: int) -> None:
         """Delete by id"""
         model = await self.get_by_id(id_)
-        await self.session.delete(self.model)
+        await self.session.delete(model)
         await self.session.commit()
 
     async def create(self, model: Model) -> Model:
