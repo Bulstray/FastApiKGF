@@ -1,14 +1,13 @@
 from sqlalchemy.ext.asyncio import AsyncSession
-
 from starlette.datastructures import FormData
 
-from core.schemas.projects import ProjectCreate, ProjectRead
 from core.models import Project
+from core.schemas.projects import ProjectCreate, ProjectRead
 from storage.db.crud_project import ProjectStorage
 
 
 class ProjectService(ProjectStorage):
-    def __init__(self, session: AsyncSession):
+    def __init__(self, session: AsyncSession) -> None:
         super().__init__(session)
 
     async def create_project(self, form_data: FormData) -> ProjectRead:
@@ -16,6 +15,6 @@ class ProjectService(ProjectStorage):
         project_in = await self.create(
             Project(
                 **project_in.model_dump(),
-            )
+            ),
         )
         return ProjectRead.model_validate(project_in)
