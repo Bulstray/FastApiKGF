@@ -1,12 +1,12 @@
 import uuid
-from fastapi import Depends
-
 from typing import Annotated
+
+from fastapi import Depends
 
 from core.models import User
 from core.schemas.user import UserRead
-from storage.redis import session
 from dependencies.session_auth import cookie_scheme
+from storage.redis import session
 
 
 async def create_session(user: User) -> str:
