@@ -5,12 +5,12 @@ from fastapi.responses import HTMLResponse
 
 from core.schemas import ProgramRead
 from core.schemas.user import UserRead
+from dependencies.projects import get_project_service
 from dependencies.providers import get_program_service
 from dependencies.session_auth import get_current_user
 from services.programs import ProgramService
-from templating.jinja_template import templates
 from services.projects.service import ProjectService
-from dependencies.projects import get_project_service
+from templating.jinja_template import templates
 
 router = APIRouter()
 
