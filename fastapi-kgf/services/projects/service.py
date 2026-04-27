@@ -4,12 +4,12 @@ from starlette.datastructures import FormData
 
 from core.schemas.projects import ProjectCreate, ProjectRead
 from core.models import Project
-from storage.db.base_crud import BaseCRUD
+from storage.db.crud_project import ProjectStorage
 
 
-class ProjectService(BaseCRUD):
+class ProjectService(ProjectStorage):
     def __init__(self, session: AsyncSession):
-        super().__init__(session, Project)
+        super().__init__(session)
 
     async def create_project(self, form_data: FormData) -> ProjectRead:
         project_in = ProjectCreate.model_validate(form_data)
