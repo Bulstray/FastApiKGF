@@ -1,10 +1,10 @@
+from typing import Annotated
+
 from fastapi import Depends
 from sqlalchemy.ext.asyncio import AsyncSession
-from services.projects.service import ProjectService
 
 from core.models import db_helper
-
-from typing import Annotated
+from services.projects.service import ProjectService
 
 
 async def get_project_service(
