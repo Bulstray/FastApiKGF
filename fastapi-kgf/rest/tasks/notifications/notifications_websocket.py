@@ -1,8 +1,8 @@
 from fastapi import (
     APIRouter,
-    WebSocketException,
     WebSocket,
     WebSocketDisconnect,
+    WebSocketException,
 )
 
 from managers.notification_manager import notification_manager
