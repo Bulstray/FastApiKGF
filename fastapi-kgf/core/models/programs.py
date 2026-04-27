@@ -36,7 +36,7 @@ class Program(Base):
     )
 
 
-@event.listens_for(Program, "after_delete")
+@event.listens_for(Program, "after_delete")  # type: ignore[no-untyped-def]
 def delete_file_after_delete(mapper, connection, target) -> None:
     folder_file = Path(target.folder_file)
     if folder_file.exists():
