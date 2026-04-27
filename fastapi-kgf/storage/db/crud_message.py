@@ -35,9 +35,29 @@ class MessageStorage(BaseCRUD):
         result = await self.session.scalars(message)
         return list(result.all())
 
+    async def update_count_unread(
+        self,
+        task_id: int,
+        user_id: int,
+    ) -> None:
+        stmt = (
+            update(MessageReadStatus)
+            .where(
+                and_(
+                    MessageReadStatus.task_id == task_id,
+                    MessageReadStatus.user_id == user_id,
+                ),
+            )
+            .values(count=MessageReadStatus.count + 1)
+        )
+        await self.session.execute(stmt)
+        await self.session.commit()
+
 
 async def update_mark_read_message(
-    session: AsyncSession, task_id: int, user_id: int
+    session: AsyncSession,
+    task_id: int,
+    user_id: int,
 ) -> None:
     message = (
         update(MessageReadStatus)
@@ -50,23 +70,4 @@ async def update_mark_read_message(
         .values(count=0)
     )
     await session.execute(message)
-    await session.commit()
-
-
-async def update_count_unread(
-    session: AsyncSession,
-    task_id: int,
-    user_id: int,
-) -> None:
-    stmt = (
-        update(MessageReadStatus)
-        .where(
-            and_(
-                MessageReadStatus.task_id == task_id,
-                MessageReadStatus.user_id == user_id,
-            ),
-        )
-        .values(count=MessageReadStatus.count + 1)
-    )
-    await session.execute(stmt)
     await session.commit()
