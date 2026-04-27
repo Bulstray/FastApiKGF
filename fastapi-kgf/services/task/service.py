@@ -2,13 +2,12 @@ from aiopath import AsyncPath
 from sqlalchemy.ext.asyncio import AsyncSession
 from starlette.datastructures import FormData
 
-from core.models import Task, TaskUsers, MessageReadStatus
-from core.schemas import TaskRead, TaskCreate
+from core.models import MessageReadStatus, Task, TaskUsers
+from core.schemas import TaskCreate, TaskRead
+from malling.send_email import send_email
 from services.files import FilesService
 from services.users.service import UserService
 from storage.db.crud_tasks import TaskStorage
-
-from malling.send_email import send_email
 
 
 class TasksFilesService(TaskStorage):
@@ -41,7 +40,7 @@ class TasksFilesService(TaskStorage):
 
         return folder, filename
 
-    async def created_task(self, task_in: TaskRead, users_id: list[int]):
+    async def created_task(self, task_in: TaskRead, users_id: list[int]) -> None:
         task = Task(**task_in.model_dump())
 
         task.task_users = [TaskUsers(user_id=user_id) for user_id in users_id]
@@ -77,5 +76,5 @@ class TasksFilesService(TaskStorage):
 
         await self.created_task(
             task_in=task_model,
-            users_id=users_ids + [task_model.customer_id],
+            users_id=[*users_ids, task_model.customer_id],
         )
