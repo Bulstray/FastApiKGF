@@ -20,10 +20,9 @@ class Task(Base):
     __tablename__ = "tasks"
 
     title: Mapped[str] = mapped_column(
-        String(200),
         nullable=False,
-        index=True,
     )
+
     description: Mapped[str] = mapped_column(
         Text,
         nullable=False,
@@ -32,7 +31,6 @@ class Task(Base):
     deadline: Mapped[datetime] = mapped_column(
         Date,
         nullable=False,
-        index=True,
     )
 
     customer_id: Mapped[int] = mapped_column(
