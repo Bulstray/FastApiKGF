@@ -82,7 +82,6 @@ select = [
 	"RSE", # flake8-raise (RSE)
 	"SLF", # flake8-self (SLF)
 	"SLOT", # flake8-slots (SLOT)
-	"ARG", # flake8-unused-arguments (ARG)
 	"FLY", # flynt (FLY)
 	"TRY", # tryceratops (TRY)
 	"PLR", # Pylint Refactor (PLR)
@@ -92,7 +91,6 @@ select = [
 	"C90", # mccabe (C90)
 	"PERF", # Perflint (PERF)
 	"FURB", # refurb (FURB)
-	"FAST" # fastapi
 ]
 
 ignore = ["RUF002", "ARG001",]
