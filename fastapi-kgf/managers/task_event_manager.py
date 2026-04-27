@@ -1,8 +1,7 @@
 from starlette.websockets import WebSocket
-from storage.db.crud_tasks import update_status_task, delete_task_by_id
-
 
 from core.models import db_helper
+from storage.db.crud_tasks import delete_task_by_id, update_status_task
 
 
 class ConnectionManager:
@@ -47,7 +46,7 @@ class ConnectionManager:
                 {
                     "action": method,
                     "task_id": task_id,
-                }
+                },
             )
 
 
