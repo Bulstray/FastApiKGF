@@ -14,6 +14,11 @@ from utils import hash_password
 PasswordBytes = Annotated[str, AfterValidator(hash_password)]
 
 
+class UserLogin(BaseModel):
+    username: str
+    password: str
+
+
 class UserBase(BaseModel):
     """The base model user"""
 
@@ -46,7 +51,3 @@ class UserRead(UserBase):
     model_config = ConfigDict(
         from_attributes=True,
     )
-
-
-class UserCreate(UserBase):
-    """Model for user creation"""
