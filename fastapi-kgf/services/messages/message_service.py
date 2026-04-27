@@ -1,15 +1,18 @@
 import json
 
+from aiopath import AsyncPath
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from core.models import MessageFile, Message
 from services.files import FilesService
 from storage.db import crud_message, crud_task_users
 from core.schemas.message import Message as MessageSchema
-from services.service_base import BaseService
+from storage.db.crud_message import MessageStorage
+
+from utils.file_size import get_file_size
 
 
-class MessageManager(BaseService):
+class MessageManager(MessageStorage):
     """
     A manager for working with messages.
 
@@ -34,28 +37,8 @@ class MessageManager(BaseService):
             session (AsyncSession): Asynchronous SQLAlchemy session for database interaction.
             file_service (FilesService): Instance of the file service.
         """
-        super().__init__(session, Message)
+        super().__init__(session)
         self.file_service = file_service
-
-    async def get_messages_for_task(self, task_id: int) -> list[Message]:
-        """
-        Retrieves all messages associated with a specific task.
-
-        Fetches messages linked to the given task ID from the database
-        using the configured session.
-
-        Args:
-            task_id (int): The unique identifier of the task
-                whose messages are to be retrieved.
-
-        Returns:
-            list[Message]: A list of Message objects associated with the task.
-            Returns an empty list if no messages are found.
-        """
-        return await crud_message.get_messages_for_task(
-            self.session,
-            task_id,
-        )
 
     async def set_unread_count_message(
         self,
@@ -87,7 +70,7 @@ class MessageManager(BaseService):
         for user_id in users_in_task:
             if author_id == user_id:
                 continue
-            await crud_message.update_mark_read_message(
+            await crud_message.update_count_unread(
                 session=self.session,
                 task_id=task_id,
                 user_id=user_id,
@@ -96,7 +79,7 @@ class MessageManager(BaseService):
     async def create_message_db(
         self,
         message_in: MessageSchema,
-    ) -> str | None:
+    ) -> AsyncPath | None:
         """
         Creates a new message in the database, optionally with an attached file.
 
@@ -120,12 +103,15 @@ class MessageManager(BaseService):
             **message_in.model_dump(exclude={"file"}),
         )
 
-        if message.file:
+        if message_in.file:
             file_path = await self.file_service.save_program_file_bs64(
                 code_file=message_in.file.content,
                 filename=message_in.file.name,
             )
-            file = MessageFile(name=message_in.file.name, folder_path=f"{file_path}")
+            file = MessageFile(
+                name=message_in.file.name,
+                folder_path=f"{file_path}",
+            )
 
             message.file = file
 
@@ -166,14 +152,9 @@ class MessageManager(BaseService):
             message_data.update(
                 file={
                     "name": message_schema.file.name,
-                    "folder_path": file_path,
+                    "folder_path": str(file_path),
+                    "size": await get_file_size(file_path),
                 }
             )
 
         return message_data
-
-    async def get_unread_message(self, user_id: int) -> dict:
-        return await crud_message.get_unread_message(
-            session=self.session,
-            user_id=user_id,
-        )
