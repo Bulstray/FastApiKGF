@@ -1,13 +1,10 @@
 from typing import Any
 
-from sqladmin import ModelView
-from core.models import User
-from dependencies.session_auth import get_authenticated_user
-from core.types import UserRole
-
-from utils.password_service import hash_password
-
 from fastapi import Request
+from sqladmin import ModelView
+
+from core.models import User
+from utils.password_service import hash_password
 
 FIELD_USER = [
     User.username,
