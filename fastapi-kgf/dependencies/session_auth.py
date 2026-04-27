@@ -1,13 +1,13 @@
 from typing import Annotated
 
-from fastapi import Depends, HTTPException, status, Request, Cookie
+from fastapi import Cookie, Depends, HTTPException, Request, status
 from fastapi.security import APIKeyCookie
 from starlette.websockets import WebSocket
 
 from core.config.settings import SESSION_COOKIE_NAME
 from core.schemas import UserRead
-from storage.redis import session
 from core.schemas.cookie import Cookies
+from storage.redis import session
 
 cookie_scheme = APIKeyCookie(
     name=SESSION_COOKIE_NAME,
@@ -38,7 +38,7 @@ async def get_current_user(
 
 
 async def get_cookie_websocket(
-    websocket: WebSocket, session_id: Annotated[Cookies, Cookie()]
+    websocket: WebSocket, session_id: Annotated[Cookies, Cookie()],
 ):
     if session_id and (
         answer := await session.get_by_session_id(session_id.web_app_session_id)
