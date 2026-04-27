@@ -7,21 +7,6 @@ from core.schemas import TaskRead
 from core.types.tasks import TaskStatus
 
 
-async def get_all_tasks(
-    session: AsyncSession,
-) -> list[Task]:
-    stmt = select(Task).order_by(Task.id)
-    result = await session.scalars(stmt)
-    return list(result.all())
-
-
-async def get_task_by_id(
-    session: AsyncSession,
-    task_id: int,
-) -> Task | None:
-    return await session.get(Task, task_id)
-
-
 async def add_task(
     session: AsyncSession,
     task_in: TaskRead,
