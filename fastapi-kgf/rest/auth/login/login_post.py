@@ -1,15 +1,12 @@
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, Form
-from sqlalchemy.ext.asyncio import AsyncSession
+from fastapi import APIRouter, Depends
 from starlette import status
 from starlette.requests import Request
 from starlette.responses import HTMLResponse, RedirectResponse
 
 from core.config.settings import SESSION_COOKIE_NAME
-from core.models import User
 from dependencies.auth_user import validate_basic_auth_user
-from services.auth.session_manager import create_session
 from templating.jinja_template import templates
 
 router = APIRouter()
