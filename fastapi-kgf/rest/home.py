@@ -3,13 +3,12 @@ from typing import Annotated
 from fastapi import APIRouter, Depends
 from fastapi.requests import Request
 from fastapi.responses import HTMLResponse
-from dependencies.projects import get_project_service
 
 from core.schemas.user import UserRead
+from dependencies.projects import get_project_service
 from dependencies.session_auth import get_current_user
-from templating.jinja_template import templates
-
 from services.projects.service import ProjectService
+from templating.jinja_template import templates
 
 router = APIRouter()
 
