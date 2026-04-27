@@ -1,7 +1,7 @@
 import json
 from typing import Annotated
 
-from fastapi import Depends, APIRouter
+from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 from starlette.websockets import WebSocket, WebSocketDisconnect
 
@@ -36,7 +36,7 @@ async def websocket_endpoint(
             user = UserRead.model_validate(
                 await user_service.get_by_id(
                     message_data["author"],
-                )
+                ),
             )
 
             message_data.update(
