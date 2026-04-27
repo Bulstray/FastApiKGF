@@ -4,10 +4,10 @@ from starlette.datastructures import FormData
 
 from core.schemas.projects import ProjectCreate, ProjectRead
 from core.models import Project
-from services.service_base import BaseService
+from storage.db.base_crud import BaseCRUD
 
 
-class ProjectService(BaseService):
+class ProjectService(BaseCRUD):
     def __init__(self, session: AsyncSession):
         super().__init__(session, Project)
 
