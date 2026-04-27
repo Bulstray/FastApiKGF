@@ -2,23 +2,52 @@ from aiopath import AsyncPath
 from sqlalchemy.ext.asyncio import AsyncSession
 from starlette.datastructures import FormData
 
-from core.models import Task
-from core.schemas import TaskRead
-from core.schemas.tasks import TaskCreate
+from core.models import Task, TaskUsers, MessageReadStatus
+from core.schemas import TaskRead, TaskCreate
 from services.files import FilesService
-from storage.db import crud_tasks, crud_user
+from services.users.service import UserService
+from storage.db.crud_tasks import TaskStorage
 
 from malling.send_email import send_email
 
 
-class TasksFilesService:
+class TasksFilesService(TaskStorage):
     def __init__(
         self,
         session: AsyncSession,
         uploads_path: AsyncPath,
     ) -> None:
-        self.session = session
+        super().__init__(session=session)
         self.file_service = FilesService(uploads_path=uploads_path)
+        self.user_service = UserService(session=session)
+
+    @staticmethod
+    def get_executor_ids(form: FormData) -> list[int]:
+        return [int(user_id) for user_id in form.getlist("executor_ids")]
+
+    async def save_file_if_exists(
+        self,
+        task_model: TaskCreate,
+        content: bytes,
+    ) -> tuple[None, None] | tuple[str, str]:
+        folder, filename = None, None
+
+        if task_model.rar_file.filename:
+            filename = task_model.rar_file.filename
+            folder = await self.file_service.save_program_file(
+                file=task_model.rar_file,
+                content=content,
+            )
+
+        return folder, filename
+
+    async def created_task(self, task_in: TaskRead, users_id: list[int]):
+        task = Task(**task_in.model_dump())
+
+        task.task_users = [TaskUsers(user_id=user_id) for user_id in users_id]
+        task.read_status = [MessageReadStatus(user_id=user_id) for user_id in users_id]
+
+        await self.create(task)
 
     async def create_task(
         self,
@@ -26,43 +55,27 @@ class TasksFilesService:
         content: bytes,
     ) -> None:
 
-        folder, filename = None, None
+        task_create = TaskCreate.model_validate(form)
 
-        task_schema = TaskCreate.model_validate(form)
-
-        if task_schema.rar_file.filename:
-            filename = task_schema.rar_file.filename
-            folder = await self.file_service.save_program_file(
-                file=task_schema.rar_file,
-                content=content,
-            )
+        folder, filename = await self.save_file_if_exists(
+            task_create,
+            content,
+        )
 
         task_model = TaskRead(
             filename=filename,
             folder_file=f"{folder}",
-            **task_schema.model_dump(),
+            **task_create.model_dump(),
         )
 
-        users_ids = [int(user_id) for user_id in form.getlist("executor_ids")] + [
-            task_model.customer_id,
-        ]
+        users_ids = self.get_executor_ids(form)
 
         # send message to email
-        for user_id in users_ids[:-1]:
-            user = await crud_user.get_user_by_id(self.session, user_id)
-            await send_email(user.email, task_schema)
+        for user_id in users_ids:
+            user = await self.user_service.get_by_id(user_id)
+            await send_email(user.email, task_model)
 
-        await crud_tasks.add_task(
-            session=self.session,
+        await self.created_task(
             task_in=task_model,
-            user_ids=users_ids,
-        )
-
-    async def get_tasks_by_project_id(
-        self, project_id: int, user_id: int
-    ) -> list[Task]:
-        return await crud_tasks.get_tasks_by_project_id(
-            self.session,
-            project_id,
-            user_id,
+            users_id=users_ids + [task_model.customer_id],
         )
