@@ -5,7 +5,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from core.models import MessageFile, Message
 from services.files import FilesService
-from storage.db import crud_message, crud_task_users
+from storage.db import crud_task_users
 from core.schemas.message import Message as MessageSchema
 from storage.db.crud_message import MessageStorage
 
@@ -70,8 +70,7 @@ class MessageManager(MessageStorage):
         for user_id in users_in_task:
             if author_id == user_id:
                 continue
-            await crud_message.update_count_unread(
-                session=self.session,
+            await self.update_count_unread(
                 task_id=task_id,
                 user_id=user_id,
             )
