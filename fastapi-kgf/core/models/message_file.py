@@ -1,9 +1,14 @@
+from typing import TYPE_CHECKING
+
 from pathlib import Path
 
 from sqlalchemy import ForeignKey, String, event
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from core.models import Base
+
+if TYPE_CHECKING:
+    from .message import Message
 
 
 class MessageFile(Base):
@@ -27,6 +32,11 @@ class MessageFile(Base):
     folder_path: Mapped[str] = mapped_column(
         String(500),
         nullable=False,
+    )
+
+    message: Mapped["Message"] = relationship(
+        "Message",
+        back_populates="file",
     )
 
 
