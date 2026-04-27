@@ -3,12 +3,11 @@ import json
 from aiopath import AsyncPath
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from core.models import MessageFile, Message
+from core.models import Message, MessageFile
+from core.schemas.message import Message as MessageSchema
 from services.files import FilesService
 from storage.db import crud_task_users
-from core.schemas.message import Message as MessageSchema
 from storage.db.crud_message import MessageStorage
-
 from utils.file_size import get_file_size
 
 
@@ -22,7 +21,8 @@ class MessageManager(MessageStorage):
 
     Attributes:
         session (AsyncSession): Asynchronous database session.
-        file_service (FilesService): Service for working with files (attachments).
+        file_service (FilesService): Service for working
+                                     with files (attachments).
     """
 
     def __init__(
@@ -34,7 +34,9 @@ class MessageManager(MessageStorage):
         Initialize the message manager.
 
         Args:
-            session (AsyncSession): Asynchronous SQLAlchemy session for database interaction.
+            session (AsyncSession): Asynchronous SQLAlchemy
+            session for database interaction.
+
             file_service (FilesService): Instance of the file service.
         """
         super().__init__(session)
@@ -93,8 +95,8 @@ class MessageManager(MessageStorage):
 
         Returns:
             str | None: The filesystem path where the file was saved if a file
-                was attached and successfully saved. Returns None if no file was
-                included.
+                was attached and successfully saved. Returns None if no file
+                was included.
         """
         file_path = None
 
@@ -123,7 +125,8 @@ class MessageManager(MessageStorage):
         message_in: str,
     ) -> dict:
         """
-        Создать сообщение с опциональным файлом и обновить счётчики непрочитанных сообщений.
+        Создать сообщение с опциональным файлом и обновить счётчики
+        непрочитанных сообщений.
 
         Args:
             message_in: Данные сообщения, включая опциональные данные файла
@@ -153,7 +156,7 @@ class MessageManager(MessageStorage):
                     "name": message_schema.file.name,
                     "folder_path": str(file_path),
                     "size": await get_file_size(file_path),
-                }
+                },
             )
 
         return message_data
