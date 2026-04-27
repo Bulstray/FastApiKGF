@@ -2,10 +2,11 @@ import json
 
 from fastapi import (
     APIRouter,
-    WebSocketException,
     WebSocket,
     WebSocketDisconnect,
+    WebSocketException,
 )
+
 from managers.task_event_manager import task_event_manager
 
 router = APIRouter()
