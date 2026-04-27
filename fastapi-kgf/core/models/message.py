@@ -37,7 +37,7 @@ class Message(Base):
 
     file: Mapped["MessageFile"] = relationship(
         "MessageFile",
-        backref="message",
+        back_populates="message",
         cascade="all, delete-orphan",
         lazy="selectin",
     )
