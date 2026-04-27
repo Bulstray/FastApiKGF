@@ -1,7 +1,8 @@
-from sqlalchemy.orm import Mapped, relationship, mapped_column
+from typing import TYPE_CHECKING
+
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from .base import Base
-from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from .task import Task
