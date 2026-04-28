@@ -17,13 +17,17 @@ class ConnectionManager:
         try:
             self.active_connections.pop(user_id)
         except KeyError:
-            pass
+            return
 
     async def broadcast(self, users_id: list[int], task_id: int) -> None:
         """Отправить всем подключенным клиентам"""
         for user_id in users_id:
             if user_id in self.active_connections:
-                await self.active_connections[user_id].send_json({"task_id": task_id})
+                await self.active_connections[user_id].send_json(
+                    {
+                        "task_id": task_id,
+                    },
+                )
 
 
 notification_manager = ConnectionManager()
