@@ -10,7 +10,7 @@ from .notification_manager import notification_manager
 class ConnectionManager:
     def __init__(self) -> None:
         # Словарь для соединений по комнатам (task_id)
-        self.active_connections: dict[int, tuple[int, WebSocket]] = {}
+        self.active_connections: dict[int, list[tuple[int, WebSocket]]] = {}
 
     async def connect(
         self,
@@ -20,9 +20,10 @@ class ConnectionManager:
     ) -> None:
         await websocket.accept()
 
-        self.active_connections[task_id] = self.active_connections.get(task_id, []) + [
-            (user_id, websocket),
-        ]
+        if self.active_connections.get(task_id):
+            self.active_connections[task_id] += [(user_id, websocket)]
+        else:
+            self.active_connections[task_id] = [(user_id, websocket)]
 
     async def disconnect(
         self,
