@@ -10,8 +10,8 @@ __all__ = (
     "TaskRead",
     "TaskUsersCreate",
     "Tender",
-    "UserRead",
     "UserLogin",
+    "UserRead",
 )
 
 from .cookie import Cookies
@@ -22,4 +22,4 @@ from .projects import ProjectCreate, ProjectRead
 from .tasks import TaskCreate, TaskRead
 from .tasks_users import TaskUsersCreate
 from .tenders import Tender
-from .user import UserRead, UserLogin
+from .user import UserLogin, UserRead
