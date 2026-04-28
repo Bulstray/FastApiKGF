@@ -7,6 +7,7 @@ requires-python = ">=3.13"
 dependencies = [
     "aiopath>=0.7.7",
     "aiosqlite>=0.22.1",
+    "alembic>=1.18.4",
     "bcrypt>=5.0.0",
     "beautifulsoup4>=4.14.3",
     "defusedxml>=0.7.1",
