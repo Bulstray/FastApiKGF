@@ -48,21 +48,23 @@ class MessageManager(MessageStorage):
         author_id: int,
     ) -> None:
         """
-        Updates unread message counters for users in a task (excluding the author).
+        Updates unread message counters for users in a task
+        (excluding the author).
 
-        For all users participating in the specified task, except the message author,
-        marks new messages as unread. This ensures recipients see notifications
-        about new messages.
+        For all users participating in the specified task, except the message
+        author, marks new messages as unread. This ensures recipients see
+        notifications about new messages.
 
         Args:
             task_id (int): The unique identifier of the task. Used to fetch
                 the list of users participating in the task.
             author_id (int): The identifier of the user who sent the message.
-                This user's unread counters are not updated (since they sent the message).
+                This user's unread counters are not updated
+                (since they sent the message).
 
         Returns:
-            None: This method performs updates in the database and does not return
-                any value.
+            None: This method performs updates in the database
+            and does not return any value.
         """
         users_in_task = await crud_task_users.get_task_users(
             self.session,
@@ -82,7 +84,8 @@ class MessageManager(MessageStorage):
         message_in: MessageSchema,
     ) -> AsyncPath | None:
         """
-        Creates a new message in the database, optionally with an attached file.
+        Creates a new message in the database, optionally with an attached
+        file.
 
         Processes an input message schema, saves any attached file to storage,
         and persists the message to the database. If a file is included,
@@ -90,7 +93,8 @@ class MessageManager(MessageStorage):
 
         Args:
              message_in (MessageSchema): Input schema containing message data
-                and optional file attachment. Must include all required message fields;
+                and optional file attachment. Must include all required message
+                fields;
                 file is optional.
 
         Returns:
