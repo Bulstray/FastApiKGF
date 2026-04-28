@@ -5,14 +5,11 @@ from email.mime.text import MIMEText
 from core.config import settings
 from core.schemas import TaskRead
 
-from sqlalchemy.ext.asyncio import AsyncSession
-
 
 def get_html_content(subject: TaskRead):
-    DEADLINE = "15.12.2024"
-    ASSIGNER = "Иванов Иван"
+    task_url = f'http://192.168.1.75:8000/projects/{subject.project_id}'
     return f"""
-    <!DOCTYPE html>
+ <!DOCTYPE html>
     <html lang="ru">
     <head>
         <meta charset="UTF-8">
@@ -26,7 +23,7 @@ def get_html_content(subject: TaskRead):
                     <h1 style="color: #ffffff; margin: 0; font-size: 24px; font-weight: bold;">📋 Новая задача</h1>
                 </td>
             </tr>
-            
+
             <!-- Content -->
             <tr>
                 <td style="padding: 30px 40px;">
@@ -34,36 +31,18 @@ def get_html_content(subject: TaskRead):
                     <h2 style="color: #333333; font-size: 20px; margin: 0 0 20px 0; border-bottom: 2px solid #667eea; padding-bottom: 10px;">
                         {subject.title}
                     </h2>
-                    
-                    <!-- Info Cards -->
-                    <table cellpadding="0" cellspacing="0" border="0" width="100%" style="margin-bottom: 25px;">
+
+                    <!-- Access Warning -->
+                    <table cellpadding="0" cellspacing="0" border="0" width="100%" style="margin-bottom: 25px; background-color: #fff3cd; border: 1px solid #ffc107; border-radius: 8px;">
                         <tr>
-                            <!-- Deadline -->
-                            <td width="48%" style="padding-right: 2%;">
-                                <table cellpadding="0" cellspacing="0" border="0" width="100%" style="background-color: #fff3e0; border-radius: 8px; border: 1px solid #ffe0b2;">
-                                    <tr>
-                                        <td style="padding: 12px 15px;">
-                                            <p style="color: #e65100; font-size: 11px; margin: 0 0 3px 0; text-transform: uppercase; letter-spacing: 0.5px;">⏰ Дедлайн</p>
-                                            <p style="color: #333333; font-size: 15px; font-weight: bold; margin: 0;">{DEADLINE}</p>
-                                        </td>
-                                    </tr>
-                                </table>
-                            </td>
-                            
-                            <!-- Assigner -->
-                            <td width="48%" style="padding-left: 2%;">
-                                <table cellpadding="0" cellspacing="0" border="0" width="100%" style="background-color: #e8f5e9; border-radius: 8px; border: 1px solid #c8e6c9;">
-                                    <tr>
-                                        <td style="padding: 12px 15px;">
-                                            <p style="color: #2e7d32; font-size: 11px; margin: 0 0 3px 0; text-transform: uppercase; letter-spacing: 0.5px;">👤 Постановщик</p>
-                                            <p style="color: #333333; font-size: 15px; font-weight: bold; margin: 0;">{ASSIGNER}</p>
-                                        </td>
-                                    </tr>
-                                </table>
+                            <td style="padding: 12px 15px;">
+                                <p style="color: #856404; font-size: 13px; margin: 0; line-height: 1.5;">
+                                    ⚠️ <strong>Важно!</strong> Доступ к системе возможен только с рабочих компьютеров АО «Казаньгеофизика»
+                                </p>
                             </td>
                         </tr>
                     </table>
-                    
+
                     <!-- Description -->
                     <div style="margin-bottom: 30px;">
                         <p style="color: #666666; font-size: 14px; margin: 0 0 5px 0; text-transform: uppercase; letter-spacing: 1px;">📝 Описание задачи</p>
@@ -71,31 +50,28 @@ def get_html_content(subject: TaskRead):
                             {subject.description or "Описание отсутствует"}
                         </p>
                     </div>
-                    
+
                     <!-- Button -->
                     <div style="text-align: center; margin: 30px 0;">
-                        <a href="#" 
+                        <a href="{task_url}" 
                            style="display: inline-block; padding: 12px 35px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: #ffffff; text-decoration: none; border-radius: 25px; font-size: 16px; font-weight: bold; box-shadow: 0 4px 6px rgba(102, 126, 234, 0.3);">
                             🔗 Перейти к задаче
                         </a>
                     </div>
-                    
+
                     <!-- Link -->
                     <div style="text-align: center; margin-top: 20px; padding: 15px; background-color: #f8f9fa; border-radius: 6px;">
                         <p style="color: #666666; font-size: 13px; margin: 0 0 5px 0;">Или скопируйте ссылку:</p>
-                        <a href="#" style="color: #667eea; font-size: 13px; word-break: break-all;">https://example.com</a>
+                        <a href="{task_url}" style="color: #667eea; font-size: 13px; word-break: break-all;">{task_url}</a>
                     </div>
                 </td>
             </tr>
-            
+
             <!-- Footer -->
             <tr>
                 <td style="background-color: #f8f9fa; padding: 20px 40px; text-align: center; border-top: 1px solid #e9ecef;">
                     <p style="color: #999999; font-size: 12px; margin: 0 0 10px 0;">
                         Это автоматическое уведомление от системы управления задачами
-                    </p>
-                    <p style="color: #999999; font-size: 11px; margin: 0;">
-                        © 2024 Task Manager. Все права защищены.
                     </p>
                 </td>
             </tr>
