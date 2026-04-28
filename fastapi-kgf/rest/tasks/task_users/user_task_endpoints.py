@@ -16,5 +16,5 @@ async def get_users_for_task(
         AsyncSession,
         Depends(db_helper.session_getter),
     ],
-):
+) -> list[int]:
     return await crud_task_users.get_task_users(session, task_id)
