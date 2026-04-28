@@ -38,3 +38,7 @@ strict = true
 module = "aiopath.*"
 ignore_missing_imports = true
 
+
+[tool.black]
+line-length = 79
+skip-string-normalization = true
