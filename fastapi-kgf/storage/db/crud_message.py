@@ -19,7 +19,8 @@ class MessageStorage(BaseCRUD):
 
         result = await self.session.execute(stmt)
         return {
-            task_message.task_id: task_message.count for task_message in result.all()
+            task_message.task_id: task_message.count
+            for task_message in result.all()
         }
 
     async def get_messages_for_task(
