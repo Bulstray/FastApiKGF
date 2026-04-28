@@ -2,6 +2,7 @@ from typing import Annotated
 
 from fastapi import Cookie, Depends, HTTPException, Request, status
 from fastapi.security import APIKeyCookie
+from starlette.responses import RedirectResponse
 from starlette.websockets import WebSocket
 
 from core.config.settings import SESSION_COOKIE_NAME
@@ -22,7 +23,11 @@ async def get_authenticated_user(
         Depends(cookie_scheme),
     ],
 ) -> UserRead | None:
-    if session_id and (answer := await session.get_by_session_id(session_id)):
+    if session_id and (
+        answer := await session.get_by_session_id(
+            session_id,
+        )
+    ):
         return answer
 
     return None
@@ -38,10 +43,13 @@ async def get_current_user(
 
 
 async def get_cookie_websocket(
-    websocket: WebSocket, session_id: Annotated[Cookies, Cookie()],
-):
+    websocket: WebSocket,
+    session_id: Annotated[Cookies, Cookie()],
+) -> UserRead | RedirectResponse:
     if session_id and (
-        answer := await session.get_by_session_id(session_id.web_app_session_id)
+        answer := await session.get_by_session_id(
+            session_id.web_app_session_id,
+        )
     ):
         return answer
 
