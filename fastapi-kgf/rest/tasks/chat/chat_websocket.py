@@ -16,15 +16,35 @@ from services.users.service import UserService
 router = APIRouter()
 
 
+async def _build_services(
+    message_service: Annotated[
+        MessageManager,
+        Depends(get_message_service),
+    ],
+    user_service: Annotated[
+        UserService,
+        Depends(get_user_service),
+    ],
+) -> tuple[MessageManager, UserService]:
+    return message_service, user_service
+
+
 @router.websocket("/ws/task/{task_id}/{user_id}", name="chat:task")
 async def websocket_endpoint(
     websocket: WebSocket,
     task_id: int,
     user_id: int,
-    message_service: Annotated[MessageManager, Depends(get_message_service)],
-    user_service: Annotated[UserService, Depends(get_user_service)],
-    session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
+    services: Annotated[
+        tuple[MessageManager, UserService],
+        Depends(_build_services),
+    ],
+    session: Annotated[
+        AsyncSession,
+        Depends(db_helper.session_getter),
+    ],
 ) -> None:
+    message_service, user_service = services
+
     await message_manager.connect(websocket, task_id, user_id)
     try:
         while True:
