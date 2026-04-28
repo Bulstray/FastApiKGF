@@ -18,13 +18,13 @@ class ConnectionManager:
         try:
             self.active_connections[project_id].remove(websocket)
         except KeyError:
-            pass
+            return
 
     async def delete_project_id(self, project_id: int) -> None:
         try:
             self.active_connections.pop(project_id)
         except KeyError:
-            pass
+            return
 
     async def broadcast(
         self,
