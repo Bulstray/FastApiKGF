@@ -29,6 +29,9 @@ class UserAdmin(ModelView, model=User):
         request: Request,
     ) -> None:
         raw_password = data.get("hashed_password")
-        if raw_password is not None and isinstance(raw_password, str):
-            if is_created or raw_password != model.hashed_password:
-                data.update(hashed_password=hash_password(raw_password))
+        if (
+            raw_password is not None
+            and isinstance(raw_password, str)
+            and (is_created or raw_password != model.hashed_password)
+        ):
+            data.update(hashed_password=hash_password(raw_password))
