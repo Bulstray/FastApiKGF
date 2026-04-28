@@ -8,6 +8,9 @@ from services.users.service import UserService
 
 
 async def get_user_service(
-    session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
-):
+    session: Annotated[
+        AsyncSession,
+        Depends(db_helper.session_getter),
+    ],
+) -> UserService:
     return UserService(session)
