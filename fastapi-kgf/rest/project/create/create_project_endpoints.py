@@ -14,7 +14,7 @@ router = APIRouter()
 @router.post("/", name="project:create")
 async def create_project(
     request: Request,
-    service: Annotated["ProjectService", Depends(get_project_service)],
+    service: Annotated[ProjectService, Depends(get_project_service)],
 ) -> RedirectResponse:
     async with request.form() as form:
         project = await service.create_project(form)
