@@ -1,4 +1,4 @@
-import datetime
+from datetime import date
 from pathlib import Path
 from typing import TYPE_CHECKING
 
@@ -28,7 +28,7 @@ class Task(Base):
         nullable=False,
     )
 
-    deadline: Mapped[datetime] = mapped_column(
+    deadline: Mapped[date] = mapped_column(
         Date,
         nullable=False,
     )
@@ -89,7 +89,7 @@ class Task(Base):
 
 
 @event.listens_for(Task, "after_delete")
-def delete_file_after_delete(mapper, connection, target):
+def delete_file_after_delete(mapper, connection, target):  # type: ignore[unused-ignore]
     folder_file = Path(target.folder_file)
     if folder_file.exists():
         folder_file.unlink()
