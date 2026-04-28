@@ -18,13 +18,7 @@ class RedisDatabaseConfig(BaseModel):
     chat_message: int = 3
 
 
-class RedisCollectionConfig(BaseModel):
-    sessions_hash: str = "sessions"
-    tenders_hash: str = "tenders"
-
-
 class RedisConfig(BaseModel):
     connection: RedisConnectionConfig = RedisConnectionConfig()
     database: RedisDatabaseConfig = RedisDatabaseConfig()
-    collections_name: RedisCollectionConfig = RedisCollectionConfig()
     decode_response: bool = True
