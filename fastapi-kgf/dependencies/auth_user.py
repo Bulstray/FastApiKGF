@@ -3,7 +3,6 @@ from typing import Annotated
 import bcrypt
 from fastapi import Depends, Request
 
-from core.models import User
 from core.schemas import UserLogin
 from services.auth.session_manager import create_session
 from services.users.service import UserService
@@ -21,7 +20,7 @@ async def validate_basic_auth_user(
     async with request.form() as form_data:
         user = UserLogin.model_validate(form_data)
 
-    is_user: None | User = await user_service.get_user_by_username(
+    is_user = await user_service.get_user_by_username(
         username=user.username,
     )
 
