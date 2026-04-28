@@ -40,11 +40,17 @@ class TasksFilesService(TaskStorage):
 
         return folder, filename
 
-    async def created_task(self, task_in: TaskRead, users_id: list[int]) -> None:
+    async def created_task(
+        self,
+        task_in: TaskRead,
+        users_id: list[int],
+    ) -> None:
         task = Task(**task_in.model_dump())
 
         task.task_users = [TaskUsers(user_id=user_id) for user_id in users_id]
-        task.read_status = [MessageReadStatus(user_id=user_id) for user_id in users_id]
+        task.read_status = [
+            MessageReadStatus(user_id=user_id) for user_id in users_id
+        ]
 
         await self.create(task)
 
