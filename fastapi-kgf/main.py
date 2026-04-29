@@ -8,10 +8,13 @@ from api import router
 from app_lifespan import lifespan
 from core.models import db_helper
 from rest import router as main_router
+from core.config import settings
 
 app = FastAPI(lifespan=lifespan)
 
-auth_backend = AdminAuth(secret_key="123132131")
+auth_backend = AdminAuth(
+    secret_key=settings.secret_key_admin.secret_key,
+)
 admin = Admin(
     app,
     session_maker=db_helper.session_factory,
