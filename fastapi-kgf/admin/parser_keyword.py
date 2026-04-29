@@ -1,4 +1,5 @@
 from sqladmin import ModelView
+
 from core.models import ParsingKeyword
 
 
