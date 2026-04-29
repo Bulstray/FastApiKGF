@@ -7,8 +7,7 @@ from .platforms import EtpgpbParser, TekTorgPlatform
 class TenderParseCore:
     def __init__(self, key_word: str) -> None:
         self.parsers = {
-            (TekTorgPlatform(key_word=key_word), Platform.rosh),
-            (EtpgpbParser(key_word=key_word), Platform.gazp),
+            (TekTorgPlatform(key_word=key_word)),
         }
 
     def search_all_platforms(self) -> list[Tender]:
@@ -16,7 +15,7 @@ class TenderParseCore:
 
         results = []
 
-        for parse_class, platform in self.parsers:
-            results.extend(parse_class.search_tenders(platform=platform))
+        for parse_class in self.parsers:
+            results.extend(parse_class.search_tenders())
 
         return results
