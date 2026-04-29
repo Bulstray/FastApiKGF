@@ -8,6 +8,7 @@ from core.models import db_helper
 from services.programs import ProgramService
 from services.task.service import TasksFilesService
 from services.users.service import UserService
+from services.tenders.key_word_service import KeyWordService
 
 
 async def get_program_service(
@@ -38,3 +39,12 @@ async def get_user_service(
     ],
 ) -> UserService:
     return UserService(session=session)
+
+
+async def get_keyword_tenders_service(
+    session: Annotated[
+        AsyncSession,
+        Depends(db_helper.session_getter),
+    ],
+) -> KeyWordService:
+    return KeyWordService(session)
