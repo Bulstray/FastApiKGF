@@ -47,6 +47,37 @@ class TekTorgPlatform(BaseTenderPlatform):
         return pub_date.strftime("%Y-%m-%d")
 
     @staticmethod
+    def is_tender_price_taken(card: Tag | Element) -> str:
+
+        if isinstance(card, Element):
+            return "Не установлено"
+
+        price_tag = card.find(
+            "div",
+            class_="sc-a6b34174-0 cLruXa",
+        )
+
+        if price_tag is None:
+            return "Не установлено"
+
+        return price_tag.text.replace(',', ' ')
+
+    @staticmethod
+    def is_tender_organize_taken(card: Tag | Element) -> str:
+        if isinstance(card, Element):
+            return 'Отсутствует'
+
+        organize_tag = card.find(
+            "div",
+            class_="sc-6c01eeae-10 hqcmWX",
+        )
+
+        if organize_tag is None:
+            return "Отсутствует"
+
+        return organize_tag.text
+
+    @staticmethod
     def get_params(key_word: str) -> dict[str, str | int]:
         return {
             "name": key_word,
