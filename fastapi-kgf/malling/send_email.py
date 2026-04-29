@@ -6,7 +6,7 @@ from core.config import settings
 from core.schemas import TaskRead
 
 
-def get_html_content(subject: TaskRead):
+def get_html_content(subject: TaskRead) -> str:
     task_url = f'http://192.168.1.75:8000/projects/{subject.project_id}'
     return f"""
  <!DOCTYPE html>
