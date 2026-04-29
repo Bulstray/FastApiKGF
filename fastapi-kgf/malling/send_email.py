@@ -37,7 +37,7 @@ def get_html_content(subject: TaskRead):
                         <tr>
                             <td style="padding: 12px 15px;">
                                 <p style="color: #856404; font-size: 13px; margin: 0; line-height: 1.5;">
-                                    ⚠️ <strong>Важно!</strong> Доступ к системе возможен только с рабочих компьютеров АО «Казаньгеофизика»
+                                    ⚠️ <strong>Важно!</strong> Доступ к системе возможен только с рабочих компьютеров «Казаньгеофизика»
                                 </p>
                             </td>
                         </tr>
