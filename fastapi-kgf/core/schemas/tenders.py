@@ -5,9 +5,11 @@ from core.types.platform import Platform
 
 class BaseTender(BaseModel):
     """The base model for tenders"""
-    platform: Platform
+
     name: str
     pub_date: str
+    price: str
+    organizer: str
 
 
 class Tender(BaseTender):
