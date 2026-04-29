@@ -8,7 +8,7 @@ from .database import DatabaseConfig
 from .platforms import PlatformConfig
 from .redis_db import RedisConfig
 from .session import SessionConfig
-from .superuser import SuperUserConfig, AdminSecretKey
+from .superuser import AdminSecretKey, SuperUserConfig
 
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
