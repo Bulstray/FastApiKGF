@@ -5,28 +5,45 @@ from starlette.requests import Request
 from starlette.responses import HTMLResponse
 
 from core.schemas.user import UserRead
-from dependencies.session_auth import require_auth
 from templating.jinja_template import templates
+from services.tenders.key_word_service import KeyWordService
+from dependencies.providers import get_keyword_tenders_service
+from dependencies.projects import get_project_service
+from dependencies.session_auth import get_current_user
+from services.projects.service import ProjectService
+
+from parsers.core import TenderParseCore
+import asyncio
 
 router = APIRouter()
 
 
 @router.get("/", name="tenders:page")
-def tenders_page(
+async def tenders_page(
     request: Request,
-    is_authenticated: Annotated[
-        UserRead,
-        Depends(
-            require_auth,
-        ),
+    keyword_service: Annotated[
+        KeyWordService,
+        Depends(get_keyword_tenders_service),
     ],
+    current_user: Annotated[UserRead, Depends(get_current_user)],
+    project_service: Annotated[ProjectService, Depends(get_project_service)],
 ) -> HTMLResponse:
+    key_words = await keyword_service.get_all()
+    projects = await project_service.get_all()
+
+    tenders = {}
+
+    for key_word in key_words:
+        init_tender_class = TenderParseCore(key_word.keyword)
+        tenders[key_word.decoding] = init_tender_class.search_all_platforms()
+        await asyncio.sleep(5)
 
     return templates.TemplateResponse(
         request=request,
         name="tenders.html",
         context={
-            "tenders": [],
-            "is_authenticated": is_authenticated,
+            "tenders": tenders,
+            "user": current_user,
+            "projects": projects,
         },
     )
