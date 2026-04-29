@@ -1,8 +1,8 @@
 from sqladmin import Admin
 
-from .user import UserAdmin
-from .project import ProjectAdmin
 from .parser_keyword import ParserKeywordAdmin
+from .project import ProjectAdmin
+from .user import UserAdmin
 
 
 def register_admin_views(admin: Admin) -> None:
