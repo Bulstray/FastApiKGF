@@ -8,7 +8,7 @@ from .database import DatabaseConfig
 from .platforms import PlatformConfig
 from .redis_db import RedisConfig
 from .session import SessionConfig
-from .superuser import SuperUserConfig
+from .superuser import SuperUserConfig, AdminSecretKey
 
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
@@ -29,6 +29,7 @@ class Settings(BaseSettings):
     tender_platform: PlatformConfig = PlatformConfig()
     session: SessionConfig = SessionConfig()
     superuser: SuperUserConfig
+    secret_key_admin: AdminSecretKey
 
     uploads_program_dir: AsyncPath = AsyncPath("uploads/programs")
     uploads_file_task_dir: AsyncPath = AsyncPath("uploads/file_tasks")
