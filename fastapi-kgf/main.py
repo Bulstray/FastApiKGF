@@ -6,9 +6,9 @@ from admin import register_admin_views
 from admin.auth import AdminAuth
 from api import router
 from app_lifespan import lifespan
+from core.config import settings
 from core.models import db_helper
 from rest import router as main_router
-from core.config import settings
 
 app = FastAPI(lifespan=lifespan)
 
