@@ -270,7 +270,7 @@
                   <div class="card-budget">{{ tender.price }}</div>
                   <div class="card-deadline"><i class="bi bi-clock"></i> 25 дней</div>
                 </div>
-                <a href="#" class="card-link">Подробнее <i class="bi bi-arrow-right"></i></a>
+                <a href="{{ tender.url }}" class="card-link" target="_blank" rel="noopener noreferrer">Подробнее <i class="bi bi-arrow-right"></i></a>
               </div>
             </div>
           {% endfor %}
