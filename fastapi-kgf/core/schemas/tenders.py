@@ -10,6 +10,7 @@ class BaseTender(BaseModel):
     pub_date: str
     price: str
     organizer: str
+    url: str
 
 
 class Tender(BaseTender):
