@@ -1,4 +1,3 @@
-from datetime import UTC, datetime
 from xml.etree.ElementTree import Element
 
 from bs4 import BeautifulSoup
@@ -7,6 +6,8 @@ from bs4.element import ResultSet, Tag
 from core.config import settings
 from parsers.platforms.base_platform import BaseTenderPlatform
 
+import dateparser
+
 
 class TekTorgPlatform(BaseTenderPlatform):
     """Парсер площадки ТЕК-Торг"""
@@ -14,17 +15,23 @@ class TekTorgPlatform(BaseTenderPlatform):
     def __init__(self, key_word: str) -> None:
         super().__init__(
             base_url=f"{settings.tender_platform.tek_torg}",
+            base_platform=f"{settings.tender_platform.base_platform.base_tek_torg}",
             params=self.get_params(key_word=key_word),
         )
 
-    @staticmethod
-    def is_tender_name_taken(card: Tag | Element) -> str:
-        name_tag = card.find("a")
+    def is_tender_name_taken(
+        self, card: Tag | Element
+    ) -> tuple[str, str] | None:
+
+        if isinstance(card, Element):
+            return None
+
+        name_tag = card.find("a", class_="sc-6c01eeae-7 gccepd")
 
         if name_tag is None:
-            return "Имя не найдено"
+            return None
 
-        return f"{name_tag.text}"
+        return f"{name_tag.text}", f"{name_tag.get('href')}"
 
     @staticmethod
     def is_tender_pub_date_taken(card: Tag | Element) -> str:
@@ -37,12 +44,9 @@ class TekTorgPlatform(BaseTenderPlatform):
             class_="sc-7909e12c-0 glSvLE",
         )
         if pub_date_tag is None:
-            return "Дата не найдена"
+            return "Дата не установлена"
 
-        pub_date = datetime.strptime(
-            pub_date_tag.text,
-            "%d.%m.%Y",
-        ).replace(tzinfo=UTC)
+        pub_date = dateparser.parse(pub_date_tag.text)
 
         return pub_date.strftime("%Y-%m-%d")
 
@@ -75,7 +79,15 @@ class TekTorgPlatform(BaseTenderPlatform):
         if organize_tag is None:
             return "Отсутствует"
 
-        return organize_tag.text
+        organize_text = organize_tag.text.replace(
+            "ОБЩЕСТВО С ОГРАНИЧЕННОЙ ОТВЕТСТВЕННОСТЬЮ",
+            "ООО",
+        ).replace(
+            "общество с ограниченной ответственностью",
+            "ООО",
+        )
+
+        return organize_text
 
     @staticmethod
     def get_params(key_word: str) -> dict[str, str | int]:
@@ -85,5 +97,5 @@ class TekTorgPlatform(BaseTenderPlatform):
         }
 
     def get_cards_data(self) -> ResultSet[Tag]:
-        soup = BeautifulSoup(self.response.text, "html.parser")
+        soup = BeautifulSoup(self.html_source, "html.parser")
         return soup.find_all("div", class_="sc-6c01eeae-0 jtfzxc")
