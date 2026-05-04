@@ -31,9 +31,11 @@ class BaseTenderPlatform(ABC):
         base_platform: str,
         base_url: str,
         params: dict[str, str | int],
+        keyword_id: int,
     ) -> None:
         self.base_url = base_url
         self.base_platform = base_platform
+        self.keyword_id = keyword_id
         if base_url == settings.tender_platform.etp_gpb:
             driver = webdriver.Chrome()
             driver.get(f"{base_url}?{urlencode(params)}")
@@ -78,6 +80,11 @@ class BaseTenderPlatform(ABC):
     def is_tender_organize_taken(card: Tag | Element) -> str:
         """Метод для определения организатора"""
 
+    @staticmethod
+    @abstractmethod
+    def get_end_date(card: Tag | Element) -> str:
+        """Метод для определения даты окончания тендера"""
+
     def search_tenders(self) -> list[Tender]:
 
         cards = self.get_cards_data()
@@ -97,6 +104,8 @@ class BaseTenderPlatform(ABC):
                     price=self.is_tender_price_taken(card),
                     organizer=self.is_tender_organize_taken(card),
                     url=fr"{self.base_platform}{url}",
+                    keyword_id=self.keyword_id,
+                    end_date=self.get_end_date(card),
                 )
             )
 
