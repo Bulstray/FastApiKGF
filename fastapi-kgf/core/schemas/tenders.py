@@ -1,5 +1,5 @@
-from pydantic import BaseModel
-from datetime import date
+from pydantic import BaseModel, ConfigDict
+from datetime import datetime
 
 
 class BaseTender(BaseModel):
@@ -10,9 +10,14 @@ class BaseTender(BaseModel):
     price: str
     organizer: str
     url: str
-    end_date: str
     keyword_id: int
 
 
-class Tender(BaseTender):
-    """A model for data storage"""
+class TenderCreate(BaseTender):
+    """A model for create data storage"""
+
+    model_config = ConfigDict(
+        from_attributes=True,
+    )
+
+    end_date: datetime
