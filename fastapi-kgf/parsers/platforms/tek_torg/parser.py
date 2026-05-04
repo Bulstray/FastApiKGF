@@ -5,7 +5,7 @@ from bs4.element import ResultSet, Tag
 
 from core.config import settings
 from parsers.platforms.base_platform import BaseTenderPlatform
-from datetime import date
+from datetime import date, datetime
 
 import dateparser
 
@@ -81,12 +81,23 @@ class TekTorgPlatform(BaseTenderPlatform):
         if organize_tag is None:
             return "Отсутствует"
 
-        organize_text = organize_tag.text.replace(
-            "ОБЩЕСТВО С ОГРАНИЧЕННОЙ ОТВЕТСТВЕННОСТЬЮ",
-            "ООО",
-        ).replace(
-            "общество с ограниченной ответственностью",
-            "ООО",
+        organize_text = (
+            organize_tag.text.replace(
+                "ОБЩЕСТВО С ОГРАНИЧЕННОЙ ОТВЕТСТВЕННОСТЬЮ",
+                "ООО",
+            )
+            .replace(
+                "общество с ограниченной ответственностью",
+                "ООО",
+            )
+            .replace(
+                "АКЦИОНЕРНОЕ ОБЩЕСТВО",
+                "АО",
+            )
+            .replace(
+                "Публичное акционерное общество",
+                "ПАО",
+            )
         )
 
         return organize_text
@@ -96,7 +107,12 @@ class TekTorgPlatform(BaseTenderPlatform):
         if isinstance(card, Element):
             return "Дата не установлена"
 
-        end_date = card.find(
+        end_card_div = card.find_all(
+            "div",
+            class_="sc-6c01eeae-18 kxxgLZ",
+        )[-1]
+
+        end_date = end_card_div.find(
             "span",
             class_="sc-7909e12c-0 glSvLE",
         )
@@ -104,9 +120,11 @@ class TekTorgPlatform(BaseTenderPlatform):
         if end_date is None:
             return "Дата не установлена"
 
-        pub_date = dateparser.parse(end_date.text)
-
-        return pub_date.date()
+        end_date = datetime.strptime(
+            end_date.text,
+            "%d.%m.%Y",
+        )
+        return end_date
 
     @staticmethod
     def get_params(key_word: str) -> dict[str, str | int]:
