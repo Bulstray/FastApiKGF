@@ -1,3 +1,4 @@
+import datetime
 from typing import Annotated
 
 from fastapi import APIRouter, Depends
@@ -11,7 +12,6 @@ from dependencies.providers import get_keyword_tenders_service
 from dependencies.projects import get_project_service
 from dependencies.session_auth import get_current_user
 from services.projects.service import ProjectService
-
 
 router = APIRouter()
 
@@ -36,5 +36,6 @@ async def tenders_page(
             "keywords": key_words,
             "user": current_user,
             "projects": projects,
+            "today": datetime.datetime.today(),
         },
     )
