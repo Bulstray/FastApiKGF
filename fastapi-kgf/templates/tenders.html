@@ -77,14 +77,6 @@
           letter-spacing: -0.02em;
       }
 
-      .keyword-count {
-          font-size: 0.8rem;
-          color: #94a3b8;
-          font-weight: 500;
-          background: #f1f5f9;
-          padding: 0.2rem 0.7rem;
-          border-radius: 100px;
-      }
 
       .keyword-toggle {
           background: white;
@@ -242,7 +234,7 @@
     <!-- Заголовок -->
     <div class="page-header">
       <h1 class="page-title">
-        <i class="bi bi-file-earmark-text"></i> Активные Тендеры
+        <i class="bi bi-file-earmark-text"></i> Актуальные тендера по последнему запросу
       </h1>
     </div>
 
@@ -251,7 +243,6 @@
         <div class="keyword-header">
           <div class="keyword-title-group">
             <span class="keyword-name">{{ keyword.decoding }}</span>
-            <span class="keyword-count">6</span>
           </div>
           <button class="keyword-toggle"><i class="bi bi-chevron-down"></i></button>
         </div>
@@ -268,9 +259,17 @@
               <div class="card-footer">
                 <div>
                   <div class="card-budget">{{ tender.price }}</div>
-                  <div class="card-deadline"><i class="bi bi-clock"></i> 25 дней</div>
+                  {% set days_left = (tender.end_date - today).days + 1 %}
+                  {% if days_left % 10 in (0, 5, 6, 7, 8, 9) %}
+                    <div class="card-deadline"><i class="bi bi-clock"></i>{{ days_left }} дней</div>
+                  {% elif days_left % 10 == 1 %}
+                    <div class="card-deadline"><i class="bi bi-clock"></i>{{ days_left }} день</div>
+                  {% elif days_left % 10 in (2, 3, 4) %}
+                    <div class="card-deadline"><i class="bi bi-clock"></i>{{ days_left }} дня</div>
+                  {% endif %}
                 </div>
-                <a href="{{ tender.url }}" class="card-link" target="_blank" rel="noopener noreferrer">Подробнее <i class="bi bi-arrow-right"></i></a>
+                <a href="{{ tender.url }}" class="card-link" target="_blank" rel="noopener noreferrer">Подробнее <i
+                  class="bi bi-arrow-right"></i></a>
               </div>
             </div>
           {% endfor %}
