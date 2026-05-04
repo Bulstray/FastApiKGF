@@ -9,7 +9,7 @@ from core.config import settings
 
 from bs4.element import ResultSet, Tag
 
-from core.schemas import Tender
+from core.schemas import TenderCreate
 
 from selenium import webdriver
 from urllib.parse import urlencode
@@ -39,7 +39,7 @@ class BaseTenderPlatform(ABC):
         if base_url == settings.tender_platform.etp_gpb:
             driver = webdriver.Chrome()
             driver.get(f"{base_url}?{urlencode(params)}")
-            time.sleep(5)
+            time.sleep(20)
             self.html_source = driver.page_source
             driver.quit()
         else:
@@ -48,7 +48,8 @@ class BaseTenderPlatform(ABC):
                 params=params,
                 timeout=self.TIMEOUT,
                 headers=self.HEADERS,
-            ).text
+            )
+            self.html_source = self.html_source.text
 
     @staticmethod
     @abstractmethod
@@ -85,7 +86,7 @@ class BaseTenderPlatform(ABC):
     def get_end_date(card: Tag | Element) -> str:
         """Метод для определения даты окончания тендера"""
 
-    def search_tenders(self) -> list[Tender]:
+    def search_tenders(self) -> list[TenderCreate]:
 
         cards = self.get_cards_data()
 
@@ -98,7 +99,7 @@ class BaseTenderPlatform(ABC):
             title, url = title_and_url
 
             tenders.append(
-                Tender(
+                TenderCreate(
                     name=title,
                     pub_date=self.is_tender_pub_date_taken(card),
                     price=self.is_tender_price_taken(card),
