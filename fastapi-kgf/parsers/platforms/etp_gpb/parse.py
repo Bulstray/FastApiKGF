@@ -2,7 +2,6 @@ import dateparser
 from xml.etree.ElementTree import Element
 
 from bs4 import Tag, BeautifulSoup, ResultSet
-import time
 
 from datetime import date
 
@@ -91,15 +90,19 @@ class EtpgpbParser(BaseTenderPlatform):
         if isinstance(card, Element):
             return "Отсутствует"
 
-        organize_tag = card.find(
-            "div",
-            class_="vTxt--faint2Weak",
-        )
+        for organize in card.find_all("div", class_="cardBody__infoItem"):
+            organize_tag = organize.find(
+                "div",
+                class_="vTxt--faint2Weak",
+            )
 
-        if organize_tag is None:
-            return "Отсутствует"
+            if "Заказчики" in organize_tag.text:
+                return organize.find(
+                    "div",
+                    class_="cardBody__truncate",
+                ).text
 
-        return organize_tag.text
+        return "Отсутствует"
 
     @staticmethod
     def get_end_date(card: Tag | Element) -> str | date:
@@ -108,7 +111,7 @@ class EtpgpbParser(BaseTenderPlatform):
 
         end_date = card.find(
             "div",
-            class_="procedureDateExpired__value is-nearest",
+            class_="procedureDateExpired__value",
         )
 
         if end_date is None:
@@ -118,7 +121,7 @@ class EtpgpbParser(BaseTenderPlatform):
             end_date.text.replace("МСК", ""),
         )
 
-        return end_date.date()
+        return end_date
 
     def get_cards_data(self) -> ResultSet[Tag]:
         root = BeautifulSoup(self.html_source, "html.parser")
