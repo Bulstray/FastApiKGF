@@ -10,6 +10,7 @@ __all__ = (
     "TaskUsers",
     "User",
     "db_helper",
+    "Tender",
 )
 
 from .base import Base
@@ -23,3 +24,4 @@ from .projects import Project
 from .taks_users import TaskUsers
 from .task import Task
 from .user import User
+from .tenders import Tender
