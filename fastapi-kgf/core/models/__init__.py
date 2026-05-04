@@ -11,6 +11,7 @@ __all__ = (
     "User",
     "db_helper",
     "Tender",
+    "ArchiveTender",
 )
 
 from .base import Base
@@ -24,4 +25,5 @@ from .projects import Project
 from .taks_users import TaskUsers
 from .task import Task
 from .user import User
-from .tenders import Tender
+from .tender import Tender
+from .archive_tenders import ArchiveTender
