@@ -9,7 +9,7 @@ __all__ = (
     "TaskCreate",
     "TaskRead",
     "TaskUsersCreate",
-    "Tender",
+    "TenderCreate",
     "UserLogin",
     "UserRead",
 )
@@ -21,5 +21,5 @@ from .programs import ProgramCreate, ProgramRead
 from .projects import ProjectCreate, ProjectRead
 from .tasks import TaskCreate, TaskRead
 from .tasks_users import TaskUsersCreate
-from .tenders import Tender
+from .tenders import TenderCreate
 from .user import UserLogin, UserRead
