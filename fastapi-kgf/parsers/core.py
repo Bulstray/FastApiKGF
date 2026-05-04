@@ -1,9 +1,10 @@
-from core.schemas import Tender
+from core.schemas import TenderCreate
 
 from .platforms import EtpgpbParser, TekTorgPlatform
 
 from services.tenders.key_word_service import KeyWordService
 from services.tenders.tender_service import TendersService
+from services.tenders.archive_tender_service import ArchiveTendersService
 from core.models import db_helper
 
 
@@ -21,7 +22,7 @@ class TenderParseCore:
             ),
         }
 
-    def search_all_platforms(self) -> list[Tender]:
+    def search_all_platforms(self) -> list[TenderCreate]:
         """Поиск по всем платформам"""
 
         results = []
@@ -36,8 +37,16 @@ async def parse_tenders():
     async with db_helper.session_factory() as session:
         keyword_service = KeyWordService(session)
         tender_service = TendersService(session)
+        tender_archive_service = ArchiveTendersService(session)
 
         all_keywords = await keyword_service.get_all()
+        active_tenders = await tender_service.get_all()
+
+        if active_tenders:
+            await tender_service.delete_table()
+            await tender_archive_service.add_all(active_tenders)
+
+        tenders = []
 
         for keyword in all_keywords:
             tender_parser = TenderParseCore(
@@ -45,6 +54,15 @@ async def parse_tenders():
                 keyword.id,
             )
 
-            tenders = tender_parser.search_all_platforms()
+            tenders.extend(tender_parser.search_all_platforms())
 
-        await tender_service.add_tenders_in_db(tenders)
+        for tender in tenders:
+            archive_tender = await tender_service.get_archive_tender(
+                tender.url
+            )
+
+            if archive_tender:
+                pass
+
+        if tenders:
+            await tender_service.add_tenders_in_db(tenders)
