@@ -246,17 +246,17 @@
       </h1>
     </div>
 
-    {% for key_word in tenders %}
+    {% for keyword in keywords %}
       <section class="keyword-section">
         <div class="keyword-header">
           <div class="keyword-title-group">
-            <span class="keyword-name">{{ key_word }}</span>
+            <span class="keyword-name">{{ keyword.decoding }}</span>
             <span class="keyword-count">6</span>
           </div>
           <button class="keyword-toggle"><i class="bi bi-chevron-down"></i></button>
         </div>
         <div class="tenders-grid">
-          {% for tender in tenders[key_word] %}
+          {% for tender in keyword.tenders %}
             <div class="tender-card" data-status="urgent">
               <div class="card-top-row">
               </div>
