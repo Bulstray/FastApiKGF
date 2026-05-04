@@ -5,6 +5,7 @@ from bs4.element import ResultSet, Tag
 
 from core.config import settings
 from parsers.platforms.base_platform import BaseTenderPlatform
+from datetime import date
 
 import dateparser
 
@@ -12,11 +13,12 @@ import dateparser
 class TekTorgPlatform(BaseTenderPlatform):
     """Парсер площадки ТЕК-Торг"""
 
-    def __init__(self, key_word: str) -> None:
+    def __init__(self, key_word: str, keyword_id: int) -> None:
         super().__init__(
             base_url=f"{settings.tender_platform.tek_torg}",
             base_platform=f"{settings.tender_platform.base_platform.base_tek_torg}",
             params=self.get_params(key_word=key_word),
+            keyword_id=keyword_id,
         )
 
     def is_tender_name_taken(
@@ -88,6 +90,23 @@ class TekTorgPlatform(BaseTenderPlatform):
         )
 
         return organize_text
+
+    @staticmethod
+    def get_end_date(card: Tag | Element) -> str | date:
+        if isinstance(card, Element):
+            return "Дата не установлена"
+
+        end_date = card.find(
+            "span",
+            class_="sc-7909e12c-0 glSvLE",
+        )
+
+        if end_date is None:
+            return "Дата не установлена"
+
+        pub_date = dateparser.parse(end_date.text)
+
+        return pub_date.date()
 
     @staticmethod
     def get_params(key_word: str) -> dict[str, str | int]:
