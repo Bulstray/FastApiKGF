@@ -30,6 +30,7 @@ class Settings(BaseSettings):
     session: SessionConfig = SessionConfig()
     superuser: SuperUserConfig
     secret_key_admin: AdminSecretKey
+    email_password: str
 
     uploads_program_dir: AsyncPath = AsyncPath("uploads/programs")
     uploads_file_task_dir: AsyncPath = AsyncPath("uploads/file_tasks")
