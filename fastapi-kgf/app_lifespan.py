@@ -1,11 +1,24 @@
 from collections.abc import AsyncIterator
 from contextlib import asynccontextmanager
 
+from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from fastapi import FastAPI
+import logging
 
 from core.config import settings
 from core.models import Base, User, db_helper
 from services.users.service import UserService
+
+from parsers.core import parse_tenders
+
+import asyncio
+
+
+async def scheduler():
+    while True:
+        await parse_tenders()
+        # Ждем 24 часа (86400 секунд)
+        await asyncio.sleep(86400)  # 24 * 60 * 60
 
 
 @asynccontextmanager
@@ -29,6 +42,8 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
     await settings.uploads_program_dir.mkdir(exist_ok=True, parents=True)
     await settings.uploads_file_task_dir.mkdir(exist_ok=True, parents=True)
     await settings.uploads_file_in_chat.mkdir(exist_ok=True, parents=True)
+
+    asyncio.create_task(scheduler())
 
     yield None
 
