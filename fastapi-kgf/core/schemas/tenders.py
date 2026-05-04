@@ -1,6 +1,5 @@
 from pydantic import BaseModel
-
-from core.types.platform import Platform
+from datetime import date
 
 
 class BaseTender(BaseModel):
@@ -11,6 +10,8 @@ class BaseTender(BaseModel):
     price: str
     organizer: str
     url: str
+    end_date: str
+    keyword_id: int
 
 
 class Tender(BaseTender):
