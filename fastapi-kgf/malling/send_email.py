@@ -97,7 +97,14 @@ async def send_email(
     server = smtplib.SMTP_SSL("smtp.yandex.com")
     server.ehlo(settings.superuser.email)
 
-    server.login(settings.superuser.email, settings.superuser.email_password)
+    server.login(
+        settings.superuser.email,
+        settings.superuser.email_password,
+    )
     server.auth_plain()
-    server.sendmail(settings.superuser.email, recipient, message.as_string())
+    server.sendmail(
+        settings.superuser.email,
+        recipient,
+        message.as_string(),
+    )
     server.quit()
