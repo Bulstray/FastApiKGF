@@ -15,7 +15,6 @@ class SuperUserConfig(BaseModel):
     surname: str
     email: EmailStr
     role: UserRole = UserRole.admin
-    email_password: str
 
 
 class AdminSecretKey(BaseModel):
