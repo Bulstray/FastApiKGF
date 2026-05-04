@@ -12,8 +12,6 @@ from dependencies.projects import get_project_service
 from dependencies.session_auth import get_current_user
 from services.projects.service import ProjectService
 
-from parsers.core import TenderParseCore
-import asyncio
 
 router = APIRouter()
 
@@ -31,18 +29,11 @@ async def tenders_page(
     key_words = await keyword_service.get_all()
     projects = await project_service.get_all()
 
-    tenders = {}
-
-    for key_word in key_words:
-        init_tender_class = TenderParseCore(key_word.keyword)
-        tenders[key_word.decoding] = init_tender_class.search_all_platforms()
-        await asyncio.sleep(5)
-
     return templates.TemplateResponse(
         request=request,
         name="tenders.html",
         context={
-            "tenders": tenders,
+            "keywords": key_words,
             "user": current_user,
             "projects": projects,
         },
