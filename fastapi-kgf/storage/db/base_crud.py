@@ -26,6 +26,9 @@ class BaseCRUD:
     async def delete_by_id(self, id_: int) -> None:
         """Delete by id"""
         model = await self.get_by_id(id_)
+        await self.delete(model)
+
+    async def delete(self, model: Model) -> None:
         await self.session.delete(model)
         await self.session.commit()
 
