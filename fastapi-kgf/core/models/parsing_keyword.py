@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING
 from .base import Base
 
 if TYPE_CHECKING:
-    from .tenders import Tender
+    from .tender import Tender
 
 
 class ParsingKeyword(Base):
