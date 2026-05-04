@@ -4,6 +4,8 @@ from xml.etree.ElementTree import Element
 from bs4 import Tag, BeautifulSoup, ResultSet
 import time
 
+from datetime import date
+
 from core.config import settings
 from parsers.platforms.base_platform import BaseTenderPlatform
 
@@ -11,12 +13,13 @@ from parsers.platforms.base_platform import BaseTenderPlatform
 class EtpgpbParser(BaseTenderPlatform):
     """Parser for ETP GPB tender platform."""
 
-    def __init__(self, key_word: str) -> None:
+    def __init__(self, key_word: str, keyword_id: int) -> None:
         self.key_word = key_word.lower()
         super().__init__(
             base_url=f"{settings.tender_platform.etp_gpb}",
             base_platform=f"{settings.tender_platform.base_platform.base_etp_gpb}",
             params=self.get_params(key_word),
+            keyword_id=keyword_id,
         )
 
     @staticmethod
@@ -97,6 +100,25 @@ class EtpgpbParser(BaseTenderPlatform):
             return "Отсутствует"
 
         return organize_tag.text
+
+    @staticmethod
+    def get_end_date(card: Tag | Element) -> str | date:
+        if isinstance(card, Element):
+            return "Дата не установлена"
+
+        end_date = card.find(
+            "div",
+            class_="procedureDateExpired__value is-nearest",
+        )
+
+        if end_date is None:
+            return "Дата не установлена"
+
+        end_date = dateparser.parse(
+            end_date.text.replace("МСК", ""),
+        )
+
+        return end_date.date()
 
     def get_cards_data(self) -> ResultSet[Tag]:
         root = BeautifulSoup(self.html_source, "html.parser")
