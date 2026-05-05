@@ -41,7 +41,12 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
     await settings.uploads_file_task_dir.mkdir(exist_ok=True, parents=True)
     await settings.uploads_file_in_chat.mkdir(exist_ok=True, parents=True)
 
-    asyncio.create_task(scheduler())
+    background_tasks = set()
+    task = asyncio.create_task(scheduler())
+    background_tasks.add(task)
+    task.add_done_callback(background_tasks.discard)
+
+    app.state.scheduler_task = task
 
     yield None
 
