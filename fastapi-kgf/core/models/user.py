@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING
 
-from sqlalchemy import Enum, String
+from sqlalchemy import Enum, String, false
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from core.types import UserRole
@@ -50,6 +50,11 @@ class User(Base):
         default=UserRole.user,
         nullable=False,
         server_default=UserRole.user,
+    )
+
+    send_email_tender: Mapped[bool] = mapped_column(
+        default=False,
+        server_default=false(),
     )
 
     creator_user: Mapped["Task"] = relationship(
