@@ -1,0 +1,392 @@
+{% from "macro/navbar.html" import navbar, style_navbar with context %}
+
+{% extends "base.html" %}
+
+{% block style %}
+  {{ style_navbar() }}
+  <style>
+      .main-container {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          min-height: calc(100vh - 56px);  /* высота экрана минус топбар если есть */
+          padding: 2rem;
+      }
+
+      /* Карточка профиля */
+      .profile-card {
+          background: white;
+          border-radius: 20px;
+          box-shadow: 0 2px 20px rgba(0, 0, 0, 0.06);
+          overflow: hidden;
+          width: 100%;
+          max-width: 1000px;
+          max-height: 800px;/* ограничиваем ширину */
+      }
+
+      .profile-header {
+          background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+          padding: 2.5rem 2rem;
+          color: white;
+          display: flex;
+          align-items: center;
+          gap: 1.5rem;
+          position: relative;
+          overflow: hidden;
+      }
+
+      .profile-header::after {
+          content: '';
+          position: absolute;
+          top: -50%;
+          right: -5%;
+          width: 300px;
+          height: 300px;
+          background: rgba(255, 255, 255, 0.03);
+          border-radius: 50%;
+      }
+
+      .avatar-circle {
+          width: 85px;
+          height: 85px;
+          border-radius: 50%;
+          background: var(--accent-color);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 2.2rem;
+          border: 4px solid rgba(255, 255, 255, 0.3);
+          flex-shrink: 0;
+          position: relative;
+          z-index: 1;
+      }
+
+      .profile-info {
+          position: relative;
+          z-index: 1;
+      }
+
+      .profile-info h4 {
+          margin: 0 0 0.3rem;
+          font-weight: 700;
+          font-size: 1.5rem;
+      }
+
+      .profile-info span {
+          font-size: 0.9rem;
+          opacity: 0.85;
+          display: block;
+          line-height: 1.6;
+      }
+
+      .profile-body {
+          padding: 3rem 3rem;
+      }
+
+      /* Секции формы */
+      .form-section {
+          /* без ограничений */
+      }
+
+      .section-title {
+          font-size: 1.1rem;
+          font-weight: 700;
+          color: #1a1a2e;
+          margin-bottom: 1.5rem;
+          padding-bottom: 0.75rem;
+          border-bottom: 2px solid #f0f0f0;
+      }
+
+      .form-label {
+          font-weight: 600;
+          color: #2c3e50;
+          margin-bottom: 0.5rem;
+          font-size: 0.9rem;
+      }
+
+      .input-group {
+          margin-bottom: 0;
+      }
+
+      .input-group-text {
+          background: #f8f9fa;
+          border-right: none;
+          color: #6c757d;
+      }
+
+      .form-control {
+          border-left: none;
+          padding: 0.65rem 1rem;
+          font-size: 0.95rem;
+      }
+
+      .form-control:focus {
+          border-color: var(--accent-color);
+          box-shadow: none;
+      }
+
+      .input-group:focus-within .input-group-text,
+      .input-group:focus-within .form-control {
+          border-color: var(--accent-color);
+      }
+
+      .form-control::placeholder {
+          color: #adb5bd;
+      }
+
+      /* Поле ввода с иконкой */
+      .input-field-wrapper {
+          margin-bottom: 1.5rem;
+      }
+
+      .input-hint {
+          font-size: 0.8rem;
+          color: #6c757d;
+          margin-top: 0.4rem;
+      }
+
+      /* Карточка уведомлений */
+      .notifications-wrapper {
+          background: #f8f9fa;
+          border-radius: 16px;
+          padding: 1.5rem;
+          margin-top: 2rem;
+          border: 2px solid transparent;
+          transition: background 0.3s, border-color 0.3s;
+      }
+
+      .notifications-wrapper.enabled {
+          background: #eaf8ff;
+          border-color: var(--accent-color);
+      }
+
+      .notifications-content {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          gap: 1.5rem;
+      }
+
+      .notifications-info {
+          flex: 1;
+      }
+
+      .notifications-title {
+          font-size: 1rem;
+          font-weight: 700;
+          color: #1a1a2e;
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+          margin-bottom: 0.25rem;
+      }
+
+      .notifications-title i {
+          color: var(--accent-color);
+          font-size: 1.3rem;
+      }
+
+      .notifications-desc {
+          font-size: 0.85rem;
+          color: #6c757d;
+          margin: 0;
+      }
+
+      /* Toggle Switch */
+      .form-switch {
+          flex-shrink: 0;
+      }
+
+      .form-switch .form-check-input {
+          width: 3rem !important;
+          height: 1.5rem !important;
+          cursor: pointer;
+          margin-top: 0;
+      }
+
+      .form-switch .form-check-input:checked {
+          background-color: var(--accent-color);
+          border-color: var(--accent-color);
+      }
+
+      .form-switch .form-check-input:focus {
+          border-color: var(--accent-color);
+          box-shadow: 0 0 0 0.2rem rgba(233, 69, 96, 0.2);
+      }
+
+      /* Кнопки */
+      .form-actions {
+          display: flex;
+          gap: 1rem;
+          padding-top: 2rem;
+          margin-top: 1rem;
+          border-top: 1px solid #e9ecef;
+      }
+
+      .btn-save {
+          background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+          color: white;
+          border: none;
+          padding: 0.75rem 2.5rem;
+          border-radius: 12px;
+          font-weight: 600;
+          transition: all 0.3s;
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+      }
+
+      .btn-save:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 8px 20px rgba(26, 26, 46, 0.3);
+          color: white;
+      }
+
+      .btn-cancel {
+          border: 2px solid #dee2e6;
+          padding: 0.75rem 2rem;
+          border-radius: 12px;
+          font-weight: 500;
+          transition: all 0.3s;
+          color: #495057;
+          background: white;
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+      }
+
+      .btn-cancel:hover {
+          background: #f8f9fa;
+          border-color: #c1c7cd;
+      }
+
+      .toast-custom i {
+          color: #28a745;
+          font-size: 1.2rem;
+      }
+
+      /* Адаптив */
+      @media (max-width: 992px) {
+          .main-container {
+              padding: 1rem;
+          }
+
+          .profile-body {
+              padding: 1.5rem;
+          }
+      }
+
+      @media (max-width: 768px) {
+          .profile-header {
+              flex-direction: column;
+              text-align: center;
+              padding: 2rem 1.5rem;
+          }
+
+          .form-actions {
+              flex-direction: column;
+          }
+
+          .notifications-content {
+              flex-direction: column;
+              align-items: flex-start;
+          }
+      }
+
+      @media (max-width: 576px) {
+          .main-container {
+              padding: 0.5rem;
+          }
+      }
+  </style>
+{% endblock %}
+
+{% block main %}
+  {{ navbar(user, projects) }}
+
+  <div class="main-container">
+    <!-- Карточка профиля -->
+    <div class="profile-card">
+      <!-- Шапка -->
+      <div class="profile-header">
+        <div class="avatar-circle">
+          <i class="bi bi-person-check-fill"></i>
+        </div>
+        <div class="profile-info">
+          <h4>{{ user.name }} {{ user.surname }}</h4>
+          <span><i class="bi bi-shield-check me-1"></i>{{ user.role }}</span>
+          <span><i class="bi bi-envelope me-1"></i>{{ user.email }}</span>
+        </div>
+      </div>
+
+      <!-- Тело -->
+      <div class="profile-body">
+        <div class="form-section">
+          <form id="profileForm">
+            <!-- Секция: Личные данные -->
+            <h5 class="section-title">
+              <i class="bi bi-person-vcard me-2"></i>Личные данные
+            </h5>
+
+            <!-- Логин -->
+            <div class="row">
+              <div class="col-md-6">
+                <div class="input-field-wrapper">
+                  <label for="login" class="form-label">Логин</label>
+                  <div class="input-group">
+                    <span class="input-group-text">
+                      <i class="bi bi-person"></i>
+                    </span>
+                    <input type="text" class="form-control" id="login" value="ivan_petrov" placeholder="Введите логин">
+                  </div>
+                </div>
+              </div>
+
+              <!-- Email -->
+              <div class="col-md-6">
+                <div class="input-field-wrapper">
+                  <label for="email" class="form-label">Email</label>
+                  <div class="input-group">
+                    <span class="input-group-text">
+                      <i class="bi bi-envelope"></i>
+                    </span>
+                    <input type="email" class="form-control" id="email" value="ivan@example.com"
+                           placeholder="Введите email">
+                  </div>
+                  <div class="input-hint">Будет использоваться для входа и уведомлений</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Секция: Уведомления -->
+            <div class="notifications-wrapper enabled" id="notificationsWrapper">
+              <div class="notifications-content">
+                <div class="notifications-info">
+                  <div class="notifications-title">
+                    <i class="bi bi-envelope-paper"></i>
+                    Уведомления о тендерах
+                  </div>
+                  <p class="notifications-desc">Присылать новые тендеры на почту</p>
+                </div>
+                <div class="form-check form-switch m-0">
+                  <input class="form-check-input" type="checkbox" id="emailNotify" checked>
+                </div>
+              </div>
+            </div>
+
+            <!-- Кнопки -->
+            <div class="form-actions">
+              <button type="submit" class="btn btn-save">
+                <i class="bi bi-check-lg"></i>Сохранить изменения
+              </button>
+              <button type="reset" class="btn btn-cancel">
+                <i class="bi bi-x-lg"></i>Отмена
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+{% endblock %}
