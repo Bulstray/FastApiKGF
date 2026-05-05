@@ -43,8 +43,10 @@ async def parse_tenders():
         active_tenders = await tender_service.get_all()
 
         if active_tenders:
+            await tender_archive_service.add_all_from_active_tender(
+                active_tenders
+            )
             await tender_service.delete_table()
-            await tender_archive_service.add_all(active_tenders)
 
         tenders = []
 
@@ -60,9 +62,8 @@ async def parse_tenders():
             archive_tender = await tender_service.get_archive_tender(
                 tender.url
             )
-
             if archive_tender:
-                pass
+                await tender_archive_service.delete(archive_tender)
 
         if tenders:
             await tender_service.add_tenders_in_db(tenders)
