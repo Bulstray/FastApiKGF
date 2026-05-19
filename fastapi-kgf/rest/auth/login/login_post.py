@@ -29,7 +29,7 @@ async def login_submit(
         return templates.TemplateResponse(
             name="login.html",
             request=request,
-            context={"error": "Неверный логин или пароль"},
+            context={"error": "Неверная почта или пароль"},
             status_code=status.HTTP_401_UNAUTHORIZED,
         )
 
