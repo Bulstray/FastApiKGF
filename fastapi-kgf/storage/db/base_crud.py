@@ -42,7 +42,12 @@ class BaseCRUD:
         return list(result.all())
 
     async def delete_by_id(self, id_: int) -> None:
-        """Delete by id"""
+        """
+        Delete a model instance by its ID.
+
+        Args:
+            id_ (int): The ID of the model to delete.
+        """
         model = await self.get_by_id(id_)
         await self.delete(model)
 
