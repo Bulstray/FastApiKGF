@@ -1,5 +1,5 @@
 from fastapi import APIRouter
-from starlette.responses import FileResponse
+from fastapi.responses import FileResponse
 
 router = APIRouter(prefix="/download")
 
