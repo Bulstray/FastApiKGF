@@ -18,7 +18,7 @@ class Tender(Base):
     price: Mapped[str]
     organizer: Mapped[str]
     url: Mapped[str]
-    end_date: Mapped[datetime]
+    end_date: Mapped[datetime] = mapped_column(nullable=True)
     keyword_id: Mapped[int] = mapped_column(
         ForeignKey(
             "parsing_keyword.id",
