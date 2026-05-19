@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING
 
-from sqlalchemy import Enum, String, false
+from sqlalchemy import Enum, String, false, event
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from core.types import UserRole
@@ -15,13 +15,6 @@ if TYPE_CHECKING:
 
 class User(Base):
     __tablename__ = "users"
-
-    username: Mapped[str] = mapped_column(
-        String(50),
-        unique=True,
-        nullable=False,
-        index=True,
-    )
 
     email: Mapped[str] = mapped_column(
         String(255),
@@ -82,3 +75,10 @@ class User(Base):
     @property
     def initials(self) -> str:
         return f"{self.name[0]}{self.surname[0]}".upper()
+
+
+@event.listens_for(User, 'before_insert')
+@event.listens_for(User, 'before_update')
+def lowercase_email(mapper, connection, target):
+    if target.email is not None:
+        target.email = target.email.lower()
