@@ -7,11 +7,9 @@ from typing import Annotated
 from core.schemas import UserRead, UserUpdateForm
 from dependencies.session_auth import get_current_user
 from dependencies.projects import get_project_service
-from services.projects.service import ProjectService
-from services.users.service import UserService
+from services import ProjectService, UserService
 from templating.jinja_template import templates
 from dependencies.user import get_user_service
-from storage.redis.session import save_session
 from core.config.settings import SESSION_COOKIE_NAME
 
 router = APIRouter(prefix="/profile")
