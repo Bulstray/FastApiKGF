@@ -28,8 +28,8 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
 
         user_service = UserService(session)
 
-        check_user = await user_service.get_user_by_username(
-            username=settings.superuser.username,
+        check_user = await user_service.get_user_by_email(
+            email=settings.superuser.email,
         )
 
         if check_user is None:
