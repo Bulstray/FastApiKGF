@@ -52,6 +52,12 @@ class BaseCRUD:
         await self.delete(model)
 
     async def delete(self, model: Model) -> None:
+        """
+        Delete the given model instance from the database.
+
+        Args:
+            model (Model): The model instance to delete.
+        """
         await self.session.delete(model)
         await self.session.commit()
 
