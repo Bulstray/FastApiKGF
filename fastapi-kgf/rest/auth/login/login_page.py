@@ -1,8 +1,8 @@
 from typing import Annotated
 
 from fastapi import APIRouter, Depends
-from starlette.requests import Request
-from starlette.responses import HTMLResponse
+from fastapi.requests import Request
+from fastapi.responses import HTMLResponse
 
 from core.schemas.user import UserRead
 from dependencies.session_auth import redirect_if_authenticated
