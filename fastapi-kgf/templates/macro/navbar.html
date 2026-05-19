@@ -47,11 +47,11 @@
             <span class="user-role">{{ auth.role }}</span>
           </div>
           <div class="user-dropdown">
-            <a href="#" class="dropdown-item">
+            <a href="{{ url_for('profile:page') }}" class="dropdown-item">
               <i class="bi bi-person"></i>
               <span>Мой профиль</span>
             </a>
-            <a href="{{ url_for('profile:page') }}" class="dropdown-item">
+            <a href="{{ url_for('settings:page') }}" class="dropdown-item">
               <i class="bi bi-gear"></i>
               <span>Настройки</span>
             </a>
