@@ -31,7 +31,12 @@ class BaseCRUD:
         return await self.session.get(self.model, id_)
 
     async def get_all(self) -> list[Model]:
-        """Get all rows from table"""
+        """
+        Get all rows from the table, ordered by ID.
+
+        Returns:
+            list[Model]: List of all model instances in the table.
+        """
         stmt = select(self.model).order_by(self.model.id)
         result = await self.session.scalars(stmt)
         return list(result.all())
