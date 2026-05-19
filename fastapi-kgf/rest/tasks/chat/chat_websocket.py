@@ -10,8 +10,7 @@ from core.schemas import UserRead
 from dependencies.message import get_message_service
 from dependencies.providers import get_user_service
 from managers.message_manager import message_manager
-from services.messages.message_service import MessageManager
-from services.users.service import UserService
+from services import MessageManager, UserService
 
 router = APIRouter()
 
