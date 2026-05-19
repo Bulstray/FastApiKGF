@@ -8,8 +8,13 @@ class BaseCRUD:
     """Base CRUD class for all models"""
 
     def __init__(self, session: AsyncSession, model: Model) -> None:
-        """Initialize the base crud with
-        a database connection and an ORM object."""
+        """
+        Initialize the base CRUD with a database connection and an ORM object.
+
+        Args:
+            session (AsyncSession): Asynchronous SQLAlchemy session for database interaction.
+            model (Model): ORM model class to work with.
+        """
         self.session = session
         self.model = model
 
