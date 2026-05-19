@@ -10,7 +10,7 @@ from services.programs.exceptions import (
     ProgramNameAlreadyExistsError,
     ProgramNameDoesNotExistError,
 )
-from services.programs.service import ProgramService
+from services.programs import ProgramService
 
 router = APIRouter(tags=["Programs"])
 
