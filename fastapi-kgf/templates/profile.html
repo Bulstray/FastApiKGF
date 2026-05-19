@@ -9,19 +9,17 @@
           display: flex;
           justify-content: center;
           align-items: center;
-          min-height: calc(100vh - 56px);  /* высота экрана минус топбар если есть */
+          min-height: calc(100vh - 56px);
           padding: 2rem;
       }
 
-      /* Карточка профиля */
       .profile-card {
           background: white;
           border-radius: 20px;
           box-shadow: 0 2px 20px rgba(0, 0, 0, 0.06);
           overflow: hidden;
           width: 100%;
-          max-width: 1000px;
-          max-height: 800px;/* ограничиваем ширину */
+          max-width: 800px;
       }
 
       .profile-header {
@@ -80,12 +78,7 @@
       }
 
       .profile-body {
-          padding: 3rem 3rem;
-      }
-
-      /* Секции формы */
-      .form-section {
-          /* без ограничений */
+          padding: 2.5rem;
       }
 
       .section-title {
@@ -102,10 +95,6 @@
           color: #2c3e50;
           margin-bottom: 0.5rem;
           font-size: 0.9rem;
-      }
-
-      .input-group {
-          margin-bottom: 0;
       }
 
       .input-group-text {
@@ -134,7 +123,6 @@
           color: #adb5bd;
       }
 
-      /* Поле ввода с иконкой */
       .input-field-wrapper {
           margin-bottom: 1.5rem;
       }
@@ -145,76 +133,27 @@
           margin-top: 0.4rem;
       }
 
-      /* Карточка уведомлений */
-      .notifications-wrapper {
-          background: #f8f9fa;
-          border-radius: 16px;
-          padding: 1.5rem;
-          margin-top: 2rem;
-          border: 2px solid transparent;
-          transition: background 0.3s, border-color 0.3s;
+      .password-field-wrapper {
+          position: relative;
       }
 
-      .notifications-wrapper.enabled {
-          background: #eaf8ff;
-          border-color: var(--accent-color);
-      }
-
-      .notifications-content {
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          gap: 1.5rem;
-      }
-
-      .notifications-info {
-          flex: 1;
-      }
-
-      .notifications-title {
-          font-size: 1rem;
-          font-weight: 700;
-          color: #1a1a2e;
-          display: flex;
-          align-items: center;
-          gap: 0.5rem;
-          margin-bottom: 0.25rem;
-      }
-
-      .notifications-title i {
-          color: var(--accent-color);
-          font-size: 1.3rem;
-      }
-
-      .notifications-desc {
-          font-size: 0.85rem;
-          color: #6c757d;
-          margin: 0;
-      }
-
-      /* Toggle Switch */
-      .form-switch {
-          flex-shrink: 0;
-      }
-
-      .form-switch .form-check-input {
-          width: 3rem !important;
-          height: 1.5rem !important;
+      .password-toggle {
+          position: absolute;
+          right: 12px;
+          top: 50%;
+          transform: translateY(-50%);
           cursor: pointer;
-          margin-top: 0;
+          color: #6c757d;
+          z-index: 10;
+          background: none;
+          border: none;
+          padding: 4px;
       }
 
-      .form-switch .form-check-input:checked {
-          background-color: var(--accent-color);
-          border-color: var(--accent-color);
+      .password-toggle:hover {
+          color: var(--accent-color);
       }
 
-      .form-switch .form-check-input:focus {
-          border-color: var(--accent-color);
-          box-shadow: 0 0 0 0.2rem rgba(233, 69, 96, 0.2);
-      }
-
-      /* Кнопки */
       .form-actions {
           display: flex;
           gap: 1rem;
@@ -242,40 +181,8 @@
           color: white;
       }
 
-      .btn-cancel {
-          border: 2px solid #dee2e6;
-          padding: 0.75rem 2rem;
-          border-radius: 12px;
-          font-weight: 500;
-          transition: all 0.3s;
-          color: #495057;
-          background: white;
-          display: flex;
-          align-items: center;
-          gap: 0.5rem;
-      }
-
-      .btn-cancel:hover {
-          background: #f8f9fa;
-          border-color: #c1c7cd;
-      }
-
-      .toast-custom i {
-          color: #28a745;
-          font-size: 1.2rem;
-      }
 
       /* Адаптив */
-      @media (max-width: 992px) {
-          .main-container {
-              padding: 1rem;
-          }
-
-          .profile-body {
-              padding: 1.5rem;
-          }
-      }
-
       @media (max-width: 768px) {
           .profile-header {
               flex-direction: column;
@@ -283,13 +190,12 @@
               padding: 2rem 1.5rem;
           }
 
-          .form-actions {
-              flex-direction: column;
+          .profile-body {
+              padding: 1.5rem;
           }
 
-          .notifications-content {
+          .form-actions {
               flex-direction: column;
-              align-items: flex-start;
           }
       }
 
@@ -305,9 +211,8 @@
   {{ navbar(user, projects) }}
 
   <div class="main-container">
-    <!-- Карточка профиля -->
     <div class="profile-card">
-      <!-- Шапка -->
+      <!-- Шапка профиля -->
       <div class="profile-header">
         <div class="avatar-circle">
           <i class="bi bi-person-check-fill"></i>
@@ -315,78 +220,101 @@
         <div class="profile-info">
           <h4>{{ user.name }} {{ user.surname }}</h4>
           <span><i class="bi bi-shield-check me-1"></i>{{ user.role }}</span>
-          <span><i class="bi bi-envelope me-1"></i>{{ user.email }}</span>
         </div>
       </div>
 
-      <!-- Тело -->
+      <!-- Форма редактирования -->
       <div class="profile-body">
-        <div class="form-section">
-          <form id="profileForm">
-            <!-- Секция: Личные данные -->
-            <h5 class="section-title">
-              <i class="bi bi-person-vcard me-2"></i>Личные данные
-            </h5>
+        <form id="profileForm" action="/users/profile" method="POST">
 
-            <!-- Логин -->
-            <div class="row">
-              <div class="col-md-6">
-                <div class="input-field-wrapper">
-                  <label for="login" class="form-label">Логин</label>
-                  <div class="input-group">
-                    <span class="input-group-text">
-                      <i class="bi bi-person"></i>
-                    </span>
-                    <input type="text" class="form-control" id="login" value="ivan_petrov" placeholder="Введите логин">
-                  </div>
-                </div>
-              </div>
+          <!-- Секция: Email -->
+          <h5 class="section-title">
+            <i class="bi bi-envelope me-2"></i>Изменение Email
+          </h5>
 
-              <!-- Email -->
-              <div class="col-md-6">
-                <div class="input-field-wrapper">
-                  <label for="email" class="form-label">Email</label>
-                  <div class="input-group">
-                    <span class="input-group-text">
-                      <i class="bi bi-envelope"></i>
-                    </span>
-                    <input type="email" class="form-control" id="email" value="ivan@example.com"
-                           placeholder="Введите email">
-                  </div>
-                  <div class="input-hint">Будет использоваться для входа и уведомлений</div>
+          <div class="input-field-wrapper">
+            <label for="email" class="form-label">Новый Email</label>
+            <div class="input-group">
+              <span class="input-group-text">
+                <i class="bi bi-envelope"></i>
+              </span>
+              <input
+                type="email"
+                class="form-control"
+                id="email"
+                name="email"
+                value="{{ user.email }}"
+                placeholder="Введите новый email"
+              >
+            </div>
+            <div class="input-hint">Этот email будет использоваться для входа в систему</div>
+          </div>
+
+          <!-- Секция: Пароль -->
+          <h5 class="section-title mt-4">
+            <i class="bi bi-lock me-2"></i>Изменение пароля
+          </h5>
+
+          <div class="row">
+            <div class="col-md-6">
+              <div class="input-field-wrapper">
+                <label for="newPassword" class="form-label">Новый пароль</label>
+                <div class="input-group password-field-wrapper">
+                  <span class="input-group-text">
+                    <i class="bi bi-key"></i>
+                  </span>
+                  <input
+                    type="password"
+                    class="form-control"
+                    id="newPassword"
+                    name="new_password"
+                    placeholder="Введите новый пароль"
+                  >
+                  <button
+                    type="button"
+                    class="password-toggle"
+                  >
+                    <i class="bi bi-eye"></i>
+                  </button>
                 </div>
+                <div class="input-hint">Минимум 6 символов</div>
               </div>
             </div>
 
-            <!-- Секция: Уведомления -->
-            <div class="notifications-wrapper enabled" id="notificationsWrapper">
-              <div class="notifications-content">
-                <div class="notifications-info">
-                  <div class="notifications-title">
-                    <i class="bi bi-envelope-paper"></i>
-                    Уведомления о тендерах
-                  </div>
-                  <p class="notifications-desc">Присылать новые тендеры на почту</p>
+            <div class="col-md-6">
+              <div class="input-field-wrapper">
+                <label for="confirmPassword" class="form-label">Подтверждение пароля</label>
+                <div class="input-group password-field-wrapper">
+                  <span class="input-group-text">
+                    <i class="bi bi-key-fill"></i>
+                  </span>
+                  <input
+                    type="password"
+                    class="form-control"
+                    id="confirmPassword"
+                    name="confirm_password"
+                    placeholder="Повторите пароль"
+                  >
+                  <button
+                    type="button"
+                    class="password-toggle"
+                  >
+                    <i class="bi bi-eye"></i>
+                  </button>
                 </div>
-                <div class="form-check form-switch m-0">
-                  <input class="form-check-input" type="checkbox" id="emailNotify" checked>
-                </div>
+                <div class="input-hint">Пароли должны совпадать</div>
               </div>
             </div>
+          </div>
 
-            <!-- Кнопки -->
-            <div class="form-actions">
-              <button type="submit" class="btn btn-save">
-                <i class="bi bi-check-lg"></i>Сохранить изменения
-              </button>
-              <button type="reset" class="btn btn-cancel">
-                <i class="bi bi-x-lg"></i>Отмена
-              </button>
-            </div>
-          </form>
-        </div>
+          <!-- Кнопки -->
+          <div class="form-actions">
+            <button type="submit" class="btn btn-save">
+              <i class="bi bi-check-lg"></i>Сохранить изменения
+            </button>
+          </div>
+        </form>
       </div>
     </div>
   </div>
-
 {% endblock %}
