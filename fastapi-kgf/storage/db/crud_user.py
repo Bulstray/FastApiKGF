@@ -15,3 +15,11 @@ class UserStorage(BaseCRUD):
         stmt = select(User).where(email == User.email)
         result = await self.session.scalars(stmt)
         return result.first()
+
+    async def update_data_user(
+        self, user_in: dict[str, str], user_id: int
+    ) -> None:
+
+        stmt = update(User).where(User.id == user_id).values(**user_in)
+        await self.session.execute(stmt)
+        await self.session.commit()
