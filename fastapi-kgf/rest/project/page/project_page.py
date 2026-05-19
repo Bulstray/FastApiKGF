@@ -11,10 +11,12 @@ from dependencies.message import get_message_service
 from dependencies.projects import get_project_service
 from dependencies.providers import get_tasks_service, get_user_service
 from dependencies.session_auth import get_current_user
-from services.messages.message_service import MessageManager
-from services.projects.service import ProjectService
-from services.task import TasksFilesService
-from services.users.service import UserService
+from services import (
+    MessageManager,
+    ProjectService,
+    TasksFilesService,
+    UserService,
+)
 from templating.jinja_template import templates
 
 router = APIRouter()
