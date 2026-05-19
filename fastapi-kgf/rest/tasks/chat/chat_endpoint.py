@@ -6,7 +6,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from core.models import db_helper
 from dependencies.message import get_message_service
-from services.messages.message_service import MessageManager
+from services import MessageManager
 from storage.db import crud_message
 from utils import get_file_size
 
