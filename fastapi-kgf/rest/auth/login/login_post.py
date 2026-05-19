@@ -1,9 +1,7 @@
 from typing import Annotated
 
-from fastapi import APIRouter, Depends
-from starlette import status
-from starlette.requests import Request
-from starlette.responses import HTMLResponse, RedirectResponse
+from fastapi import APIRouter, Depends, status, Request
+from fastapi.responses import HTMLResponse, RedirectResponse
 
 from core.config.settings import SESSION_COOKIE_NAME
 from dependencies.auth_user import validate_basic_auth_user
