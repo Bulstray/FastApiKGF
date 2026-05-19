@@ -20,8 +20,8 @@ async def validate_basic_auth_user(
     async with request.form() as form_data:
         user = UserLogin.model_validate(form_data)
 
-    is_user = await user_service.get_user_by_username(
-        username=user.username,
+    is_user = await user_service.get_user_by_email(
+        email=user.email.lower(),
     )
 
     if is_user and bcrypt.checkpw(
