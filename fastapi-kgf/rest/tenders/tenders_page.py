@@ -7,11 +7,10 @@ from starlette.responses import HTMLResponse
 
 from core.schemas.user import UserRead
 from templating.jinja_template import templates
-from services.tenders.key_word_service import KeyWordService
 from dependencies.providers import get_keyword_tenders_service
 from dependencies.projects import get_project_service
 from dependencies.session_auth import get_current_user
-from services.projects.service import ProjectService
+from services import ProjectService, KeyWordService
 
 router = APIRouter()
 
