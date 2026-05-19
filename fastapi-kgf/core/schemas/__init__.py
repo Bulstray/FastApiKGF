@@ -12,6 +12,8 @@ __all__ = (
     "TenderCreate",
     "UserLogin",
     "UserRead",
+    "UserUpdateForm",
+    "UserUpdate",
 )
 
 from .cookie import Cookies
@@ -22,4 +24,4 @@ from .projects import ProjectCreate, ProjectRead
 from .tasks import TaskCreate, TaskRead
 from .tasks_users import TaskUsersCreate
 from .tenders import TenderCreate
-from .user import UserLogin, UserRead
+from .user import UserLogin, UserRead, UserUpdateForm, UserUpdate
