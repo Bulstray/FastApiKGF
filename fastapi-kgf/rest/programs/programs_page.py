@@ -8,8 +8,7 @@ from core.schemas.user import UserRead
 from dependencies.projects import get_project_service
 from dependencies.providers import get_program_service
 from dependencies.session_auth import get_current_user
-from services.programs import ProgramService
-from services.projects.service import ProjectService
+from services import ProgramService, ProjectService
 from templating.jinja_template import templates
 
 router = APIRouter()
