@@ -18,6 +18,7 @@ class DatabaseHelper:
 
         self.session_factory = async_sessionmaker(
             bind=self.engine,
+            expire_on_commit=False,
         )
 
     async def dispose(self) -> None:
