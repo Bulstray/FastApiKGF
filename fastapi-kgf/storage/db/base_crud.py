@@ -62,7 +62,15 @@ class BaseCRUD:
         await self.session.commit()
 
     async def create(self, model: Model) -> Model:
-        """Create new row in db"""
+        """
+        Create a new row in the database.
+
+        Args:
+            model (Model): The model instance to create.
+
+        Returns:
+            Model: The created model instance with updated fields (after refresh).
+        """
         self.session.add(model)
         await self.session.commit()
         await self.session.refresh(model)
