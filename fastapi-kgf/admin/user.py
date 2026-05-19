@@ -7,7 +7,6 @@ from core.models import User
 from utils.password_service import hash_password
 
 FIELD_USER = [
-    User.username,
     User.email,
     User.name,
     User.surname,
