@@ -19,7 +19,15 @@ class BaseCRUD:
         self.model = model
 
     async def get_by_id(self, id_: int) -> Model | None:
-        """Get a model by its ID."""
+        """
+        Get a model instance by its ID.
+
+        Args:
+            id_ (int): The ID of the model to retrieve.
+
+        Returns:
+            Model | None: The model instance if found, otherwise None.
+        """
         return await self.session.get(self.model, id_)
 
     async def get_all(self) -> list[Model]:
