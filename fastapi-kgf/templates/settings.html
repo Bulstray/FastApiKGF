@@ -1,0 +1,242 @@
+{% from "macro/navbar.html" import navbar, style_navbar with context %}
+
+{% extends "base.html" %}
+
+{% block style %}
+  {{ style_navbar() }}
+  <style>
+      .main-container {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          min-height: calc(100vh - 56px);
+          padding: 2rem;
+      }
+
+      .settings-card {
+          width: 100%;
+          max-width: 650px;
+          background: white;
+          border-radius: 20px;
+          box-shadow: 0 2px 20px rgba(0, 0, 0, 0.06);
+          overflow: hidden;
+      }
+
+      .settings-header {
+          background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+          padding: 2.5rem 2rem;
+          color: white;
+      }
+
+      .settings-header h4 {
+          margin: 0;
+          font-weight: 700;
+          font-size: 1.5rem;
+      }
+
+      .settings-header p {
+          margin: 0.3rem 0 0;
+          opacity: 0.85;
+          font-size: 0.9rem;
+      }
+
+      .settings-body {
+          padding: 2.5rem;
+      }
+
+      .section-title {
+          font-size: 1.1rem;
+          font-weight: 700;
+          color: #1a1a2e;
+          margin-bottom: 1.5rem;
+          padding-bottom: 0.75rem;
+          border-bottom: 2px solid #f0f0f0;
+      }
+
+      .toggle-group {
+          display: flex;
+          flex-direction: column;
+      }
+
+      .toggle-item {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          padding: 1rem 0;
+          transition: all 0.2s ease;
+      }
+
+      .toggle-label {
+          display: flex;
+          align-items: center;
+          gap: 1rem;
+          cursor: pointer;
+          flex: 1;
+      }
+
+      .toggle-label i {
+          font-size: 1.3rem;
+          width: 24px;
+          color: #6c757d;
+          transition: color 0.3s;
+      }
+
+      .toggle-item:has(.form-check-input:checked) .toggle-label i {
+          color: var(--accent-color);
+      }
+
+      .toggle-text {
+          font-size: 0.95rem;
+          font-weight: 500;
+          color: #1a1a2e;
+      }
+
+      .toggle-desc {
+          font-size: 0.8rem;
+          color: #6c757d;
+          margin-top: 0.15rem;
+      }
+
+      .form-switch {
+          padding-left: 0;
+          margin: 0;
+      }
+
+      .form-switch .form-check-input {
+          width: 2.8rem !important;
+          height: 1.4rem !important;
+          cursor: pointer;
+          margin: 0;
+          border: 2px solid #dee2e6;
+          background-color: #dee2e6;
+      }
+
+      .form-switch .form-check-input:checked {
+          background-color: var(--accent-color);
+          border-color: var(--accent-color);
+      }
+
+      .form-switch .form-check-input:focus {
+          border-color: var(--accent-color);
+          box-shadow: 0 0 0 0.2rem rgba(233, 69, 96, 0.15);
+      }
+
+      .divider {
+          height: 1px;
+          background: #e9ecef;
+      }
+
+      .form-actions {
+          padding-top: 2rem;
+          margin-top: 2rem;
+          border-top: 1px solid #e9ecef;
+      }
+
+      .btn-save {
+          background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+          color: white;
+          border: none;
+          padding: 0.75rem 2.5rem;
+          border-radius: 12px;
+          font-weight: 600;
+          transition: all 0.3s;
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+          width: 100%;
+          justify-content: center;
+      }
+
+      .btn-save:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 8px 20px rgba(26, 26, 46, 0.25);
+          color: white;
+      }
+
+      @media (max-width: 576px) {
+          .main-container {
+              padding: 0.5rem;
+          }
+
+          .settings-body {
+              padding: 1.5rem;
+          }
+      }
+  </style>
+{% endblock %}
+
+{% block main %}
+  {{ navbar(user, projects) }}
+
+  <div class="main-container">
+    <div class="settings-card">
+      <div class="settings-header">
+        <h4>Уведомления</h4>
+        <p>Выберите, что хотите получать на почту</p>
+      </div>
+
+      <div class="settings-body">
+        <form id="notificationsForm" action="/settings/notifications" method="POST">
+
+          <h5 class="section-title">
+            <i class="bi bi-bell me-2"></i>Email уведомления
+          </h5>
+
+          <div class="toggle-group">
+            <!-- Тендеры -->
+            <div class="toggle-item">
+              <label class="toggle-label" for="tenderNotify">
+                <i class="bi bi-briefcase"></i>
+                <div>
+                  <div class="toggle-text">Новые тендеры</div>
+                  <div class="toggle-desc">Уведомления о появлении новых тендеров</div>
+                </div>
+              </label>
+              <div class="form-check form-switch">
+                <input class="form-check-input" type="checkbox" id="tenderNotify" name="tender_notify" checked>
+              </div>
+            </div>
+
+            <div class="divider"></div>
+
+            <!-- Задачи -->
+            <div class="toggle-item">
+              <label class="toggle-label" for="taskNotify">
+                <i class="bi bi-check2-square"></i>
+                <div>
+                  <div class="toggle-text">Новые задачи</div>
+                  <div class="toggle-desc">Когда вам назначают новую задачу</div>
+                </div>
+              </label>
+              <div class="form-check form-switch">
+                <input class="form-check-input" type="checkbox" id="taskNotify" name="task_notify" checked>
+              </div>
+            </div>
+
+            <div class="divider"></div>
+
+            <!-- Сообщения -->
+            <div class="toggle-item">
+              <label class="toggle-label" for="messageNotify">
+                <i class="bi bi-chat-dots"></i>
+                <div>
+                  <div class="toggle-text">Сообщения в задачах</div>
+                  <div class="toggle-desc">Новые комментарии в ваших задачах</div>
+                </div>
+              </label>
+              <div class="form-check form-switch">
+                <input class="form-check-input" type="checkbox" id="messageNotify" name="message_notify" checked>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-actions">
+            <button type="submit" class="btn btn-save">
+              <i class="bi bi-check-lg"></i>Сохранить
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+{% endblock %}
