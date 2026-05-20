@@ -8,15 +8,11 @@ from services import UserService
 
 
 class UserServiceFactory(UserService):
-    def __init__(self, session: AsyncSession) -> None:
-        super().__init__(session)
-
-    @classmethod
-    def init_user_factory(
-        cls,
+    def __init__(
+        self,
         session: Annotated[
             AsyncSession,
             Depends(db_helper.session_getter),
         ],
-    ):
-        return cls(session)
+    ) -> None:
+        super().__init__(session)
