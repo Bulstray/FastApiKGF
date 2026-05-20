@@ -5,16 +5,15 @@ from fastapi import Depends, Request
 
 from core.schemas import UserLogin
 from services.auth.session_manager import create_session
-from services.users.service import UserService
 
-from .user import get_user_service
+from .user import UserServiceFactory
 
 
 async def validate_basic_auth_user(
     request: Request,
     user_service: Annotated[
-        UserService,
-        Depends(get_user_service),
+        UserServiceFactory,
+        Depends(UserServiceFactory.init_user_factory),
     ],
 ) -> str | None:
     async with request.form() as form_data:
