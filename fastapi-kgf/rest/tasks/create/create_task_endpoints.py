@@ -10,20 +10,22 @@ from services import ProjectService, TasksFilesService
 router = APIRouter()
 
 
-@router.post("/{project_id}", name="tasks:post")
+@router.post(
+    "/{project_id}",
+    name="tasks:post",
+    response_class=RedirectResponse,
+    status_code=status.HTTP_303_SEE_OTHER,
+)
 async def create_task(
     request: Request,
     project_id: int,
     service: Annotated[TasksFilesService, Depends(get_tasks_service)],
     project_service: Annotated[ProjectService, Depends(get_project_service)],
-) -> RedirectResponse:
+) -> str:
 
     project = await project_service.get_by_id(project_id)
     if project is None:
-        return RedirectResponse(
-            url="/",
-            status_code=status.HTTP_303_SEE_OTHER,
-        )
+        return "/"
 
     async with request.form() as form:
         content = await cast("UploadFile", form.get("rar_file")).read()
@@ -33,7 +35,4 @@ async def create_task(
             content=content,
         )
 
-    return RedirectResponse(
-        url=f"/projects/{project_id}",
-        status_code=status.HTTP_303_SEE_OTHER,
-    )
+    return f"/projects/{project_id}"
