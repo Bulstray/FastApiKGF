@@ -11,7 +11,10 @@ redis = Redis(
 )
 
 
-async def save_session(session_id: str, user: UserRead) -> str:
+async def save_session(
+    session_id: str,
+    user: UserRead,
+) -> str:
     await redis.set(
         session_id,
         user.model_dump_json(),
