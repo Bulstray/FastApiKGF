@@ -9,7 +9,7 @@ from starlette.responses import HTMLResponse, RedirectResponse
 from core.schemas.user import UserRead
 from dependencies.message import get_message_service
 from dependencies.projects import get_project_service
-from dependencies.providers import get_tasks_service, get_user_service
+from dependencies.providers import get_tasks_service
 from dependencies.session_auth import get_current_user
 from services import (
     MessageManager,
@@ -17,6 +17,7 @@ from services import (
     TasksFilesService,
     UserService,
 )
+from dependencies import UserServiceFactory
 from templating.jinja_template import templates
 
 router = APIRouter()
@@ -24,7 +25,10 @@ router = APIRouter()
 
 async def _get_user_and_user_service(
     user: Annotated[UserRead, Depends(get_current_user)],
-    user_service: Annotated[UserService, Depends(get_user_service)],
+    user_service: Annotated[
+        UserServiceFactory,
+        Depends(UserServiceFactory),
+    ],
 ) -> tuple[UserRead, UserService]:
     return user, user_service
 
