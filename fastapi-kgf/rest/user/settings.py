@@ -3,13 +3,13 @@ from fastapi import APIRouter, Depends, Request, status
 
 from fastapi.responses import HTMLResponse, RedirectResponse
 from typing import Annotated
-from core.schemas import UserRead, UserSettings
+from core.schemas import UserRead
 from dependencies.session_auth import get_current_user
 from dependencies.projects import get_project_service
 from dependencies.user import (
     UserSettingsServiceFactory,
 )
-from services import ProjectService, UserSettingsService
+from services import ProjectService
 from templating.jinja_template import templates
 
 router = APIRouter(prefix="/settings")
@@ -26,13 +26,13 @@ async def settings_page(
         ProjectService,
         Depends(get_project_service),
     ],
-    user_setting_service: Annotated[
+    user_setting_factory: Annotated[
         UserSettingsServiceFactory,
         Depends(UserSettingsServiceFactory),
     ],
 ) -> HTMLResponse:
     projects = await project_service.get_all()
-    settings = await user_setting_service.get_settings_by_user(current_user.id)
+    settings = await user_setting_factory.get_settings_by_user(current_user.id)
 
     return templates.TemplateResponse(
         "settings.html",
