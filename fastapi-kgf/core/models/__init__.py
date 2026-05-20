@@ -12,6 +12,7 @@ __all__ = (
     "db_helper",
     "Tender",
     "ArchiveTender",
+    "UserSettings",
 )
 
 from .base import Base
@@ -27,3 +28,4 @@ from .task import Task
 from .user import User
 from .tender import Tender
 from .archive_tenders import ArchiveTender
+from .user_settings import UserSettings
