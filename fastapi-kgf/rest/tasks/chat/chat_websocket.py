@@ -8,9 +8,9 @@ from starlette.websockets import WebSocket, WebSocketDisconnect
 from core.models import db_helper
 from core.schemas import UserRead
 from dependencies.message import get_message_service
-from dependencies.providers import get_user_service
 from managers.message_manager import message_manager
 from services import MessageManager, UserService
+from dependencies import UserServiceFactory
 
 router = APIRouter()
 
@@ -21,8 +21,8 @@ async def _build_services(
         Depends(get_message_service),
     ],
     user_service: Annotated[
-        UserService,
-        Depends(get_user_service),
+        UserServiceFactory,
+        Depends(UserServiceFactory),
     ],
 ) -> tuple[MessageManager, UserService]:
     return message_service, user_service
