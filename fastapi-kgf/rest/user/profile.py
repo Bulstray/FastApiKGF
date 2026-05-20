@@ -45,7 +45,7 @@ async def update_profile(
     request: Request,
     user_service: Annotated[
         UserServiceFactory,
-        Depends(UserServiceFactory.init_user_factory),
+        Depends(UserServiceFactory),
     ],
     current_user: Annotated[
         UserRead,
@@ -80,9 +80,10 @@ async def update_profile(
             )
 
             session_id = request.cookies.get(SESSION_COOKIE_NAME)
-            current_user.email = user_update.email
 
-            await save_session(session_id, current_user)
+            if user_update.email:
+                current_user.email = user_update.email
+                await save_session(session_id, current_user)
 
             return templates.TemplateResponse(
                 "profile.html",
