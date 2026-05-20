@@ -86,6 +86,6 @@ class User(Base):
 
 @event.listens_for(User, 'before_insert')
 @event.listens_for(User, 'before_update')
-async def lowercase_email(mapper, connection, target):
+def lowercase_email(mapper, connection, target):
     if target.email is not None:
         target.email = target.email.lower()
