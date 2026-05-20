@@ -4,12 +4,13 @@ from pydantic import ValidationError
 
 from fastapi.responses import HTMLResponse
 from typing import Annotated
+from storage.redis.session import save_session
 from core.schemas import UserRead, UserUpdateForm
 from dependencies.session_auth import get_current_user
 from dependencies.projects import get_project_service
 from services import ProjectService, UserService
 from templating.jinja_template import templates
-from dependencies.user import get_user_service
+from dependencies.user import UserServiceFactory
 from core.config.settings import SESSION_COOKIE_NAME
 
 router = APIRouter(prefix="/profile")
@@ -43,8 +44,8 @@ async def profile_page(
 async def update_profile(
     request: Request,
     user_service: Annotated[
-        UserService,
-        Depends(get_user_service),
+        UserServiceFactory,
+        Depends(UserServiceFactory.init_user_factory),
     ],
     current_user: Annotated[
         UserRead,
@@ -77,7 +78,11 @@ async def update_profile(
                 user_update,
                 current_user.id,
             )
-            print(request.get(SESSION_COOKIE_NAME))
+
+            session_id = request.cookies.get(SESSION_COOKIE_NAME)
+            current_user.email = user_update.email
+
+            await save_session(session_id, current_user)
 
             return templates.TemplateResponse(
                 "profile.html",
