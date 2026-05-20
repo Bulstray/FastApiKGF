@@ -1,6 +1,6 @@
 from typing import Annotated
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, status
 from fastapi.requests import Request
 from fastapi.responses import HTMLResponse
 
@@ -22,4 +22,5 @@ async def login_page(
     return templates.TemplateResponse(
         name="login.html",
         request=request,
+        status_code=status.HTTP_200_OK,
     )
