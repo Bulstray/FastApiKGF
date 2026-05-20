@@ -7,7 +7,7 @@ from starlette.websockets import WebSocket
 
 from core.config.settings import SESSION_COOKIE_NAME
 from core.schemas import UserRead
-from core.schemas.cookie import Cookies
+from core.schemas import CookiesRead
 from storage.redis import session
 
 cookie_scheme = APIKeyCookie(
@@ -44,7 +44,7 @@ async def get_current_user(
 
 async def get_cookie_websocket(
     websocket: WebSocket,
-    session_id: Annotated[Cookies, Cookie()],
+    session_id: Annotated[CookiesRead, Cookie()],
 ) -> UserRead | RedirectResponse:
     if session_id and (
         answer := await session.get_by_session_id(
