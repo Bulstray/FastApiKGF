@@ -39,12 +39,3 @@ async def get_user_service(
     ],
 ) -> UserService:
     return UserService(session=session)
-
-
-async def get_keyword_tenders_service(
-    session: Annotated[
-        AsyncSession,
-        Depends(db_helper.session_getter),
-    ],
-) -> KeyWordService:
-    return KeyWordService(session)
