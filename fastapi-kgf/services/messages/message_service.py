@@ -4,7 +4,7 @@ from aiopath import AsyncPath
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from core.models import Message, MessageFile
-from core.schemas.message import Message as MessageSchema
+from core.schemas.message import MessageCreate
 from services.files import FilesService
 from storage.db import crud_task_users
 from storage.db.crud_message import MessageStorage
@@ -81,7 +81,7 @@ class MessageManager(MessageStorage):
 
     async def create_message_db(
         self,
-        message_in: MessageSchema,
+        message_in: MessageCreate,
     ) -> AsyncPath | None:
         """
         Creates a new message in the database, optionally with an attached
@@ -92,7 +92,7 @@ class MessageManager(MessageStorage):
         it's decoded and saved, and a reference is linked to the message.
 
         Args:
-             message_in (MessageSchema): Input schema containing message data
+             message_in (MessageCreate): Input schema containing message data
                 and optional file attachment. Must include all required message
                 fields;
                 file is optional.
@@ -139,7 +139,7 @@ class MessageManager(MessageStorage):
             Словарь с ID сообщения и путём к файлу (если файл был загружен)
         """
 
-        message_schema = MessageSchema.model_validate(json.loads(message_in))
+        message_schema = MessageCreate.model_validate(json.loads(message_in))
 
         file_path = await self.create_message_db(
             message_schema,
