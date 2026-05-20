@@ -13,7 +13,7 @@ async def validate_basic_auth_user(
     request: Request,
     user_service: Annotated[
         UserServiceFactory,
-        Depends(UserServiceFactory.init_user_factory),
+        Depends(UserServiceFactory),
     ],
 ) -> str | None:
     async with request.form() as form_data:
