@@ -11,6 +11,7 @@ if TYPE_CHECKING:
     from .message import Message
     from .taks_users import TaskUsers
     from .task import Task
+    from .user_settings import UserSettings
 
 
 class User(Base):
@@ -67,6 +68,12 @@ class User(Base):
         cascade="all, delete-orphan",
     )
 
+    settings: Mapped["UserSettings"] = relationship(
+        "UserSettings",
+        back_populates="user",
+        lazy="selectin",
+    )
+
     @property
     def full_name(self) -> str:
         """Возвращает полное имя пользователя"""
@@ -79,6 +86,6 @@ class User(Base):
 
 @event.listens_for(User, 'before_insert')
 @event.listens_for(User, 'before_update')
-def lowercase_email(mapper, connection, target):
+async def lowercase_email(mapper, connection, target):
     if target.email is not None:
         target.email = target.email.lower()
