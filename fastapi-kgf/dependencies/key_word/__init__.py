@@ -1,5 +1,3 @@
-__all__ = (
-    "KeyWordFactory"
-)
+__all__ = ("KeyWordFactory",)
 
 from .key_word import KeyWordFactory
