@@ -1,11 +1,8 @@
 __all__ = (
-    "Cookies",
-    "Message",
-    "MessageReadStatus",
+    "CookiesRead",
+    "MessageCreate",
     "ProgramCreate",
     "ProgramRead",
-    "ProjectCreate",
-    "ProjectRead",
     "TaskCreate",
     "TaskRead",
     "TaskUsersCreate",
@@ -14,14 +11,14 @@ __all__ = (
     "UserRead",
     "UserUpdateForm",
     "UserUpdate",
+    "UserSettings",
 )
 
-from .cookie import Cookies
-from .message import Message
-from .message_read_status import MessageReadStatus
+from .cookie import CookiesRead
+from .message import MessageCreate
 from .programs import ProgramCreate, ProgramRead
-from .projects import ProjectCreate, ProjectRead
 from .tasks import TaskCreate, TaskRead
 from .tasks_users import TaskUsersCreate
 from .tenders import TenderCreate
 from .user import UserLogin, UserRead, UserUpdateForm, UserUpdate
+from .user_settings import UserSettings
