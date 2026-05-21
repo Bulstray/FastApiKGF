@@ -1,10 +1,9 @@
 from typing import Annotated, cast
 
-from fastapi import APIRouter, Depends, status, Request
+from fastapi import APIRouter, Depends, Request, status
 from fastapi.responses import RedirectResponse
 
-from dependencies import ProjectFactory
-from dependencies import TaskFactory
+from dependencies import ProjectFactory, TaskFactory
 from services import ProjectService
 
 router = APIRouter()
