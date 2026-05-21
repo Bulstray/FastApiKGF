@@ -1,8 +1,8 @@
-from storage.db.crud_arhive_tenders import ArchiveTendersStorage
-
 from sqlalchemy.ext.asyncio import AsyncSession
+
+from core.models import ArchiveTender, Tender
 from core.schemas.tenders import TenderCreate as TenderSchema
-from core.models import Tender, ArchiveTender
+from storage.db.crud_arhive_tenders import ArchiveTendersStorage
 
 
 class ArchiveTendersService(ArchiveTendersStorage):
