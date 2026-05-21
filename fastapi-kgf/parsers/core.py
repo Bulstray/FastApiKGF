@@ -1,11 +1,16 @@
 from core.schemas import TenderCreate
+from services import (
+    UserService,
+    KeyWordService,
+    TendersService,
+    ArchiveTendersService,
+)
 
 from .platforms import EtpgpbParser, TekTorgPlatform
 
-from services.tenders.key_word_service import KeyWordService
-from services.tenders.tender_service import TendersService
-from services.tenders.archive_tender_service import ArchiveTendersService
 from core.models import db_helper
+
+from malling.send_new_tender import send_new_tenders
 
 
 class TenderParseCore:
@@ -38,6 +43,9 @@ async def parse_tenders():
         keyword_service = KeyWordService(session)
         tender_service = TendersService(session)
         tender_archive_service = ArchiveTendersService(session)
+        user_service = UserService(session)
+
+        all_users = await user_service.get_all()
 
         all_keywords = await keyword_service.get_all()
         active_tenders = await tender_service.get_all()
@@ -66,4 +74,13 @@ async def parse_tenders():
                 await tender_archive_service.delete(archive_tender)
 
         if tenders:
+            try:
+                [
+                    await send_new_tenders(user.email, tenders)
+                    for user in all_users
+                    if user.settings and user.settings.tender_notification
+                ]
+            except Exception as e:
+                print(e)
+
             await tender_service.add_tenders_in_db(tenders)
