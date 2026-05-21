@@ -1,3 +1,4 @@
+import asyncio
 from collections.abc import AsyncIterator
 from contextlib import asynccontextmanager
 
@@ -5,11 +6,8 @@ from fastapi import FastAPI
 
 from core.config import settings
 from core.models import Base, User, db_helper
-from services.users.service import UserService
-
 from parsers.core import parse_tenders
-
-import asyncio
+from services.users.service import UserService
 
 
 async def scheduler():
