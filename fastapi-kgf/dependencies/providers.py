@@ -6,7 +6,6 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from core.config import settings
 from core.models import db_helper
 from services.programs import ProgramService
-from services.task.service import TasksFilesService
 
 
 async def get_program_service(
