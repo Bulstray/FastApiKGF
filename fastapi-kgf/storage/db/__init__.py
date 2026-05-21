@@ -1,12 +1,12 @@
 __all__ = (
     "ArchiveTendersStorage",
     "KeyWordTendersStorage",
+    "MessageStorage",
     "ProjectStorage",
     "TaskStorage",
     "TendersStorage",
-    "UserStorage",
     "UserSettingsStorage",
-    "MessageStorage",
+    "UserStorage",
 )
 
 from .base_crud import BaseCRUD
