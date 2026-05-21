@@ -1,16 +1,14 @@
+from core.models import db_helper
 from core.schemas import TenderCreate
+from malling.send_new_tender import send_new_tenders
 from services import (
-    UserService,
+    ArchiveTendersService,
     KeyWordService,
     TendersService,
-    ArchiveTendersService,
+    UserService,
 )
 
 from .platforms import EtpgpbParser, TekTorgPlatform
-
-from core.models import db_helper
-
-from malling.send_new_tender import send_new_tenders
 
 
 class TenderParseCore:
@@ -52,7 +50,7 @@ async def parse_tenders():
 
         if active_tenders:
             await tender_archive_service.add_all_from_active_tender(
-                active_tenders
+                active_tenders,
             )
             await tender_service.delete_table()
 
@@ -68,7 +66,7 @@ async def parse_tenders():
 
         for tender in tenders:
             archive_tender = await tender_service.get_archive_tender(
-                tender.url
+                tender.url,
             )
             if archive_tender:
                 await tender_archive_service.delete(archive_tender)
