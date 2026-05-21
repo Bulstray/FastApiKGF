@@ -6,9 +6,9 @@ from starlette.requests import Request
 from starlette.responses import HTMLResponse
 
 from core.schemas.user import UserRead
-from templating.jinja_template import templates
 from dependencies import KeyWordFactory, ProjectFactory
 from dependencies.session_auth import get_current_user
+from templating.jinja_template import templates
 
 router = APIRouter()
 
