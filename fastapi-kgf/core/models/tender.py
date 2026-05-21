@@ -1,10 +1,10 @@
-from .base import Base
-
-from sqlalchemy.orm import Mapped, relationship, mapped_column
-from sqlalchemy import ForeignKey
-
-from typing import TYPE_CHECKING
 from datetime import datetime
+from typing import TYPE_CHECKING
+
+from sqlalchemy import ForeignKey
+from sqlalchemy.orm import Mapped, mapped_column, relationship
+
+from .base import Base
 
 if TYPE_CHECKING:
     from .parsing_keyword import ParsingKeyword
@@ -23,7 +23,7 @@ class Tender(Base):
         ForeignKey(
             "parsing_keyword.id",
             ondelete="CASCADE",
-        )
+        ),
     )
 
     keyword: Mapped["ParsingKeyword"] = relationship(
