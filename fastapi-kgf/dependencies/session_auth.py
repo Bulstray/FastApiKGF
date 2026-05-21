@@ -6,8 +6,7 @@ from starlette.responses import RedirectResponse
 from starlette.websockets import WebSocket
 
 from core.config.settings import SESSION_COOKIE_NAME
-from core.schemas import UserRead
-from core.schemas import CookiesRead
+from core.schemas import CookiesRead, UserRead
 from storage.redis import session
 
 cookie_scheme = APIKeyCookie(
