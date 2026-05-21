@@ -19,12 +19,3 @@ async def get_program_service(
         session=session,
         uploads_path=settings.uploads_program_dir,
     )
-
-
-async def get_tasks_service(
-    session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
-) -> TasksFilesService:
-    return TasksFilesService(
-        session=session,
-        uploads_path=settings.uploads_file_task_dir,
-    )
