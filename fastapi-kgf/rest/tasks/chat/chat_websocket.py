@@ -7,10 +7,9 @@ from starlette.websockets import WebSocket, WebSocketDisconnect
 
 from core.models import db_helper
 from core.schemas import UserRead
-from dependencies import TaskMessageFactory
+from dependencies import TaskMessageFactory, UserServiceFactory
 from managers.message_manager import message_manager
 from services import MessageManager, UserService
-from dependencies import UserServiceFactory
 
 router = APIRouter()
 
