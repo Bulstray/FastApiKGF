@@ -45,7 +45,7 @@ def get_html_content(subject: list[TenderCreate]) -> str:
                     </tr>
                 </table>
 """
-    tenders_html = ''
+    tenders_html = ""
 
     for tender in subject[:3]:
         tenders_html += f"""
@@ -140,7 +140,7 @@ async def send_new_tenders(
     message = MIMEMultipart()
     message["From"] = settings.superuser.email
     message["To"] = recipient
-    message["Subject"] = f"Новые тендера"
+    message["Subject"] = "Новые тендера"
 
     msg = get_html_content(subject)
 
