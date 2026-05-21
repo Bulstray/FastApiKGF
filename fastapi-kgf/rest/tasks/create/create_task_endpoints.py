@@ -3,9 +3,9 @@ from typing import Annotated, cast
 from fastapi import APIRouter, Depends, status, Request
 from fastapi.responses import RedirectResponse
 
-from dependencies.projects import get_project_service
-from dependencies.providers import get_tasks_service
-from services import ProjectService, TasksFilesService
+from dependencies import ProjectFactory
+from dependencies import TaskFactory
+from services import ProjectService
 
 router = APIRouter()
 
@@ -19,8 +19,8 @@ router = APIRouter()
 async def create_task(
     request: Request,
     project_id: int,
-    service: Annotated[TasksFilesService, Depends(get_tasks_service)],
-    project_service: Annotated[ProjectService, Depends(get_project_service)],
+    service: Annotated[TaskFactory, Depends(TaskFactory)],
+    project_service: Annotated[ProjectService, Depends(ProjectFactory)],
 ) -> str:
 
     project = await project_service.get_by_id(project_id)
