@@ -1,13 +1,12 @@
+from datetime import date, datetime
 from xml.etree.ElementTree import Element
 
+import dateparser
 from bs4 import BeautifulSoup
 from bs4.element import ResultSet, Tag
 
 from core.config import settings
 from parsers.platforms.base_platform import BaseTenderPlatform
-from datetime import date, datetime
-
-import dateparser
 
 
 class TekTorgPlatform(BaseTenderPlatform):
@@ -22,7 +21,7 @@ class TekTorgPlatform(BaseTenderPlatform):
         )
 
     def is_tender_name_taken(
-        self, card: Tag | Element
+        self, card: Tag | Element,
     ) -> tuple[str, str] | None:
 
         if isinstance(card, Element):
@@ -66,12 +65,12 @@ class TekTorgPlatform(BaseTenderPlatform):
         if price_tag is None:
             return "Не установлено"
 
-        return price_tag.text.replace(',', ' ')
+        return price_tag.text.replace(",", " ")
 
     @staticmethod
     def is_tender_organize_taken(card: Tag | Element) -> str:
         if isinstance(card, Element):
-            return 'Отсутствует'
+            return "Отсутствует"
 
         organize_tag = card.find(
             "div",
