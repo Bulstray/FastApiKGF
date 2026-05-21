@@ -1,10 +1,10 @@
+from typing import Annotated
+
+from fastapi import Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from services import UserSettingsService
-from fastapi import Depends
-
-from typing import Annotated
 from core.models import db_helper
+from services import UserSettingsService
 
 
 class UserSettingsServiceFactory(UserSettingsService):
