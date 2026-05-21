@@ -99,7 +99,7 @@ async def send_email(
 
     server.login(
         settings.superuser.email,
-        settings.superuser.email_password,
+        settings.email_password,
     )
     server.auth_plain()
     server.sendmail(
