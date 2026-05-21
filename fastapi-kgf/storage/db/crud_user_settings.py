@@ -1,9 +1,10 @@
-from .base_crud import BaseCRUD
-
+from sqlalchemy import select, update
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import update, select
+
 from core.models import UserSettings
 from core.schemas import UserSettings as UserSchemaSchema
+
+from .base_crud import BaseCRUD
 
 
 class UserSettingsStorage(BaseCRUD):

@@ -1,6 +1,8 @@
-from .base_crud import BaseCRUD
 from sqlalchemy.ext.asyncio.session import AsyncSession
+
 from core.models import ParsingKeyword
+
+from .base_crud import BaseCRUD
 
 
 class KeyWordTendersStorage(BaseCRUD):

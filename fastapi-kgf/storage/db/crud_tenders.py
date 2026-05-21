@@ -1,6 +1,7 @@
-from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import delete, select
-from core.models import Tender, ArchiveTender
+from sqlalchemy.ext.asyncio import AsyncSession
+
+from core.models import ArchiveTender, Tender
 
 from .base_crud import BaseCRUD
 
