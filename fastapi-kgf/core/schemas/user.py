@@ -5,8 +5,8 @@ from pydantic import (
     BaseModel,
     ConfigDict,
     EmailStr,
-    model_validator,
     ValidationError,
+    model_validator,
 )
 
 from core.types import UserRole
