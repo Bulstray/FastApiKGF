@@ -1,12 +1,10 @@
+import bcrypt
+from fastapi import Request
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from storage.db.crud_user import UserStorage
-
-from core.schemas import UserUpdateForm, UserUpdate, UserLogin
+from core.schemas import UserLogin, UserUpdate, UserUpdateForm
 from services.auth.session_manager import create_session
-
-from fastapi import Request
-import bcrypt
+from storage.db.crud_user import UserStorage
 
 
 class UserService(UserStorage):
