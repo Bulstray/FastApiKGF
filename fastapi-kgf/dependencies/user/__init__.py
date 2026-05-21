@@ -3,5 +3,5 @@ __all__ = (
     "UserSettingsServiceFactory",
 )
 
-from .user import UserServiceFactory
 from .settings import UserSettingsServiceFactory
+from .user import UserServiceFactory
