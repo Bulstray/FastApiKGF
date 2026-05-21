@@ -7,10 +7,8 @@ from starlette.responses import HTMLResponse
 
 from core.schemas.user import UserRead
 from templating.jinja_template import templates
-from dependencies import KeyWordFactory
-from dependencies.projects import get_project_service
+from dependencies import KeyWordFactory, ProjectFactory
 from dependencies.session_auth import get_current_user
-from services import ProjectService, KeyWordService
 
 router = APIRouter()
 
@@ -23,7 +21,7 @@ async def tenders_page(
         Depends(KeyWordFactory),
     ],
     current_user: Annotated[UserRead, Depends(get_current_user)],
-    project_service: Annotated[ProjectService, Depends(get_project_service)],
+    project_service: Annotated[ProjectFactory, Depends(ProjectFactory)],
 ) -> HTMLResponse:
     key_words = await keyword_service.get_all()
     projects = await project_service.get_all()
