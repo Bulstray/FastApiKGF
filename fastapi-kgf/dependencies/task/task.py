@@ -13,7 +13,7 @@ class TaskFactory(TasksFilesService):
         self,
         session: Annotated[
             AsyncSession,
-            Depends(db_helper.get_session),
+            Depends(db_helper.session_getter),
         ],
     ):
         super().__init__(
