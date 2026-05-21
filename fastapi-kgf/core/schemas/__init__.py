@@ -9,9 +9,9 @@ __all__ = (
     "TenderCreate",
     "UserLogin",
     "UserRead",
-    "UserUpdateForm",
-    "UserUpdate",
     "UserSettings",
+    "UserUpdate",
+    "UserUpdateForm",
 )
 
 from .cookie import CookiesRead
@@ -20,5 +20,5 @@ from .programs import ProgramCreate, ProgramRead
 from .tasks import TaskCreate, TaskRead
 from .tasks_users import TaskUsersCreate
 from .tenders import TenderCreate
-from .user import UserLogin, UserRead, UserUpdateForm, UserUpdate
+from .user import UserLogin, UserRead, UserUpdate, UserUpdateForm
 from .user_settings import UserSettings
