@@ -1,5 +1,6 @@
-from .base import MessageBase
 from pydantic import ConfigDict
+
+from .base import MessageBase
 
 
 class MessageCreate(MessageBase):
