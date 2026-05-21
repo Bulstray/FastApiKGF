@@ -1,4 +1,5 @@
 __all__ = (
+    "ArchiveTender",
     "Base",
     "Message",
     "MessageFile",
@@ -8,13 +9,13 @@ __all__ = (
     "Project",
     "Task",
     "TaskUsers",
-    "User",
-    "db_helper",
     "Tender",
-    "ArchiveTender",
+    "User",
     "UserSettings",
+    "db_helper",
 )
 
+from .archive_tenders import ArchiveTender
 from .base import Base
 from .db_helper import db_helper
 from .message import Message
@@ -25,7 +26,6 @@ from .programs import Program
 from .projects import Project
 from .taks_users import TaskUsers
 from .task import Task
-from .user import User
 from .tender import Tender
-from .archive_tenders import ArchiveTender
+from .user import User
 from .user_settings import UserSettings
