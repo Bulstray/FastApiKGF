@@ -1,9 +1,8 @@
-import dateparser
+from datetime import date
 from xml.etree.ElementTree import Element
 
-from bs4 import Tag, BeautifulSoup, ResultSet
-
-from datetime import date
+import dateparser
+from bs4 import BeautifulSoup, ResultSet, Tag
 
 from core.config import settings
 from parsers.platforms.base_platform import BaseTenderPlatform
@@ -32,7 +31,7 @@ class EtpgpbParser(BaseTenderPlatform):
         }
 
     def is_tender_name_taken(
-        self, card: Element | Tag
+        self, card: Element | Tag,
     ) -> tuple[str, str] | None:
 
         if isinstance(card, Element):
@@ -83,7 +82,7 @@ class EtpgpbParser(BaseTenderPlatform):
         if price_tag is None:
             return "Цена не установлена"
 
-        return price_tag.text.replace(',', ' ')
+        return price_tag.text.replace(",", " ")
 
     @staticmethod
     def is_tender_organize_taken(card: Tag | Element) -> str:
