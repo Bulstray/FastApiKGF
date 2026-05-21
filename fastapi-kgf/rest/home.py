@@ -6,7 +6,6 @@ from fastapi.responses import HTMLResponse
 
 from core.schemas.user import UserRead
 from dependencies import ProjectFactory
-
 from dependencies.session_auth import get_current_user
 from templating.jinja_template import templates
 
