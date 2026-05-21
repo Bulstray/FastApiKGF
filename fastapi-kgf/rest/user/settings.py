@@ -1,12 +1,11 @@
-from fastapi import APIRouter, Depends, Request, status
-
-
-from fastapi.responses import HTMLResponse, RedirectResponse
 from typing import Annotated
+
+from fastapi import APIRouter, Depends, Request, status
+from fastapi.responses import HTMLResponse, RedirectResponse
+
 from core.schemas import UserRead
+from dependencies import ProjectFactory, UserSettingsServiceFactory
 from dependencies.session_auth import get_current_user
-from dependencies import ProjectFactory
-from dependencies import UserSettingsServiceFactory
 from templating.jinja_template import templates
 
 router = APIRouter(prefix="/settings")
@@ -65,4 +64,4 @@ async def update_settings(
             form_data,
         )
 
-    return '/users/settings'
+    return "/users/settings"
