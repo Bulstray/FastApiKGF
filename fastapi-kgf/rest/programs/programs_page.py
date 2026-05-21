@@ -5,10 +5,10 @@ from fastapi.responses import HTMLResponse
 
 from core.schemas import ProgramRead
 from core.schemas.user import UserRead
-from dependencies.projects import get_project_service
+from dependencies import ProjectFactory
 from dependencies.providers import get_program_service
 from dependencies.session_auth import get_current_user
-from services import ProgramService, ProjectService
+from services import ProgramService
 from templating.jinja_template import templates
 
 router = APIRouter()
@@ -26,8 +26,8 @@ async def programs_page(
         Depends(get_current_user),
     ],
     projects_service: Annotated[
-        ProjectService,
-        Depends(get_project_service),
+        ProjectFactory,
+        Depends(ProjectFactory),
     ],
 ) -> HTMLResponse:
     """Render programs listing page."""
