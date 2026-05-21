@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING
 
-from sqlalchemy import Enum, String, false, event
+from sqlalchemy import Enum, String, event, false
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from core.types import UserRole
@@ -84,8 +84,8 @@ class User(Base):
         return f"{self.name[0]}{self.surname[0]}".upper()
 
 
-@event.listens_for(User, 'before_insert')
-@event.listens_for(User, 'before_update')
+@event.listens_for(User, "before_insert")
+@event.listens_for(User, "before_update")
 def lowercase_email(mapper, connection, target):
     if target.email is not None:
         target.email = target.email.lower()
