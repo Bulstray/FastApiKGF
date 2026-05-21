@@ -1,8 +1,8 @@
-from storage.db.crud_user_settings import UserSettingsStorage
-from core.schemas import UserSettings
-from core.models import UserSettings as UserSettingsModel
-
 from sqlalchemy.ext.asyncio import AsyncSession
+
+from core.models import UserSettings as UserSettingsModel
+from core.schemas import UserSettings
+from storage.db.crud_user_settings import UserSettingsStorage
 
 
 class UserSettingsService(UserSettingsStorage):
