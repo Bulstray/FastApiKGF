@@ -1,18 +1,14 @@
 import time
 from abc import ABC, abstractmethod
+from urllib.parse import urlencode
 from xml.etree.ElementTree import Element
 
 import requests
+from bs4.element import ResultSet, Tag
+from selenium import webdriver
 
 from core.config import settings
-
-
-from bs4.element import ResultSet, Tag
-
 from core.schemas import TenderCreate
-
-from selenium import webdriver
-from urllib.parse import urlencode
 
 
 class BaseTenderPlatform(ABC):
@@ -20,10 +16,10 @@ class BaseTenderPlatform(ABC):
 
     TIMEOUT = 10
     HEADERS = {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36',
-        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8',
-        'Accept-Language': 'ru-RU,ru;q=0.9,en-US;q=0.8,en;q=0.7',
-        'Connection': 'keep-alive',
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36",
+        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8",
+        "Accept-Language": "ru-RU,ru;q=0.9,en-US;q=0.8,en;q=0.7",
+        "Connection": "keep-alive",
     }
 
     def __init__(
@@ -62,7 +58,7 @@ class BaseTenderPlatform(ABC):
 
     @abstractmethod
     def is_tender_name_taken(
-        self, card: Tag | Element
+        self, card: Tag | Element,
     ) -> tuple[str, str] | None:
         """Метод для проверки имени тендера"""
 
@@ -107,7 +103,7 @@ class BaseTenderPlatform(ABC):
                     url=fr"{self.base_platform}{url}",
                     keyword_id=self.keyword_id,
                     end_date=self.get_end_date(card),
-                )
+                ),
             )
 
         return tenders
