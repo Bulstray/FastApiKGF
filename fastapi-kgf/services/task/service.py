@@ -78,7 +78,8 @@ class TasksFilesService(TaskStorage):
         # send message to email
         for user_id in users_ids:
             user = await self.user_service.get_by_id(user_id)
-            await send_email(user.email, task_model)
+            if user.settings and user.settings.task_notification:
+                await send_email(user.email, task_model)
 
         await self.created_task(
             task_in=task_model,
