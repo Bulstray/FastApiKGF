@@ -1,7 +1,8 @@
-from .base import Base
+from datetime import datetime
+
 from sqlalchemy.orm import Mapped
 
-from datetime import datetime
+from .base import Base
 
 
 class ArchiveTender(Base):
