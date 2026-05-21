@@ -1,16 +1,16 @@
-from fastapi import APIRouter, Depends, Request
+from typing import Annotated
 
+from fastapi import APIRouter, Depends, Request
+from fastapi.responses import HTMLResponse
 from pydantic import ValidationError
 
-from fastapi.responses import HTMLResponse
-from typing import Annotated
-from storage.redis.session import save_session
-from core.schemas import UserRead, UserUpdateForm
-from dependencies.session_auth import get_current_user
-from dependencies import ProjectFactory
-from templating.jinja_template import templates
-from dependencies.user import UserServiceFactory
 from core.config.settings import SESSION_COOKIE_NAME
+from core.schemas import UserRead, UserUpdateForm
+from dependencies import ProjectFactory
+from dependencies.session_auth import get_current_user
+from dependencies.user import UserServiceFactory
+from storage.redis.session import save_session
+from templating.jinja_template import templates
 
 router = APIRouter(prefix="/profile")
 
@@ -39,7 +39,7 @@ async def profile_page(
     )
 
 
-@router.post("/", name='profile:update')
+@router.post("/", name="profile:update")
 async def update_profile(
     request: Request,
     user_service: Annotated[
