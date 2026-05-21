@@ -5,11 +5,8 @@ from fastapi.responses import HTMLResponse, RedirectResponse
 from typing import Annotated
 from core.schemas import UserRead
 from dependencies.session_auth import get_current_user
-from dependencies.projects import get_project_service
-from dependencies.user import (
-    UserSettingsServiceFactory,
-)
-from services import ProjectService
+from dependencies import ProjectFactory
+from dependencies import UserSettingsServiceFactory
 from templating.jinja_template import templates
 
 router = APIRouter(prefix="/settings")
@@ -23,8 +20,8 @@ async def settings_page(
         Depends(get_current_user),
     ],
     project_service: Annotated[
-        ProjectService,
-        Depends(get_project_service),
+        ProjectFactory,
+        Depends(ProjectFactory),
     ],
     user_setting_factory: Annotated[
         UserSettingsServiceFactory,

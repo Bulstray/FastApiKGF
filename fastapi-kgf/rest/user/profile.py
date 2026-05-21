@@ -7,8 +7,7 @@ from typing import Annotated
 from storage.redis.session import save_session
 from core.schemas import UserRead, UserUpdateForm
 from dependencies.session_auth import get_current_user
-from dependencies.projects import get_project_service
-from services import ProjectService, UserService
+from dependencies import ProjectFactory
 from templating.jinja_template import templates
 from dependencies.user import UserServiceFactory
 from core.config.settings import SESSION_COOKIE_NAME
@@ -24,8 +23,8 @@ async def profile_page(
         Depends(get_current_user),
     ],
     project_service: Annotated[
-        ProjectService,
-        Depends(get_project_service),
+        ProjectFactory,
+        Depends(ProjectFactory),
     ],
 ) -> HTMLResponse:
     projects = await project_service.get_all()
@@ -52,8 +51,8 @@ async def update_profile(
         Depends(get_current_user),
     ],
     project_service: Annotated[
-        ProjectService,
-        Depends(get_project_service),
+        ProjectFactory,
+        Depends(ProjectFactory),
     ],
 ):
     projects = await project_service.get_all()
