@@ -7,14 +7,10 @@ from starlette.requests import Request
 from starlette.responses import HTMLResponse, RedirectResponse
 
 from core.schemas.user import UserRead
-from dependencies.message import get_message_service
-from dependencies.projects import get_project_service
-from dependencies.providers import get_tasks_service
+from dependencies import ProjectFactory, TaskFactory, TaskMessageFactory
 from dependencies.session_auth import get_current_user
 from services import (
     MessageManager,
-    ProjectService,
-    TasksFilesService,
     UserService,
 )
 from dependencies import UserServiceFactory
@@ -40,16 +36,16 @@ async def _build_context(
         Depends(_get_user_and_user_service),
     ],
     tasks_service: Annotated[
-        TasksFilesService,
-        Depends(get_tasks_service),
+        TaskFactory,
+        Depends(TaskFactory),
     ],
     message_service: Annotated[
-        MessageManager,
-        Depends(get_message_service),
+        TaskMessageFactory,
+        Depends(TaskMessageFactory),
     ],
     project_service: Annotated[
-        ProjectService,
-        Depends(get_project_service),
+        ProjectFactory,
+        Depends(ProjectFactory),
     ],
 ) -> dict[str, Any]:
     user, user_service = user_and_user_service
