@@ -7,13 +7,16 @@ from starlette.requests import Request
 from starlette.responses import HTMLResponse, RedirectResponse
 
 from core.schemas.user import UserRead
-from dependencies import ProjectFactory, TaskFactory, TaskMessageFactory
+from dependencies import (
+    ProjectFactory,
+    TaskFactory,
+    TaskMessageFactory,
+    UserServiceFactory,
+)
 from dependencies.session_auth import get_current_user
 from services import (
-    MessageManager,
     UserService,
 )
-from dependencies import UserServiceFactory
 from templating.jinja_template import templates
 
 router = APIRouter()
