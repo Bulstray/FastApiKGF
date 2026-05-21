@@ -1,19 +1,19 @@
 __all__ = (
-    "TendersService",
-    "UserService",
     "ArchiveTendersService",
     "KeyWordService",
-    "TasksFilesService",
     "MessageManager",
     "ProgramService",
     "ProjectService",
+    "TasksFilesService",
+    "TendersService",
+    "UserService",
     "UserSettingsService",
 )
 
 
-from .tenders import TendersService, ArchiveTendersService, KeyWordService
-from .users import UserService, UserSettingsService
-from .task import TasksFilesService
 from .messages import MessageManager
 from .programs import ProgramService
 from .projects import ProjectService
+from .task import TasksFilesService
+from .tenders import ArchiveTendersService, KeyWordService, TendersService
+from .users import UserService, UserSettingsService
