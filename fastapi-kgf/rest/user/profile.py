@@ -54,7 +54,7 @@ async def update_profile(
         ProjectFactory,
         Depends(ProjectFactory),
     ],
-):
+) -> HTMLResponse:
     projects = await project_service.get_all()
     async with request.form() as form_data:
 
