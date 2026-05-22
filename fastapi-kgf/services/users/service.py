@@ -28,7 +28,9 @@ class UserService(UserStorage):
 
         return None
 
-    async def update_user_data(self, user_in: UserUpdateForm, user_id: int):
+    async def update_user_data(
+        self, user_in: UserUpdateForm, user_id: int,
+    ) -> None:
         user_data = UserUpdate(
             email=user_in.email,
             hashed_password=(
