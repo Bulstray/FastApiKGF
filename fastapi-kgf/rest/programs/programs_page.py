@@ -3,13 +3,11 @@ from typing import Annotated
 from fastapi import APIRouter, Depends, Request
 from fastapi.responses import HTMLResponse
 
-from core.schemas import ProgramRead
 from core.schemas.user import UserRead
 from dependencies import ProjectFactory
-from dependencies.providers import get_program_service
 from dependencies.session_auth import get_current_user
-from services import ProgramService
 from templating.jinja_template import templates
+from dependencies.programs.programs import ProgramsFactory
 
 router = APIRouter()
 
@@ -18,8 +16,8 @@ router = APIRouter()
 async def programs_page(
     request: Request,
     program_service: Annotated[
-        ProgramService,
-        Depends(get_program_service),
+        ProgramsFactory,
+        Depends(ProgramsFactory),
     ],
     is_authenticated: Annotated[
         UserRead,
@@ -32,21 +30,14 @@ async def programs_page(
 ) -> HTMLResponse:
     """Render programs listing page."""
 
-    programs = await program_service.get_all_programs()
+    programs = await program_service.get_all()
     projects = await projects_service.get_all()
-
-    programs_schemas = [
-        ProgramRead.model_validate(
-            program,
-        )
-        for program in programs
-    ]
 
     return templates.TemplateResponse(
         request=request,
         name="programs.html",
         context={
-            "programs": programs_schemas,
+            "programs": programs,
             "is_authenticated": is_authenticated,
             "projects": projects,
         },
