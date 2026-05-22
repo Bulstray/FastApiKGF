@@ -12,7 +12,8 @@ class BaseCRUD:
         Initialize the base CRUD with a database connection and an ORM object.
 
         Args:
-            session (AsyncSession): Asynchronous SQLAlchemy session for database interaction.
+            session (AsyncSession): Asynchronous SQLAlchemy session
+                                     for database interaction.
             model (Model): ORM model class to work with.
         """
         self.session = session
@@ -69,7 +70,8 @@ class BaseCRUD:
             model (Model): The model instance to create.
 
         Returns:
-            Model: The created model instance with updated fields (after refresh).
+            Model: The created model instance
+                    with updated fields (after refresh).
         """
         self.session.add(model)
         await self.session.commit()
