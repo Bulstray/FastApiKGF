@@ -11,7 +11,11 @@ class UserSettingsStorage(BaseCRUD):
     def __init__(self, session: AsyncSession) -> None:
         super().__init__(session, UserSettings)
 
-    async def update_settings(self, user_id, user_settings: UserSchemaSchema):
+    async def update_settings(
+        self,
+        user_id: int,
+        user_settings: UserSchemaSchema,
+    ) -> None:
         stmt = (
             update(UserSettings)
             .where(UserSettings.user_id == user_id)
