@@ -11,11 +11,13 @@ class UserSettingsService(UserSettingsStorage):
         super().__init__(session)
 
     async def update_settings_service(
-        self, user_id: int, settings_form_data: FormData,
+        self,
+        user_id: int,
+        settings_form_data: FormData,
     ) -> None:
         settings_schema = UserSettings.model_validate(settings_form_data)
 
-        user_settings = await self.get_by_id(user_id)
+        user_settings = await self.get_settings_by_user(user_id)
 
         if user_settings:
             await self.update_settings(
