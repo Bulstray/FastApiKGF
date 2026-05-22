@@ -5,21 +5,14 @@ from sqladmin import Admin
 
 from admin import register_admin_views
 from admin.auth import AdminAuth
-from api import router
 from app_lifespan import lifespan
-from core.config import settings, BASE_DIR
+from core.config import BASE_DIR, settings
 from core.models import db_helper
 from rest import router as main_router
 
 STATIC_PATH = BASE_DIR / "static"
 
 app = FastAPI(lifespan=lifespan)
-
-app.mount(
-    "/static",
-    StaticFiles(directory=STATIC_PATH),
-    name="static",
-)
 
 auth_backend = AdminAuth(
     secret_key=settings.secret_key_admin.secret_key,
@@ -31,7 +24,13 @@ admin = Admin(
 )
 
 register_admin_views(admin)
-app.include_router(router)
+
+app.mount(
+    "/static",
+    StaticFiles(directory=STATIC_PATH),
+    name="static",
+)
+
 app.include_router(main_router)
 
 
