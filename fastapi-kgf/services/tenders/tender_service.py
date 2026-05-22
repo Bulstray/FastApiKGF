@@ -6,7 +6,7 @@ from storage.db.crud_tenders import TendersStorage
 
 
 class TendersService(TendersStorage):
-    def __init__(self, session: AsyncSession):
+    def __init__(self, session: AsyncSession) -> None:
         super().__init__(session)
 
     async def add_tenders_in_db(self, tenders: list[TenderSchema]) -> None:
