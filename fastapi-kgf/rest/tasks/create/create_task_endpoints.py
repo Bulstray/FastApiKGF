@@ -1,4 +1,4 @@
-from typing import Annotated, cast
+from typing import Annotated
 
 from fastapi import APIRouter, Depends, Request, status
 from fastapi.responses import RedirectResponse
@@ -27,7 +27,7 @@ async def create_task(
         return "/"
 
     async with request.form() as form:
-        content = await cast("UploadFile", form.get("rar_file")).read()
+        content = await form.get("rar_file").read()
 
         await service.create_task(
             form=form,
