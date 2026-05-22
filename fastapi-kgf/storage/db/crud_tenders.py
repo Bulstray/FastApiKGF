@@ -14,7 +14,7 @@ class TendersStorage(BaseCRUD):
         self.session.add_all(tenders)
         await self.session.commit()
 
-    async def delete_table(self):
+    async def delete_table(self) -> None:
         stmt = delete(Tender)
         await self.session.execute(stmt)
         await self.session.commit()
