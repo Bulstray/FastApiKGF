@@ -21,7 +21,8 @@ class TekTorgPlatform(BaseTenderPlatform):
         )
 
     def is_tender_name_taken(
-        self, card: Tag | Element,
+        self,
+        card: Tag | Element,
     ) -> tuple[str, str] | None:
 
         if isinstance(card, Element):
@@ -80,7 +81,7 @@ class TekTorgPlatform(BaseTenderPlatform):
         if organize_tag is None:
             return "Отсутствует"
 
-        organize_text = (
+        return (
             organize_tag.text.replace(
                 "ОБЩЕСТВО С ОГРАНИЧЕННОЙ ОТВЕТСТВЕННОСТЬЮ",
                 "ООО",
@@ -98,8 +99,6 @@ class TekTorgPlatform(BaseTenderPlatform):
                 "ПАО",
             )
         )
-
-        return organize_text
 
     @staticmethod
     def get_end_date(card: Tag | Element) -> str | date:
@@ -119,11 +118,10 @@ class TekTorgPlatform(BaseTenderPlatform):
         if end_date is None:
             return "Дата не установлена"
 
-        end_date = datetime.strptime(
+        return datetime.strptime(
             end_date.text,
             "%d.%m.%Y",
         )
-        return end_date
 
     @staticmethod
     def get_params(key_word: str) -> dict[str, str | int]:
