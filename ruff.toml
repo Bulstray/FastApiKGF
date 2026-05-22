@@ -94,7 +94,7 @@ select = [
 	"FURB", # refurb (FURB)
 ]
 
-ignore = ["RUF002", "ARG001",]
+ignore = ["RUF002", "ARG001", "RUF001"]
 
 [lint.per-file-ignores]
 "fastapi-kgf/app_lifespan.py" = ["ARG001", "PGH003"]
@@ -105,3 +105,5 @@ ignore = ["RUF002", "ARG001",]
 "fastapi-kgf/core/models/task.py" = ["ANN"]
 "fastapi-kgf/core/models/message_file.py" = ["ANN"]
 "fastapi-kgf/malling/send_email.py" = ["E501", "W291", "RUF001", "Q000"]
+"fastapi-kgf/malling/send_new_tender.py" = ["E501", "W291", "RUF001", "Q000"]
+"fastapi-kgf/parsers/platforms/base_platform" = ["E501"]
