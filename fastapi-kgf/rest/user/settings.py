@@ -57,7 +57,7 @@ async def update_settings(
         UserRead,
         Depends(get_current_user),
     ],
-):
+) -> str:
     async with request.form() as form_data:
         await user_setting_service.update_settings_service(
             current_user.id,
