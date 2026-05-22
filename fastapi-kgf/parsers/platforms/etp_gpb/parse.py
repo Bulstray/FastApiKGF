@@ -31,7 +31,8 @@ class EtpgpbParser(BaseTenderPlatform):
         }
 
     def is_tender_name_taken(
-        self, card: Element | Tag,
+        self,
+        card: Element | Tag,
     ) -> tuple[str, str] | None:
 
         if isinstance(card, Element):
@@ -116,11 +117,9 @@ class EtpgpbParser(BaseTenderPlatform):
         if end_date is None:
             return "Дата не установлена"
 
-        end_date = dateparser.parse(
+        return dateparser.parse(
             end_date.text.replace("МСК", ""),
         )
-
-        return end_date
 
     def get_cards_data(self) -> ResultSet[Tag]:
         root = BeautifulSoup(self.html_source, "html.parser")
