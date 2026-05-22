@@ -4,31 +4,30 @@ from aiopath import AsyncPath
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.responses import FileResponse, RedirectResponse
 
-from dependencies.providers import get_program_service
-from services import ProgramService
+from dependencies.programs.programs import ProgramsFactory
 
 router = APIRouter()
 
 
 @router.get(
-    "/{name}/download",
+    "/{_id}/download",
     name="program:download",
     response_model=None,
 )
 async def download_program(
     program_service: Annotated[
-        ProgramService,
-        Depends(get_program_service),
+        ProgramsFactory,
+        Depends(ProgramsFactory),
     ],
-    name: str,
+    _id: int,
 ) -> RedirectResponse | FileResponse:
 
-    program = await program_service.get_program_by_name(program_name=name)
+    program = await program_service.get_by_id(_id)
 
     if not program:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"Program {name} not found",
+            detail=f"Program not found",
         )
 
     file_path = AsyncPath(program.folder_path)
@@ -39,7 +38,12 @@ async def download_program(
             detail="File not found in server",
         )
 
-    return FileResponse(
-        str(file_path),
-        filename=file_path.name,
-    )
+    try:
+        file_response = FileResponse(
+            str(file_path),
+            filename=file_path.name,
+        )
+    except Exception:
+        file_response = FileResponse(str(file_path))
+
+    return file_response
