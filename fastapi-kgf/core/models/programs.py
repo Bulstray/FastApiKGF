@@ -38,6 +38,6 @@ class Program(Base):
 
 @event.listens_for(Program, "after_delete")
 def delete_file_after_delete(mapper, connection, target) -> None:  # type: ignore[unused-ignore]
-    folder_file = Path(target.folder_file)
+    folder_file = Path(target.folder_path)
     if folder_file.exists():
         folder_file.unlink()
