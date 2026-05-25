@@ -1,13 +1,12 @@
+import uuid
+
+from aiopath import AsyncPath
+from fastapi import UploadFile
 from sqladmin import ModelView
 from wtforms import FileField
 
-from fastapi import UploadFile
-import uuid
-from aiopath import AsyncPath
-
-from core.models import Program
 from core.config import settings
-
+from core.models import Program
 from utils.file_size import get_file_size
 
 
