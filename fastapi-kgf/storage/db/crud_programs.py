@@ -6,5 +6,5 @@ from .base_crud import BaseCRUD
 
 
 class ProgramsStorage(BaseCRUD):
-    def __init__(self, session: AsyncSession):
+    def __init__(self, session: AsyncSession) -> None:
         super().__init__(session, Program)
