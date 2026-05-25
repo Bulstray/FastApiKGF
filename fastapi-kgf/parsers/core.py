@@ -79,11 +79,12 @@ async def parse_tenders():
 
         if tenders:
             try:
-                [
-                    await send_new_tenders(user.email, tender_for_send)
-                    for user in all_users
-                    if user.settings and user.settings.tender_notification
-                ]
+                if tender_for_send:
+                    [
+                        await send_new_tenders(user.email, tender_for_send)
+                        for user in all_users
+                        if user.settings and user.settings.tender_notification
+                    ]
             except Exception as e:
                 print(e)
 
