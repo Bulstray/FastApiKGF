@@ -31,7 +31,10 @@ class TenderParseCore:
         results = []
 
         for parse_class in self.parsers:
-            results.extend(parse_class.search_tenders())
+            try:
+                results.extend(parse_class.search_tenders())
+            except Exception as e:
+                continue
 
         return results
 
@@ -55,6 +58,7 @@ async def parse_tenders():
             await tender_service.delete_table()
 
         tenders = []
+        tender_for_send = []
 
         for keyword in all_keywords:
             tender_parser = TenderParseCore(
@@ -70,11 +74,13 @@ async def parse_tenders():
             )
             if archive_tender:
                 await tender_archive_service.delete(archive_tender)
+            else:
+                tender_for_send.append(tender)
 
         if tenders:
             try:
                 [
-                    await send_new_tenders(user.email, tenders)
+                    await send_new_tenders(user.email, tender_for_send)
                     for user in all_users
                     if user.settings and user.settings.tender_notification
                 ]
