@@ -5,9 +5,9 @@ from fastapi.responses import HTMLResponse
 
 from core.schemas.user import UserRead
 from dependencies import ProjectFactory
+from dependencies.programs.programs import ProgramsFactory
 from dependencies.session_auth import get_current_user
 from templating.jinja_template import templates
-from dependencies.programs.programs import ProgramsFactory
 
 router = APIRouter()
 
