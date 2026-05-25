@@ -61,14 +61,14 @@ async def update_profile(
         try:
             user_update = UserUpdateForm.model_validate(form_data)
 
-        except ValidationError:
+        except TypeError:
             return templates.TemplateResponse(
                 "profile.html",
                 context={
                     "user": current_user,
                     "projects": projects,
                     "request": request,
-                    "error": True,
+                    "error": "Ошибка валидации. Проверьте правильность введённых данных.",
                 },
             )
 
@@ -90,5 +90,6 @@ async def update_profile(
                     "user": current_user,
                     "projects": projects,
                     "request": request,
+                    "success": "Данные успешно сохранены",
                 },
             )
