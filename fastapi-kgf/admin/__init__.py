@@ -1,9 +1,9 @@
 from sqladmin import Admin
 
 from .parser_keyword import ParserKeywordAdmin
+from .programs_admin import ProgramAdmin
 from .project import ProjectAdmin
 from .user import UserAdmin
-from .programs_admin import ProgramAdmin
 
 
 def register_admin_views(admin: Admin) -> None:
