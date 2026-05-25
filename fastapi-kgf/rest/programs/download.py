@@ -27,7 +27,7 @@ async def download_program(
     if not program:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"Program not found",
+            detail="Program not found",
         )
 
     file_path = AsyncPath(program.folder_path)
