@@ -181,6 +181,42 @@
           color: white;
       }
 
+      .alert-error {
+          background: #fff5f5;
+          border: 1px solid #fed7d7;
+          color: #c53030;
+          border-radius: 12px;
+          padding: 1rem 1.25rem;
+          margin-bottom: 1.5rem;
+          display: flex;
+          align-items: center;
+          gap: 0.75rem;
+          font-size: 0.95rem;
+      }
+
+      .alert-error i {
+          font-size: 1.3rem;
+          flex-shrink: 0;
+      }
+
+      .alert-success {
+          background: #f0fff4;
+          border: 1px solid #c6f6d5;
+          color: #276749;
+          border-radius: 12px;
+          padding: 1rem 1.25rem;
+          margin-bottom: 1.5rem;
+          display: flex;
+          align-items: center;
+          gap: 0.75rem;
+          font-size: 0.95rem;
+      }
+
+      .alert-success i {
+          font-size: 1.3rem;
+          flex-shrink: 0;
+      }
+
 
       /* Адаптив */
       @media (max-width: 768px) {
@@ -225,6 +261,19 @@
 
       <!-- Форма редактирования -->
       <div class="profile-body">
+        {% if error %}
+          <div class="alert-error">
+            <i class="bi bi-exclamation-triangle-fill"></i>
+            <span>{{ error }}</span>
+          </div>
+        {% endif %}
+
+        {% if success %}
+          <div class="alert-success">
+            <i class="bi bi-check-circle-fill"></i>
+            <span>{{ success }}</span>
+          </div>
+        {% endif %}
         <form id="profileForm" action="/users/profile" method="POST">
 
           <!-- Секция: Email -->
@@ -310,7 +359,7 @@
           <!-- Кнопки -->
           <div class="form-actions">
             <button type="submit" class="btn btn-save">
-              <i class="bi bi-check-lg"></i>Сохранить изменения
+              Сохранить изменения
             </button>
           </div>
         </form>
