@@ -1,6 +1,6 @@
 from core.models import db_helper
 from core.schemas import TenderCreate
-from malling.send_new_tender import send_new_tenders
+from tasks import send_new_tenders_email
 from services import (
     ArchiveTendersService,
     KeyWordService,
@@ -81,7 +81,7 @@ async def parse_tenders():
             try:
                 if tender_for_send:
                     [
-                        await send_new_tenders(user.email, tender_for_send)
+                        await send_new_tenders_email.kiq(user.email, tender_for_send)
                         for user in all_users
                         if user.settings and user.settings.tender_notification
                     ]
