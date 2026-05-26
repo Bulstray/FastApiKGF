@@ -7,6 +7,7 @@ from fastapi import FastAPI
 from core.config import settings
 from core.models import Base, User, db_helper
 from parsers.core import parse_tenders
+from core import broker
 from services.users.service import UserService
 
 
@@ -19,6 +20,7 @@ async def scheduler():
 
 @asynccontextmanager
 async def lifespan(app: FastAPI) -> AsyncIterator[None]:
+    await broker.startup()
     async with db_helper.engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
 
@@ -49,3 +51,4 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
     yield None
 
     await db_helper.dispose()
+    await broker.shutdown()
