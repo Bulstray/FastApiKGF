@@ -21,7 +21,6 @@ async def download_program(
     ],
     _id: int,
 ) -> RedirectResponse | FileResponse:
-
     program = await program_service.get_by_id(_id)
 
     if not program:
@@ -38,12 +37,7 @@ async def download_program(
             detail="File not found in server",
         )
 
-    try:
-        file_response = FileResponse(
-            str(file_path),
-            filename=file_path.name,
-        )
-    except Exception:
-        file_response = FileResponse(str(file_path))
-
-    return file_response
+    return FileResponse(
+        str(file_path),
+        filename=f"{program.name}{file_path.suffix}",
+    )
