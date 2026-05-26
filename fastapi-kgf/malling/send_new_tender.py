@@ -1,4 +1,4 @@
-import smtplib
+import aiosmtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
@@ -146,17 +146,11 @@ async def send_new_tenders(
 
     message.attach(MIMEText(msg, "html"))
 
-    server = smtplib.SMTP_SSL("smtp.yandex.com")
-    server.ehlo(settings.superuser.email)
+    await aiosmtplib.send(
+        message,
+        hostname="smtp.yandex.com",
+        port=587,
+        username=settings.superuser.email,
+        password=settings.email_password,
+    )
 
-    server.login(
-        settings.superuser.email,
-        settings.email_password,
-    )
-    server.auth_plain()
-    server.sendmail(
-        settings.superuser.email,
-        recipient,
-        message.as_string(),
-    )
-    server.quit()
