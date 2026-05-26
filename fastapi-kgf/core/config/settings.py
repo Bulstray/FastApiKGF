@@ -9,6 +9,7 @@ from .platforms import PlatformConfig
 from .redis_db import RedisConfig
 from .session import SessionConfig
 from .superuser import AdminSecretKey, SuperUserConfig
+from .taskiq_config import TaskiqConfig
 
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
@@ -28,6 +29,7 @@ class Settings(BaseSettings):
     api: ApiConfig = ApiConfig()
     tender_platform: PlatformConfig = PlatformConfig()
     session: SessionConfig = SessionConfig()
+    taskiq: TaskiqConfig = TaskiqConfig()
     superuser: SuperUserConfig
     secret_key_admin: AdminSecretKey
     email_password: str
