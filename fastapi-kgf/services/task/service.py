@@ -4,7 +4,7 @@ from starlette.datastructures import FormData
 
 from core.models import MessageReadStatus, Task, TaskUsers
 from core.schemas import TaskCreate, TaskRead
-from malling.send_email import send_email
+from tasks.new_task_for_user import send_new_task_email
 from services.files import FilesService
 from services.users.service import UserService
 from storage.db.crud_tasks import TaskStorage
@@ -79,7 +79,7 @@ class TasksFilesService(TaskStorage):
         for user_id in users_ids:
             user = await self.user_service.get_by_id(user_id)
             if user.settings and user.settings.task_notification:
-                await send_email(user.email, task_model)
+                await send_new_task_email.kiq(user.email, task_model)
 
         await self.created_task(
             task_in=task_model,
