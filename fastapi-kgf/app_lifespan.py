@@ -4,10 +4,10 @@ from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 
+from core import broker
 from core.config import settings
 from core.models import Base, User, db_helper
 from parsers.core import parse_tenders
-from core import broker
 from services.users.service import UserService
 
 
