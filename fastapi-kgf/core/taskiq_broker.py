@@ -2,8 +2,9 @@ __all__ = ("broker",)
 
 import logging
 
-from taskiq_aio_pika import AioPikaBroker
 from taskiq import TaskiqEvents, TaskiqState
+from taskiq_aio_pika import AioPikaBroker
+
 from core.config import settings
 
 log = logging.getLogger(__name__)
