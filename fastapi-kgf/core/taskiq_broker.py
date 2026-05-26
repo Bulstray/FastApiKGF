@@ -1,8 +1,18 @@
 __all__ = ("broker",)
 
+import logging
+
 from taskiq_aio_pika import AioPikaBroker
+from taskiq import TaskiqEvents, TaskiqState
 from core.config import settings
+
+log = logging.getLogger(__name__)
 
 broker = AioPikaBroker(
     url=settings.taskiq.url,
 )
+
+
+@broker.on_event(TaskiqEvents.WORKER_STARTUP)
+async def on_worker_startup(state: TaskiqState) -> None:
+    logging.info("Worker startup completed, got state %s", state)
