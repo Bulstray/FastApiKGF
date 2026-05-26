@@ -33,6 +33,6 @@ async def tenders_page(
             "keywords": key_words,
             "user": current_user,
             "projects": projects,
-            "today": datetime.datetime.today(),
+            "today": datetime.datetime.now(tz=datetime.UTC),
         },
     )
