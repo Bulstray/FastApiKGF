@@ -1,12 +1,12 @@
 from core.models import db_helper
 from core.schemas import TenderCreate
-from tasks import send_new_tenders_email
 from services import (
     ArchiveTendersService,
     KeyWordService,
     TendersService,
     UserService,
 )
+from tasks import send_new_tenders_email
 
 from .platforms import EtpgpbParser, TekTorgPlatform
 
@@ -33,7 +33,7 @@ class TenderParseCore:
         for parse_class in self.parsers:
             try:
                 results.extend(parse_class.search_tenders())
-            except Exception as e:
+            except Exception:
                 continue
 
         return results
