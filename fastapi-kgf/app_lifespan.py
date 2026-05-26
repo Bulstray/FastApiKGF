@@ -20,7 +20,10 @@ async def scheduler():
 
 @asynccontextmanager
 async def lifespan(app: FastAPI) -> AsyncIterator[None]:
-    await broker.startup()
+
+    if not broker.is_worker_process:
+        await broker.startup()
+
     async with db_helper.engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
 
@@ -51,4 +54,6 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
     yield None
 
     await db_helper.dispose()
-    await broker.shutdown()
+
+    if not broker.is_worker_process:
+        await broker.shutdown()
