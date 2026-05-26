@@ -1,6 +1,7 @@
-import aiosmtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
+
+import aiosmtplib
 
 from core.config import settings
 from core.schemas import TaskRead
