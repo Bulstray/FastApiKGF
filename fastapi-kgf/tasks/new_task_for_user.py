@@ -1,8 +1,8 @@
-from malling.send_email import send_email
-from core.schemas import TaskRead
-from core import broker
-
 import logging
+
+from core import broker
+from core.schemas import TaskRead
+from malling.send_email import send_email
 
 log = logging.getLogger(__name__)
 
