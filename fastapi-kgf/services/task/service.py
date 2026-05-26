@@ -4,10 +4,10 @@ from starlette.datastructures import FormData
 
 from core.models import MessageReadStatus, Task, TaskUsers
 from core.schemas import TaskCreate, TaskRead
-from tasks.new_task_for_user import send_new_task_email
 from services.files import FilesService
 from services.users.service import UserService
 from storage.db.crud_tasks import TaskStorage
+from tasks.new_task_for_user import send_new_task_email
 
 
 class TasksFilesService(TaskStorage):
