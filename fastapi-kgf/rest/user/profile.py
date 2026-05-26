@@ -2,7 +2,6 @@ from typing import Annotated
 
 from fastapi import APIRouter, Depends, Request
 from fastapi.responses import HTMLResponse
-from pydantic import ValidationError
 
 from core.config.settings import SESSION_COOKIE_NAME
 from core.schemas import UserRead, UserUpdateForm
@@ -68,7 +67,8 @@ async def update_profile(
                     "user": current_user,
                     "projects": projects,
                     "request": request,
-                    "error": "Ошибка валидации. Проверьте правильность введённых данных.",
+                    "error": "Ошибка валидации. "
+                             "Проверьте правильность введённых данных.",
                 },
             )
 
