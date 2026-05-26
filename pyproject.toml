@@ -6,6 +6,7 @@ readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
     "aiopath>=0.7.7",
+    "aiosmtplib>=5.1.0",
     "aiosqlite>=0.22.1",
     "alembic>=1.18.4",
     "bcrypt>=5.0.0",
@@ -20,6 +21,8 @@ dependencies = [
     "selenium>=4.43.0",
     "sqladmin[full]>=0.23.0",
     "sqlalchemy[asyncio]>=2.0.46",
+    "taskiq>=0.12.4",
+    "taskiq-aio-pika>=0.6.0",
     "types-defusedxml>=0.7.0.20250822",
     "types-requests>=2.32.4.20260107",
     "wtforms>=3.1.2",
