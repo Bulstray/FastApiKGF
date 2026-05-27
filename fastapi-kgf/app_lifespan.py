@@ -11,7 +11,7 @@ from parsers.core import parse_tenders
 from services.users.service import UserService
 
 
-async def scheduler():
+async def scheduler() -> None:
     while True:
         await parse_tenders()
         # Ждем 24 часа (86400 секунд)
