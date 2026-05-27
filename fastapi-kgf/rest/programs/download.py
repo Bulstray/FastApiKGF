@@ -1,5 +1,6 @@
-from typing import Annotated
+from typing import Annotated, cast
 
+from core.models import Program
 from aiopath import AsyncPath
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.responses import FileResponse, RedirectResponse
@@ -21,7 +22,10 @@ async def download_program(
     ],
     _id: int,
 ) -> RedirectResponse | FileResponse:
-    program = await program_service.get_by_id(_id)
+    program = cast(
+        Program,
+        await program_service.get_by_id(_id),
+    )
 
     if not program:
         raise HTTPException(
