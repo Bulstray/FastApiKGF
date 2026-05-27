@@ -1,8 +1,9 @@
 from aiopath import AsyncPath
 from sqlalchemy.ext.asyncio import AsyncSession
 from starlette.datastructures import FormData
+from typing import cast
 
-from core.models import MessageReadStatus, Task, TaskUsers
+from core.models import MessageReadStatus, Task, TaskUsers, User
 from core.schemas import TaskCreate, TaskRead
 from services.files import FilesService
 from services.users.service import UserService
@@ -77,7 +78,10 @@ class TasksFilesService(TaskStorage):
 
         # send message to email
         for user_id in users_ids:
-            user = await self.user_service.get_by_id(user_id)
+            user = cast(
+                User,
+                await self.user_service.get_by_id(user_id),
+            )
             if user.settings and user.settings.task_notification:
                 await send_new_task_email.kiq(user.email, task_model)
 
