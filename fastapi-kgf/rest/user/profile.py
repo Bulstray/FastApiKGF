@@ -1,4 +1,4 @@
-from typing import Annotated
+from typing import Annotated, cast
 
 from fastapi import APIRouter, Depends, Request
 from fastapi.responses import HTMLResponse
@@ -68,7 +68,7 @@ async def update_profile(
                     "projects": projects,
                     "request": request,
                     "error": "Ошибка валидации. "
-                             "Проверьте правильность введённых данных.",
+                    "Проверьте правильность введённых данных.",
                 },
             )
 
@@ -78,7 +78,10 @@ async def update_profile(
                 current_user.id,
             )
 
-            session_id = request.cookies.get(SESSION_COOKIE_NAME)
+            session_id = cast(
+                str,
+                request.cookies.get(SESSION_COOKIE_NAME),
+            )
 
             if user_update.email:
                 current_user.email = user_update.email
