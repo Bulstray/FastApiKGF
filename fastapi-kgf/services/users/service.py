@@ -1,8 +1,10 @@
 import bcrypt
 from fastapi import Request
 from sqlalchemy.ext.asyncio import AsyncSession
+from typing import cast
 
 from core.schemas import UserLogin, UserUpdate, UserUpdateForm
+from core.models import User
 from services.auth.session_manager import create_session
 from storage.db.crud_user import UserStorage
 
@@ -29,7 +31,9 @@ class UserService(UserStorage):
         return None
 
     async def update_user_data(
-        self, user_in: UserUpdateForm, user_id: int,
+        self,
+        user_in: UserUpdateForm,
+        user_id: int,
     ) -> None:
         user_data = UserUpdate(
             email=user_in.email,
@@ -38,7 +42,7 @@ class UserService(UserStorage):
             ),
         )
 
-        user = await self.get_by_id(user_id)
+        user = cast(User, await self.get_by_id(user_id))
 
         if user_in.email == user.email:
             user_in.email = None
