@@ -1,4 +1,4 @@
-from core.models import db_helper
+from core.models import db_helper, User, ParsingKeyword, Tender
 from core.schemas import TenderCreate
 from services import (
     ArchiveTendersService,
@@ -6,6 +6,8 @@ from services import (
     TendersService,
     UserService,
 )
+
+from typing import cast
 from tasks import send_new_tenders_email
 
 from .platforms import EtpgpbParser, TekTorgPlatform
@@ -39,17 +41,27 @@ class TenderParseCore:
         return results
 
 
-async def parse_tenders():
+async def parse_tenders() -> None:
     async with db_helper.session_factory() as session:
         keyword_service = KeyWordService(session)
         tender_service = TendersService(session)
         tender_archive_service = ArchiveTendersService(session)
         user_service = UserService(session)
 
-        all_users = await user_service.get_all()
+        all_users = cast(
+            list[User],
+            await user_service.get_all(),
+        )
 
-        all_keywords = await keyword_service.get_all()
-        active_tenders = await tender_service.get_all()
+        all_keywords = cast(
+            list[ParsingKeyword],
+            await keyword_service.get_all(),
+        )
+
+        active_tenders = cast(
+            list[Tender],
+            await tender_service.get_all(),
+        )
 
         if active_tenders:
             await tender_archive_service.add_all_from_active_tender(
@@ -81,7 +93,9 @@ async def parse_tenders():
             try:
                 if tender_for_send:
                     [
-                        await send_new_tenders_email.kiq(user.email, tender_for_send)
+                        await send_new_tenders_email.kiq(
+                            user.email, tender_for_send
+                        )
                         for user in all_users
                         if user.settings and user.settings.tender_notification
                     ]
