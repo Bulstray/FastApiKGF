@@ -10,7 +10,7 @@ from core.config import settings
 log = logging.getLogger(__name__)
 
 broker = AioPikaBroker(
-    url=settings.taskiq.url,
+    url=f"{settings.taskiq.url}",
 )
 
 
