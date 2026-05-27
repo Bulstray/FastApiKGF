@@ -18,9 +18,9 @@ class PlatformConfig(BaseModel):
     )
 
     @property
-    def tek_torg(self):
+    def tek_torg(self) -> str:
         return f"{self.base_platform.base_tek_torg}{self.platform_prefix_procedures.tek_torg}"
 
     @property
-    def etp_gpb(self):
+    def etp_gpb(self) -> str:
         return f"{self.base_platform.base_etp_gpb}{self.platform_prefix_procedures.etp_gpb}"
