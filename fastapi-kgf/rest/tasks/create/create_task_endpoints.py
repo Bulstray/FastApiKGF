@@ -1,4 +1,4 @@
-from typing import Annotated, cast, TYPE_CHECKING
+from typing import TYPE_CHECKING, Annotated, cast
 
 from fastapi import APIRouter, Depends, Request, status
 from fastapi.responses import RedirectResponse
