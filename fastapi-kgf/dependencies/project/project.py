@@ -14,5 +14,5 @@ class ProjectFactory(ProjectService):
             AsyncSession,
             Depends(db_helper.session_getter),
         ],
-    ):
+    ) -> None:
         super().__init__(session)
