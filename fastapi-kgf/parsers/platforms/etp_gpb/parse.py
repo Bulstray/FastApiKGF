@@ -1,4 +1,5 @@
-from datetime import date
+from datetime import datetime
+from typing import cast
 from xml.etree.ElementTree import Element
 
 import dateparser
@@ -96,7 +97,10 @@ class EtpgpbParser(BaseTenderPlatform):
                 class_="vTxt--faint2Weak",
             )
 
-            if "Заказчики" in organize_tag.text:
+            if (
+                isinstance(organize_tag, Element)
+                and "Заказчики" in organize_tag.text
+            ):
                 return organize.find(
                     "div",
                     class_="cardBody__truncate",
@@ -105,7 +109,7 @@ class EtpgpbParser(BaseTenderPlatform):
         return "Отсутствует"
 
     @staticmethod
-    def get_end_date(card: Tag | Element) -> str | date:
+    def get_end_date(card: Tag | Element) -> str | datetime:
         if isinstance(card, Element):
             return "Дата не установлена"
 
@@ -117,8 +121,11 @@ class EtpgpbParser(BaseTenderPlatform):
         if end_date is None:
             return "Дата не установлена"
 
-        return dateparser.parse(
-            end_date.text.replace("МСК", ""),
+        return cast(
+            "datetime",
+            dateparser.parse(
+                end_date.text.replace("МСК", ""),
+            ),
         )
 
     def get_cards_data(self) -> ResultSet[Tag]:
