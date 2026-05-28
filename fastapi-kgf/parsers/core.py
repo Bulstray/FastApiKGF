@@ -1,4 +1,4 @@
-from typing import cast, TYPE_CHECKING
+from typing import TYPE_CHECKING, cast
 
 from core.models import db_helper
 from core.schemas import TenderCreate
