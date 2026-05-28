@@ -1,5 +1,6 @@
 import time
 from abc import ABC, abstractmethod
+from datetime import datetime
 from urllib.parse import urlencode
 from xml.etree.ElementTree import Element
 
@@ -79,7 +80,7 @@ class BaseTenderPlatform(ABC):
 
     @staticmethod
     @abstractmethod
-    def get_end_date(card: Tag | Element) -> str:
+    def get_end_date(card: Tag | Element) -> str | datetime:
         """Метод для определения даты окончания тендера"""
 
     def search_tenders(self) -> list[TenderCreate]:
