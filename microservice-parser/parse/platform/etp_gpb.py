@@ -6,7 +6,7 @@ import dateparser
 from bs4 import BeautifulSoup, ResultSet, Tag
 
 from core.config import settings
-from parsers.platforms.base_platform import BaseTenderPlatform
+from .base_platform import BaseTenderPlatform
 
 
 class EtpgpbParser(BaseTenderPlatform):
@@ -15,8 +15,8 @@ class EtpgpbParser(BaseTenderPlatform):
     def __init__(self, key_word: str, keyword_id: int) -> None:
         self.key_word = key_word.lower()
         super().__init__(
-            base_url=f"{settings.tender_platform.etp_gpb}",
-            base_platform=f"{settings.tender_platform.base_platform.base_etp_gpb}",
+            base_url=f"{settings.platforms.etp_gpb}",
+            base_platform=f"{settings.platforms.base_platform.base_etp_gpb}",
             params=self.get_params(key_word),
             keyword_id=keyword_id,
         )
