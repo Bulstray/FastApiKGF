@@ -30,7 +30,7 @@
           display: flex;
           align-items: center;
           justify-content: space-between;
-          margin-bottom: 2.5rem;
+          margin-bottom: 1.5rem;
           flex-wrap: wrap;
           gap: 1rem;
       }
@@ -217,6 +217,32 @@
           color: #1e40af;
       }
 
+      /* Поисковые теги */
+      .search-tags {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 0.5rem;
+          margin-bottom: 2.5rem;
+      }
+
+      .search-tag {
+          background: #eff6ff;
+          color: #1e40af;
+          padding: 0.4rem 0.9rem;
+          border-radius: 40px;
+          font-size: 0.82rem;
+          font-weight: 500;
+          display: flex;
+          align-items: center;
+          gap: 0.4rem;
+          border: 1px solid #bfdbfe;
+      }
+
+      .search-tag i {
+          font-size: 0.75rem;
+          opacity: 0.7;
+      }
+
       @media (max-width: 768px) {
           .tenders-grid {
               grid-template-columns: 1fr;
@@ -234,12 +260,21 @@
   <div class="main-content">
     <!-- Заголовок -->
     <div class="page-header">
+      <div class="search-tags">
+        <i class="bi bi-search" style="color: #64748b; margin-right: 0.25rem;"></i>
+        {% for kw in keywords %}
+          <span class="search-tag">
+            <i class="bi bi-hash"></i> {{ kw.decoding }} ({{ kw.keyword }})
+        </span>
+        {% endfor %}
+      </div>
       <h1 class="page-title">
         <i class="bi bi-file-earmark-text"></i> Актуальные тендера по последнему запросу
       </h1>
     </div>
 
     {% for keyword in keywords %}
+      {% if keyword.tenders|length > 0 %}
       <section class="keyword-section">
         <div class="keyword-header">
           <div class="keyword-title-group">
@@ -276,6 +311,7 @@
           {% endfor %}
         </div>
       </section>
+      {% endif %}
     {% endfor %}
   </div>
 
