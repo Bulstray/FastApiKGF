@@ -11,10 +11,10 @@ class ArchiveTendersStorage(BaseCRUD):
         super().__init__(session, ArchiveTender)
 
     async def add_all_from_active_tender(self, tenders: list[Tender]) -> None:
-        tenders = [
+        archive_tenders = [
             ArchiveTender(**TenderCreate.model_validate(tender).model_dump())
             for tender in tenders
         ]
 
-        self.session.add_all(tenders)
+        self.session.add_all(archive_tenders)
         await self.session.commit()
