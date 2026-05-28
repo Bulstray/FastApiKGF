@@ -6,7 +6,7 @@ from bs4 import BeautifulSoup
 from bs4.element import ResultSet, Tag
 
 from core.config import settings
-from parsers.platforms.base_platform import BaseTenderPlatform
+from .base_platform import BaseTenderPlatform
 
 
 class TekTorgPlatform(BaseTenderPlatform):
@@ -14,8 +14,8 @@ class TekTorgPlatform(BaseTenderPlatform):
 
     def __init__(self, key_word: str, keyword_id: int) -> None:
         super().__init__(
-            base_url=f"{settings.tender_platform.tek_torg}",
-            base_platform=f"{settings.tender_platform.base_platform.base_tek_torg}",
+            base_url=f"{settings.platforms.tek_torg}",
+            base_platform=f"{settings.platforms.base_platform.base_tek_torg}",
             params=self.get_params(key_word=key_word),
             keyword_id=keyword_id,
         )
