@@ -1,18 +1,19 @@
 from .platform import TekTorgPlatform, EtpgpbParser
+from datetime import datetime
 
 
 class TenderParseCore:
     def __init__(
         self,
-        key_word: str,
+        keyword: str,
         keyword_id: int,
     ) -> None:
         self.parsers = {
-            TekTorgPlatform(key_word, keyword_id),
-            EtpgpbParser(key_word, keyword_id),
+            TekTorgPlatform(keyword, keyword_id),
+            EtpgpbParser(keyword, keyword_id),
         }
 
-    def search_all_platforms(self) -> list:
+    def search_all_platforms(self) -> list[dict[str, str | datetime | int]]:
         """Поиск по всем платформам"""
 
         results = []
