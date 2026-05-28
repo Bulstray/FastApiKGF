@@ -1,12 +1,12 @@
 from core.models import (
-    ParsingKeyword,
-    Project,
-    Task,
-    User,
-    Program,
-    Tender,
     ArchiveTender,
     Message,
+    ParsingKeyword,
+    Program,
+    Project,
+    Task,
+    Tender,
+    User,
     UserSettings,
 )
 
