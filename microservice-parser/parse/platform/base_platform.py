@@ -1,0 +1,115 @@
+import time
+from abc import ABC, abstractmethod
+from datetime import datetime
+from urllib.parse import urlencode
+from xml.etree.ElementTree import Element
+
+from core.config import settings
+
+import requests
+from bs4.element import ResultSet, Tag
+from selenium import webdriver
+
+
+class BaseTenderPlatform(ABC):
+    """Базовый класс для всех парсеров площадок"""
+
+    TIMEOUT = 10
+    HEADERS = settings.header_requests
+
+    def __init__(
+        self,
+        base_platform: str,
+        base_url: str,
+        params: dict[str, str | int],
+        keyword_id: int,
+    ) -> None:
+        self.base_url = base_url
+        self.base_platform = base_platform
+        self.keyword_id = keyword_id
+        if base_url == settings.platforms.etp_gpb:
+            driver = webdriver.Chrome()
+            driver.get(f"{base_url}?{urlencode(params)}")
+            time.sleep(20)
+            self.html_source = driver.page_source
+            driver.quit()
+        else:
+            self.html_source = requests.get(
+                url=self.base_url,
+                params=params,
+                timeout=self.TIMEOUT,
+                headers=self.HEADERS,
+            )
+            self.html_source = self.html_source.text
+
+    @classmethod
+    async def get_html_source_from_selenium(cls):
+        pass
+
+    @classmethod
+    async def get_html_source_from_requests(cls):
+        pass
+
+    @staticmethod
+    @abstractmethod
+    def get_params(key_word: str) -> dict[str, str | int]:
+        """Возвращает параметры запроса"""
+
+    @abstractmethod
+    def get_cards_data(self) -> list[Element] | ResultSet[Tag]:
+        """Получение блока с тендерами"""
+
+    @abstractmethod
+    def is_tender_name_taken(
+        self,
+        card: Tag | Element,
+    ) -> tuple[str, str] | None:
+        """Метод для проверки имени тендера"""
+
+    @staticmethod
+    @abstractmethod
+    def is_tender_pub_date_taken(card: Tag | Element) -> str:
+        """Метод для проверки и преобразовании даты публикации"""
+
+    @staticmethod
+    @abstractmethod
+    def is_tender_price_taken(card: Tag | Element) -> str:
+        """Метод для получения цены"""
+
+    @staticmethod
+    @abstractmethod
+    def is_tender_organize_taken(card: Tag | Element) -> str:
+        """Метод для определения организатора"""
+
+    @staticmethod
+    @abstractmethod
+    def get_end_date(card: Tag | Element) -> str | datetime:
+        """Метод для определения даты окончания тендера"""
+
+    def search_tenders(self) -> list[dict[str, str | datetime]]:
+
+        cards = self.get_cards_data()
+
+        tenders = []
+        for card in cards:
+            title_and_url = self.is_tender_name_taken(card)
+            if title_and_url is None:
+                continue
+
+            title, url = title_and_url
+
+            tender = {}
+
+            tenders.append(
+                tender.update(
+                    name=title,
+                    pub_date=self.is_tender_pub_date_taken(card),
+                    price=self.is_tender_price_taken(card),
+                    organizer=self.is_tender_organize_taken(card),
+                    url=fr"{self.base_platform}{url}",
+                    keyword_id=self.keyword_id,
+                    end_date=self.get_end_date(card),
+                ),
+            )
+
+        return tenders
