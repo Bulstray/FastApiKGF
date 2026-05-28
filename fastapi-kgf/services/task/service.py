@@ -1,7 +1,8 @@
+from typing import cast
+
 from aiopath import AsyncPath
 from sqlalchemy.ext.asyncio import AsyncSession
 from starlette.datastructures import FormData
-from typing import cast
 
 from core.models import MessageReadStatus, Task, TaskUsers, User
 from core.schemas import TaskCreate, TaskRead
@@ -23,7 +24,13 @@ class TasksFilesService(TaskStorage):
 
     @staticmethod
     def get_executor_ids(form: FormData) -> list[int]:
-        return [int(user_id) for user_id in form.getlist("executor_ids")]
+        return [
+            int(user_id)
+            for user_id in cast(
+                "list[str]",
+                form.getlist("executor_ids"),
+            )
+        ]
 
     async def save_file_if_exists(
         self,
@@ -79,7 +86,7 @@ class TasksFilesService(TaskStorage):
         # send message to email
         for user_id in users_ids:
             user = cast(
-                User,
+                "User",
                 await self.user_service.get_by_id(user_id),
             )
             if user.settings and user.settings.task_notification:
