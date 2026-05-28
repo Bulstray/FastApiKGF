@@ -40,7 +40,7 @@ class MessageFile(Base):
 
 
 @event.listens_for(MessageFile, "after_delete")
-def delete_file_after_delete(mapper, connection, target):
+def delete_file_after_delete(mapper, connection, target): # type: ignore
     folder_path = Path(target.folder_path)
     if folder_path.exists():
         folder_path.unlink()
