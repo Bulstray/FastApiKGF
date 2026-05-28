@@ -1,11 +1,13 @@
-from typing import Annotated, cast
+from typing import TYPE_CHECKING, Annotated, cast
 
-from core.models import Program
 from aiopath import AsyncPath
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.responses import FileResponse, RedirectResponse
 
 from dependencies.programs.programs import ProgramsFactory
+
+if TYPE_CHECKING:
+    from core.models import Program
 
 router = APIRouter()
 
@@ -23,7 +25,7 @@ async def download_program(
     _id: int,
 ) -> RedirectResponse | FileResponse:
     program = cast(
-        Program,
+        "Program",
         await program_service.get_by_id(_id),
     )
 
