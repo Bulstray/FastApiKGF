@@ -42,14 +42,6 @@ class BaseTenderPlatform(ABC):
             )
             self.html_source = self.html_source.text
 
-    @classmethod
-    async def get_html_source_from_selenium(cls):
-        pass
-
-    @classmethod
-    async def get_html_source_from_requests(cls):
-        pass
-
     @staticmethod
     @abstractmethod
     def get_params(key_word: str) -> dict[str, str | int]:
@@ -98,18 +90,16 @@ class BaseTenderPlatform(ABC):
 
             title, url = title_and_url
 
-            tender = {}
-
             tenders.append(
-                tender.update(
-                    name=title,
-                    pub_date=self.is_tender_pub_date_taken(card),
-                    price=self.is_tender_price_taken(card),
-                    organizer=self.is_tender_organize_taken(card),
-                    url=fr"{self.base_platform}{url}",
-                    keyword_id=self.keyword_id,
-                    end_date=self.get_end_date(card),
-                ),
+                {
+                    "name": f"{title}",
+                    "pub_date": f"{self.is_tender_pub_date_taken(card)}",
+                    "price": f"{self.is_tender_price_taken(card)}",
+                    "organizer": f"{self.is_tender_organize_taken(card)}",
+                    "url": fr"{self.base_platform}{url}",
+                    "keyword_id": self.keyword_id,
+                    "end_date": f"{self.get_end_date(card)}",
+                },
             )
 
         return tenders
