@@ -50,6 +50,10 @@ class BaseCRUD:
             id_ (int): The ID of the model to delete.
         """
         model = await self.get_by_id(id_)
+
+        if model is None:
+            return
+
         await self.delete(model)
 
     async def delete(self, model: Model) -> None:
