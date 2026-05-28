@@ -7,13 +7,16 @@ from fastapi import FastAPI
 from core import broker
 from core.config import settings
 from core.models import Base, User, db_helper
-from parsers.core import parse_tenders
 from services.users.service import UserService
+from tenders import parse_tenders
 
 
 async def scheduler() -> None:
     while True:
-        await parse_tenders()
+        try:
+            await parse_tenders()
+        except Exception as e:
+            print(e)
         # Ждем 24 часа (86400 секунд)
         await asyncio.sleep(86400)  # 24 * 60 * 60
 
