@@ -79,7 +79,7 @@ async def update_profile(
             )
 
             session_id = cast(
-                str,
+                "str",
                 request.cookies.get(SESSION_COOKIE_NAME),
             )
 
