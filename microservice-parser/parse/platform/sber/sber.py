@@ -1,10 +1,11 @@
 from datetime import datetime
+from xml.etree.ElementTree import Element
 
-from parse.platform.base_platform import BaseTenderPlatform
-from core.config import settings
 from bs4 import BeautifulSoup
 from bs4.element import ResultSet, Tag
-from xml.etree.ElementTree import Element
+
+from core.config import settings
+from parse.platform.base_platform import BaseTenderPlatform
 
 from .sber_fetcher import page_fetcher
 
