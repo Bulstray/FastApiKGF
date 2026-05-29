@@ -56,7 +56,6 @@ class BaseTenderPlatform(ABC):
         cards = self.get_cards_data()
 
         tenders = []
-        urls = []
         for card in cards:
             title_and_url = self.is_tender_name_taken(card)
             if title_and_url is None:
@@ -64,13 +63,8 @@ class BaseTenderPlatform(ABC):
 
             title, url = title_and_url
 
-            if url in urls:
-                continue
-
             if self.base_platform != settings.platforms.sber:
                 url = fr"{self.base_platform}{url}"
-
-            urls.append(url)
 
             tenders.append(
                 {
