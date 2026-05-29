@@ -1,8 +1,8 @@
-from selenium import webdriver
-from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.common.by import By
-
 import time
+
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
 
 
 def page_fetcher(keyword: str) -> str:
@@ -10,7 +10,7 @@ def page_fetcher(keyword: str) -> str:
     driver = webdriver.Chrome()
     driver.maximize_window()
 
-    driver.get('https://www.sberbank-ast.ru/Default.aspx')
+    driver.get("https://www.sberbank-ast.ru/Default.aspx")
 
     search_box = driver.find_element(
         By.ID,
@@ -33,14 +33,14 @@ def page_fetcher(keyword: str) -> str:
     time.sleep(3)
 
     stage_event = driver.find_element(
-        By.CSS_SELECTOR, 'input.shortdict-filter-choose-button'
+        By.CSS_SELECTOR, "input.shortdict-filter-choose-button",
     )
     stage_event.click()
 
     time.sleep(3)
 
     checkbox = driver.find_element(
-        By.XPATH, "//tr[contains(., 'Подача заявок')]//input[@type='checkbox']"
+        By.XPATH, "//tr[contains(., 'Подача заявок')]//input[@type='checkbox']",
     )
     checkbox.click()
 
