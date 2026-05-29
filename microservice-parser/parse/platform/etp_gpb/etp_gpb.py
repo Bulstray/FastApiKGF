@@ -6,7 +6,9 @@ import dateparser
 from bs4 import BeautifulSoup, ResultSet, Tag
 
 from core.config import settings
-from .base_platform import BaseTenderPlatform
+from parse.platform.base_platform import BaseTenderPlatform
+
+from .etp_gpb_fetcher import page_fetcher
 
 
 class EtpgpbParser(BaseTenderPlatform):
@@ -14,11 +16,16 @@ class EtpgpbParser(BaseTenderPlatform):
 
     def __init__(self, key_word: str, keyword_id: int) -> None:
         self.key_word = key_word.lower()
-        super().__init__(
-            base_url=f"{settings.platforms.etp_gpb}",
-            base_platform=f"{settings.platforms.base_platform.base_etp_gpb}",
+
+        source_html = page_fetcher(
+            url=f'{settings.platforms.etp_gpb}',
             params=self.get_params(key_word),
+        )
+
+        super().__init__(
+            base_platform=f"{settings.platforms.base_platform.base_etp_gpb}",
             keyword_id=keyword_id,
+            page_source=source_html,
         )
 
     @staticmethod
@@ -65,8 +72,11 @@ class EtpgpbParser(BaseTenderPlatform):
         if not pub_date_tag.text:
             return "Дата не найдена"
 
-        pub_date_str = dateparser.parse(
-            pub_date_tag.text.replace("МСК", ""),
+        pub_date_str = cast(
+            datetime,
+            dateparser.parse(
+                pub_date_tag.text.replace("МСК", ""),
+            ),
         )
 
         return pub_date_str.strftime("%Y-%m-%d")
@@ -84,7 +94,12 @@ class EtpgpbParser(BaseTenderPlatform):
         if price_tag is None:
             return "Цена не установлена"
 
-        return price_tag.text.replace(",", " ")
+        price_tag_text = cast(
+            str,
+            price_tag.text,
+        )
+
+        return price_tag_text.replace(",", " ")
 
     @staticmethod
     def is_tender_organize_taken(card: Tag | Element) -> str:
@@ -109,9 +124,9 @@ class EtpgpbParser(BaseTenderPlatform):
         return "Отсутствует"
 
     @staticmethod
-    def get_end_date(card: Tag | Element) -> str | datetime:
+    def get_end_date(card: Tag | Element) -> None | datetime:
         if isinstance(card, Element):
-            return "Дата не установлена"
+            return None
 
         end_date = card.find(
             "div",
@@ -119,7 +134,7 @@ class EtpgpbParser(BaseTenderPlatform):
         )
 
         if end_date is None:
-            return "Дата не установлена"
+            return None
 
         return cast(
             "datetime",
