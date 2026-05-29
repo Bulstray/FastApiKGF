@@ -17,8 +17,8 @@ async def scheduler() -> None:
             await parse_tenders()
         except Exception as e:
             print(e)
-        # Ждем 24 часа (86400 секунд)
-        await asyncio.sleep(86400)  # 24 * 60 * 60
+        # Ждем 12 часов
+        await asyncio.sleep(43200)
 
 
 @asynccontextmanager
