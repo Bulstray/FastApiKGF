@@ -2,9 +2,9 @@ from abc import ABC, abstractmethod
 from datetime import datetime
 from xml.etree.ElementTree import Element
 
-from core.config import settings
-
 from bs4.element import ResultSet, Tag
+
+from core.config import settings
 
 
 class BaseTenderPlatform(ABC):
