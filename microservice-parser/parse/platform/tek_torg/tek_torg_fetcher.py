@@ -1,5 +1,6 @@
-from core.config import settings
 import requests
+
+from core.config import settings
 
 TIMEOUT = 10
 HEADERS = settings.header_requests
