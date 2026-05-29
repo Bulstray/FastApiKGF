@@ -1,6 +1,6 @@
-from datetime import date, datetime
-from xml.etree.ElementTree import Element
+from datetime import datetime
 from typing import cast
+from xml.etree.ElementTree import Element
 
 import dateparser
 from bs4 import BeautifulSoup
@@ -57,7 +57,7 @@ class TekTorgPlatform(BaseTenderPlatform):
             return "Дата не установлена"
 
         pub_date = cast(
-            datetime,
+            "datetime",
             dateparser.parse(pub_date_tag.text),
         )
 
