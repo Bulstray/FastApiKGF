@@ -1,6 +1,7 @@
-from selenium import webdriver
 import time
 from urllib.parse import urlencode
+
+from selenium import webdriver
 
 
 def page_fetcher(url: str, params: dict[str, str | int]) -> str:
