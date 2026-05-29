@@ -1,19 +1,17 @@
 import json
-
-from services import (
-    KeyWordService,
-    TendersService,
-    ArchiveTendersService,
-    UserService,
-)
-
-from core.models import db_helper
-from core.schemas import TenderCreate
-from tasks.new_tender_notification import send_new_tenders_email
-
 from typing import cast
 
 import aiohttp
+
+from core.models import db_helper
+from core.schemas import TenderCreate
+from services import (
+    ArchiveTendersService,
+    KeyWordService,
+    TendersService,
+    UserService,
+)
+from tasks.new_tender_notification import send_new_tenders_email
 
 
 async def parse_tenders() -> None:
@@ -50,12 +48,12 @@ async def parse_tenders() -> None:
         for keyword in all_keywords:
             async with aiohttp.ClientSession() as session:
                 async with session.get(
-                    f"http://localhost:8002/api/v1/tenders/{keyword.keyword}/{keyword.id}"
+                    f"http://localhost:8002/api/v1/tenders/{keyword.keyword}/{keyword.id}",
                 ) as response:
                     api_tenders = json.loads(await response.text())
 
             tenders.extend(
-                [TenderCreate.model_validate(tender) for tender in api_tenders]
+                [TenderCreate.model_validate(tender) for tender in api_tenders],
             )
 
         for tender in tenders:
