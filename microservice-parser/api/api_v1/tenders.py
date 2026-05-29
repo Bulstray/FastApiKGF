@@ -1,10 +1,10 @@
-from fastapi import APIRouter, Depends
 from datetime import datetime
-
 from typing import Annotated
 
-from core.config import settings
+from fastapi import APIRouter, Depends
 from parse.core import TenderParseCore
+
+from core.config import settings
 
 router = APIRouter(prefix=settings.api.v1.tenders)
 
