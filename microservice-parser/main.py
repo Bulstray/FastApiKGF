@@ -1,8 +1,6 @@
-from fastapi import FastAPI
-
-from api import router
-
 import uvicorn
+from api import router
+from fastapi import FastAPI
 
 app = FastAPI(
     title="Fastapi parse tenders",
