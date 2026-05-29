@@ -18,7 +18,7 @@ class EtpgpbParser(BaseTenderPlatform):
         self.key_word = key_word.lower()
 
         source_html = page_fetcher(
-            url=f'{settings.platforms.etp_gpb}',
+            url=f"{settings.platforms.etp_gpb}",
             params=self.get_params(key_word),
         )
 
@@ -73,7 +73,7 @@ class EtpgpbParser(BaseTenderPlatform):
             return "Дата не найдена"
 
         pub_date_str = cast(
-            datetime,
+            "datetime",
             dateparser.parse(
                 pub_date_tag.text.replace("МСК", ""),
             ),
@@ -95,7 +95,7 @@ class EtpgpbParser(BaseTenderPlatform):
             return "Цена не установлена"
 
         price_tag_text = cast(
-            str,
+            "str",
             price_tag.text,
         )
 
