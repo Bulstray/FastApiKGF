@@ -1,51 +1,24 @@
-import time
 from abc import ABC, abstractmethod
 from datetime import datetime
-from urllib.parse import urlencode
 from xml.etree.ElementTree import Element
 
 from core.config import settings
 
-import requests
 from bs4.element import ResultSet, Tag
-from selenium import webdriver
 
 
 class BaseTenderPlatform(ABC):
     """Базовый класс для всех парсеров площадок"""
 
-    TIMEOUT = 10
-    HEADERS = settings.header_requests
-
     def __init__(
         self,
         base_platform: str,
-        base_url: str,
-        params: dict[str, str | int],
         keyword_id: int,
+        page_source: str,
     ) -> None:
-        self.base_url = base_url
         self.base_platform = base_platform
         self.keyword_id = keyword_id
-        if base_url == settings.platforms.etp_gpb:
-            driver = webdriver.Chrome()
-            driver.get(f"{base_url}?{urlencode(params)}")
-            time.sleep(20)
-            self.html_source = driver.page_source
-            driver.quit()
-        else:
-            self.html_source = requests.get(
-                url=self.base_url,
-                params=params,
-                timeout=self.TIMEOUT,
-                headers=self.HEADERS,
-            )
-            self.html_source = self.html_source.text
-
-    @staticmethod
-    @abstractmethod
-    def get_params(key_word: str) -> dict[str, str | int]:
-        """Возвращает параметры запроса"""
+        self.html_source = page_source
 
     @abstractmethod
     def get_cards_data(self) -> list[Element] | ResultSet[Tag]:
@@ -75,10 +48,10 @@ class BaseTenderPlatform(ABC):
 
     @staticmethod
     @abstractmethod
-    def get_end_date(card: Tag | Element) -> str | datetime:
+    def get_end_date(card: Tag | Element) -> datetime | None:
         """Метод для определения даты окончания тендера"""
 
-    def search_tenders(self) -> list[dict[str, str | datetime]]:
+    def search_tenders(self) -> list[dict[str, str | datetime | None | int]]:
 
         cards = self.get_cards_data()
 
@@ -96,7 +69,11 @@ class BaseTenderPlatform(ABC):
                     "pub_date": f"{self.is_tender_pub_date_taken(card)}",
                     "price": f"{self.is_tender_price_taken(card)}",
                     "organizer": f"{self.is_tender_organize_taken(card)}",
-                    "url": fr"{self.base_platform}{url}",
+                    "url": (
+                        fr"{self.base_platform}{url}"
+                        if self.base_platform != settings.platforms.sber
+                        else url
+                    ),
                     "keyword_id": self.keyword_id,
                     "end_date": f"{self.get_end_date(card)}",
                 },
