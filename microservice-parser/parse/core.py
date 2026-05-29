@@ -1,5 +1,6 @@
-from .platform import TekTorgPlatform, EtpgpbParser, SberPlatform
 from datetime import datetime
+
+from .platform import EtpgpbParser, SberPlatform, TekTorgPlatform
 
 
 class TenderParseCore:
