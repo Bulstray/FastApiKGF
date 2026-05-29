@@ -127,7 +127,7 @@ class MessageManager(MessageStorage):
     async def process_message(
         self,
         message_in: str,
-    ) -> dict:
+    ) -> dict[str, str | int]:
         """
         Создать сообщение с опциональным файлом и обновить счётчики
         непрочитанных сообщений.
