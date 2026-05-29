@@ -4,6 +4,7 @@ from pydantic import BaseModel
 class BasePlatform(BaseModel):
     base_tek_torg: str = "https://www.tektorg.ru"
     base_etp_gpb: str = "https://new.etpgpb.ru"
+    base_sber: str = "https://www.sberbank-ast.ru/Default.aspx"
 
 
 class PlatformPrefixProcedures(BaseModel):
@@ -30,3 +31,7 @@ class PlatformConfig(BaseModel):
             f"{self.base_platform.base_etp_gpb}"
             f"{self.platform_prefix_procedures.etp_gpb}"
         )
+
+    @property
+    def sber(self) -> str:
+        return self.base_platform.base_sber
