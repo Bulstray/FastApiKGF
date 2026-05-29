@@ -9,8 +9,8 @@ class TenderParseCore:
         keyword_id: int,
     ) -> None:
         self.parsers = {
-            # TekTorgPlatform(keyword, keyword_id),
-            # EtpgpbParser(keyword, keyword_id),
+            TekTorgPlatform(keyword, keyword_id),
+            EtpgpbParser(keyword, keyword_id),
             SberPlatform(keyword, keyword_id),
         }
 
