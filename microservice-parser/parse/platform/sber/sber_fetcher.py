@@ -22,6 +22,8 @@ def page_fetcher(keyword: str) -> str:
     search_box.send_keys(keyword)
     search_box.send_keys(Keys.ENTER)
 
+    time.sleep(10)
+
     filter_button = driver.find_element(
         By.CSS_SELECTOR,
         "button.element-in-one-row.simple-button.orange-background",
@@ -37,7 +39,9 @@ def page_fetcher(keyword: str) -> str:
 
     time.sleep(3)
 
-    checkbox = driver.find_element(By.ID, "2216")
+    checkbox = driver.find_element(
+        By.XPATH, "//tr[contains(., 'Подача заявок')]//input[@type='checkbox']"
+    )
     checkbox.click()
 
     driver.execute_script("applyModal();")
@@ -51,3 +55,5 @@ def page_fetcher(keyword: str) -> str:
     driver.quit()
 
     return source_html
+
+
