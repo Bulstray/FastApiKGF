@@ -6,13 +6,19 @@ TIMEOUT = 10
 HEADERS = settings.header_requests
 
 
+def get_params(key_word: str) -> dict[str, str | int]:
+    return {
+        "name": key_word,
+        "status[]": "Приём заявок",
+    }
+
+
 def page_fetcher(
-    url: str,
-    params: dict[str, str | int],
+    key_word: str,
 ) -> str:
     response = requests.get(
-        url=url,
-        params=params,
+        url=settings.platforms.tek_torg,
+        params=get_params(key_word),
         timeout=TIMEOUT,
         headers=HEADERS,
     )
