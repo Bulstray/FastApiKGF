@@ -67,6 +67,9 @@ class BaseTenderPlatform(ABC):
             if url in urls:
                 continue
 
+            if self.base_platform != settings.platforms.sber:
+                url = fr"{self.base_platform}{url}"
+
             urls.append(url)
 
             tenders.append(
@@ -75,11 +78,7 @@ class BaseTenderPlatform(ABC):
                     "pub_date": f"{self.is_tender_pub_date_taken(card)}",
                     "price": f"{self.is_tender_price_taken(card)}",
                     "organizer": f"{self.is_tender_organize_taken(card)}",
-                    "url": (
-                        url
-                        if self.base_platform == settings.platforms.sber
-                        else fr"{self.base_platform}{url}"
-                    ),
+                    "url": url,
                     "keyword_id": self.keyword_id,
                     "end_date": f"{self.get_end_date(card)}",
                 },

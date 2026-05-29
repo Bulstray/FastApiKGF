@@ -12,6 +12,7 @@ from .sber_fetcher import page_fetcher
 class SberPlatform(BaseTenderPlatform):
     def __init__(self, key_word: str, keyword_id: int):
         source_html = page_fetcher(key_word)
+        self.keyword = key_word.lower()
         super().__init__(
             base_platform=settings.platforms.sber,
             keyword_id=keyword_id,
@@ -32,7 +33,7 @@ class SberPlatform(BaseTenderPlatform):
 
         name_tag = card.find("span", class_="es-el-name")
 
-        if name_tag is None:
+        if name_tag is None or self.keyword not in name_tag.text.lower():
             return None
 
         number = card.find("span", class_="es-el-code-term")
