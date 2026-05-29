@@ -1,23 +1,31 @@
 from datetime import date, datetime
 from xml.etree.ElementTree import Element
+from typing import cast
 
 import dateparser
 from bs4 import BeautifulSoup
 from bs4.element import ResultSet, Tag
 
 from core.config import settings
-from .base_platform import BaseTenderPlatform
+from parse.platform.base_platform import BaseTenderPlatform
+
+from .tek_torg_fetcher import page_fetcher
 
 
 class TekTorgPlatform(BaseTenderPlatform):
     """Парсер площадки ТЕК-Торг"""
 
     def __init__(self, key_word: str, keyword_id: int) -> None:
-        super().__init__(
-            base_url=f"{settings.platforms.tek_torg}",
-            base_platform=f"{settings.platforms.base_platform.base_tek_torg}",
+
+        source_html = page_fetcher(
+            url=f"{settings.platforms.tek_torg}",
             params=self.get_params(key_word=key_word),
+        )
+
+        super().__init__(
+            base_platform=f"{settings.platforms.base_platform.base_tek_torg}",
             keyword_id=keyword_id,
+            page_source=source_html,
         )
 
     def is_tender_name_taken(
@@ -48,7 +56,10 @@ class TekTorgPlatform(BaseTenderPlatform):
         if pub_date_tag is None:
             return "Дата не установлена"
 
-        pub_date = dateparser.parse(pub_date_tag.text)
+        pub_date = cast(
+            datetime,
+            dateparser.parse(pub_date_tag.text),
+        )
 
         return pub_date.strftime("%Y-%m-%d")
 
@@ -101,9 +112,9 @@ class TekTorgPlatform(BaseTenderPlatform):
         )
 
     @staticmethod
-    def get_end_date(card: Tag | Element) -> str | date:
+    def get_end_date(card: Tag | Element) -> datetime | None:
         if isinstance(card, Element):
-            return "Дата не установлена"
+            return None
 
         end_card_div = card.find_all(
             "div",
@@ -116,7 +127,7 @@ class TekTorgPlatform(BaseTenderPlatform):
         )
 
         if end_date is None:
-            return "Дата не установлена"
+            return None
 
         return datetime.strptime(
             end_date.text,
