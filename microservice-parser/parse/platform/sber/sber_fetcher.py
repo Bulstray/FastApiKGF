@@ -55,5 +55,3 @@ def page_fetcher(keyword: str) -> str:
     driver.quit()
 
     return source_html
-
-
