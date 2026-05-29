@@ -1,7 +1,8 @@
 from pydantic_settings import BaseSettings
-from .platforms import PlatformConfig
+
 from .api import ApiPrefix
 from .headers_requests import HEADERS
+from .platforms import PlatformConfig
 
 
 class Settings(BaseSettings):
