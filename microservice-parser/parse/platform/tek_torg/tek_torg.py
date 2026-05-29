@@ -17,10 +17,7 @@ class TekTorgPlatform(BaseTenderPlatform):
 
     def __init__(self, key_word: str, keyword_id: int) -> None:
 
-        source_html = page_fetcher(
-            url=f"{settings.platforms.tek_torg}",
-            params=self.get_params(key_word=key_word),
-        )
+        source_html = page_fetcher(key_word)
 
         super().__init__(
             base_platform=f"{settings.platforms.base_platform.base_tek_torg}",
