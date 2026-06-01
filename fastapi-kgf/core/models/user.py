@@ -61,9 +61,9 @@ class User(Base):
         back_populates="user_executors",
     )
 
-    user_message: Mapped[list["Message"]] = relationship(
+    messages: Mapped[list["Message"]] = relationship(
         "Message",
-        backref="user_message",
+        back_populates="user",
         lazy="selectin",
         cascade="all, delete-orphan",
     )
