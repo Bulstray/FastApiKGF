@@ -31,9 +31,9 @@ async def get_messages_by_id(
         msg = {
             "id": message.id,
             "text": message.text,
-            "author": message.user_message.full_name,
+            "author": message.user.full_name,
             "created_at": message.created_at,
-            "initials": message.user_message.initials,
+            "initials": message.user.initials,
         }
 
         if message.file:
