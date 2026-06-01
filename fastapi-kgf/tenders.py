@@ -53,7 +53,10 @@ async def parse_tenders() -> None:
                     api_tenders = json.loads(await response.text())
 
             tenders.extend(
-                [TenderCreate.model_validate(tender) for tender in api_tenders],
+                [
+                    TenderCreate.model_validate(tender)
+                    for tender in api_tenders
+                ],
             )
 
         for tender in tenders:
