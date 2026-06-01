@@ -139,7 +139,9 @@ class MessageManager(MessageStorage):
             Словарь с ID сообщения и путём к файлу (если файл был загружен)
         """
 
-        message_schema = MessageCreate.model_validate(json.loads(message_in))
+        message_schema = MessageCreate.model_validate(
+            json.loads(message_in),
+        )
 
         file_path = await self.create_message_db(
             message_schema,
