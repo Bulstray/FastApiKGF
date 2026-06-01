@@ -1,4 +1,5 @@
 import uuid
+from typing import cast
 
 from aiopath import AsyncPath
 from fastapi import Request, UploadFile
@@ -41,7 +42,7 @@ class ProgramAdmin(ModelView, model=Program):
         request: Request,
     ) -> None:
 
-        file: UploadFile = data.get("folder_path")
+        file: UploadFile = cast("UploadFile", data.get("folder_path"))
 
         file_path = (
             settings.uploads_program_dir / f"{uuid.uuid4().hex}"
