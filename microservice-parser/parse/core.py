@@ -9,11 +9,13 @@ class TenderParseCore:
         keyword: str,
         keyword_id: int,
     ) -> None:
+        self.keyword = keyword
+        self.keyword_id = keyword_id
         self.parsers = {
-            TekTorgPlatform(keyword, keyword_id),
-            EtpgpbParser(keyword, keyword_id),
-            SberPlatform(keyword, keyword_id),
-            LukhoilPlatform(keyword, keyword_id),
+            TekTorgPlatform,
+            EtpgpbParser,
+            SberPlatform,
+            LukhoilPlatform,
 
         }
 
@@ -22,8 +24,9 @@ class TenderParseCore:
 
         results = []
 
-        for parse_class in self.parsers:
+        for parse_platform in self.parsers:
             try:
+                parse_class = parse_platform(self.keyword, self.keyword_id)
                 tenders = parse_class.search_tenders()
             except Exception as e:
                 print(e)
