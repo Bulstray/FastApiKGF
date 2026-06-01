@@ -28,5 +28,7 @@ class TenderCreate(BaseTender):
     def parse_end_date(cls, value: str | datetime) -> datetime:
         if isinstance(value, datetime):
             return value
+
+        value = value.replace("T", " ")
         # Парсим ваш формат "2026-05-29 09:00:00"
         return datetime.strptime(value, "%Y-%m-%d %H:%M:%S")
