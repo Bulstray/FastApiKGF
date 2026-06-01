@@ -53,7 +53,7 @@ async def websocket_endpoint(
 
             user = UserRead.model_validate(
                 await user_service.get_by_id(
-                    message_data["author"],
+                    int(message_data["author"]),
                 ),
             )
 
