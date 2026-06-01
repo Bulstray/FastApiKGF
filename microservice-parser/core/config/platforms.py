@@ -5,6 +5,9 @@ class BasePlatform(BaseModel):
     base_tek_torg: str = "https://www.tektorg.ru"
     base_etp_gpb: str = "https://new.etpgpb.ru"
     base_sber: str = "https://www.sberbank-ast.ru/Default.aspx"
+    base_lukh: str = (
+        "https://lukoil.ru/Company/Tendersandauctions/Tenders/TendersofLukoilgroup"
+    )
 
 
 class PlatformPrefixProcedures(BaseModel):
@@ -35,3 +38,7 @@ class PlatformConfig(BaseModel):
     @property
     def sber(self) -> str:
         return self.base_platform.base_sber
+
+    @property
+    def lukh(self) -> str:
+        return self.base_platform.base_lukh
