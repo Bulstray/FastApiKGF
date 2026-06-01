@@ -154,4 +154,3 @@ async def send_new_tenders(
         username=settings.superuser.email,
         password=settings.email_password,
     )
-
