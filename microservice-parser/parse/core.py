@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from .platform import EtpgpbParser, SberPlatform, TekTorgPlatform
+from .platform import EtpgpbParser, SberPlatform, TekTorgPlatform, LukhoilPlatform
 
 
 class TenderParseCore:
@@ -13,6 +13,8 @@ class TenderParseCore:
             TekTorgPlatform(keyword, keyword_id),
             EtpgpbParser(keyword, keyword_id),
             SberPlatform(keyword, keyword_id),
+            LukhoilPlatform(keyword, keyword_id),
+
         }
 
     def search_all_platforms(self) -> list[dict[str, str | datetime | int | None]]:
