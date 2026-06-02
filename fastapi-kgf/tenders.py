@@ -1,5 +1,5 @@
 import json
-from typing import cast
+from typing import cast, TYPE_CHECKING
 
 import aiohttp
 
@@ -13,6 +13,9 @@ from services import (
 )
 from tasks.new_tender_notification import send_new_tenders_email
 
+if TYPE_CHECKING:
+    from core.models import User, ParsingKeyword, Tender
+
 
 async def parse_tenders() -> None:
     async with db_helper.session_factory() as session:
@@ -22,17 +25,17 @@ async def parse_tenders() -> None:
         user_service = UserService(session)
 
         all_users = cast(
-            "list[User]",
+            list["User"],
             await user_service.get_all(),
         )
 
         all_keywords = cast(
-            "list[ParsingKeyword]",
+            list["ParsingKeyword"],
             await keyword_service.get_all(),
         )
 
         active_tenders = cast(
-            "list[Tender]",
+            list["Tender"],
             await tender_service.get_all(),
         )
 
