@@ -21,7 +21,7 @@ class TenderCreate(BaseTender):
         from_attributes=True,
     )
 
-    end_date: datetime | None = None
+    end_date: datetime
 
     @field_validator("end_date", mode="before")
     @classmethod
