@@ -4,7 +4,7 @@ from typing import cast
 from aiopath import AsyncPath
 from fastapi import Request, UploadFile
 from sqladmin import ModelView
-from wtforms import FileField
+from wtforms import FileField  # type: ignore
 
 from core.config import settings
 from core.models import Program
