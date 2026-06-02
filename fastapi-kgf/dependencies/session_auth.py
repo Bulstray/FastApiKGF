@@ -37,14 +37,14 @@ async def get_current_user(
         str,
         Depends(cookie_scheme),
     ],
-) -> UserRead:
+) -> UserRead | None:
     return await session.get_by_session_id(session_id)
 
 
 async def get_cookie_websocket(
     websocket: WebSocket,
     session_id: Annotated[CookiesRead, Cookie()],
-) -> UserRead | RedirectResponse:
+) -> UserRead | None:
     if session_id and (
         answer := await session.get_by_session_id(
             session_id.web_app_session_id,
