@@ -36,7 +36,7 @@ class TasksFilesService(TaskStorage):
         self,
         task_model: TaskCreate,
         content: bytes,
-    ) -> tuple[None, None] | tuple[str, str]:
+    ) -> tuple[None, None] | tuple[str, AsyncPath]:
         folder, filename = None, None
 
         if task_model.rar_file.filename:
