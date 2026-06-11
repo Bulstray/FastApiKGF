@@ -3,26 +3,35 @@ import time
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 def page_fetcher(keyword: str) -> str:
     driver = webdriver.Chrome()
     driver.maximize_window()
 
-    driver.get(
-        "https://lukoil.ru/Company/Tendersandauctions/Tenders/TendersofLukoilgroup"
-    )
+    try:
 
-    search_box = driver.find_element(
-        By.CSS_SELECTOR, ".form-control.search-control"
-    )
-    search_box.send_keys(keyword)
-    search_box.send_keys(Keys.ENTER)
+        driver.get(
+            "https://lukoil.ru/Company/Tendersandauctions/Tenders/TendersofLukoilgroup"
+        )
 
-    time.sleep(10)
+        search_box = driver.find_element(
+            By.CSS_SELECTOR, ".form-control.search-control"
+        )
+        search_box.send_keys(keyword)
+        search_box.send_keys(Keys.ENTER)
 
-    source_html = driver.page_source
+        time.sleep(10)
 
-    driver.quit()
+        source_html = driver.page_source
 
-    return source_html
+        driver.quit()
+
+        return source_html
+
+    except Exception as error:
+        logger.error(("Ошибка: %s", str(error)))
+        logger.debug("Детали ошибки:", exc_info=True)
