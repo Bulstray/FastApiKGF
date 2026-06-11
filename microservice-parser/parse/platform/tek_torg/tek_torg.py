@@ -15,9 +15,11 @@ from .tek_torg_fetcher import page_fetcher
 class TekTorgPlatform(BaseTenderPlatform):
     """Парсер площадки ТЕК-Торг"""
 
-    def __init__(self, key_word: str, keyword_id: int) -> None:
-
-        source_html = page_fetcher(key_word)
+    def __init__(
+        self,
+        keyword_id: int,
+        source_html: str,
+    ) -> None:
 
         super().__init__(
             base_platform=f"{settings.platforms.base_platform.base_tek_torg}",

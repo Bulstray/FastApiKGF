@@ -8,19 +8,15 @@ from bs4 import BeautifulSoup, ResultSet, Tag
 from core.config import settings
 from parse.platform.base_platform import BaseTenderPlatform
 
-from .etp_gpb_fetcher import page_fetcher
-
 
 class EtpgpbParser(BaseTenderPlatform):
     """Parser for ETP GPB tender platform."""
 
     def __init__(
         self,
-        key_word: str,
         keyword_id: int,
         source_html: str,
     ) -> None:
-        self.key_word = key_word.lower()
 
         super().__init__(
             base_platform=f"{settings.platforms.base_platform.base_etp_gpb}",

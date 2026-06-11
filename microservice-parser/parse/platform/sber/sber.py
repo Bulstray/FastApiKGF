@@ -7,17 +7,13 @@ from bs4.element import ResultSet, Tag
 from core.config import settings
 from parse.platform.base_platform import BaseTenderPlatform
 
-from .sber_fetcher import page_fetcher
-
 
 class SberPlatform(BaseTenderPlatform):
     def __init__(
         self,
-        key_word: str,
         keyword_id: int,
         source_html: str,
     ):
-        self.keyword = key_word.lower()
         super().__init__(
             base_platform=settings.platforms.sber,
             keyword_id=keyword_id,

@@ -15,11 +15,9 @@ import re
 class LukhoilPlatform(BaseTenderPlatform):
     def __init__(
         self,
-        key_word: str,
         keyword_id: int,
         source_html: str,
     ):
-        self.keyword = key_word.lower()
         super().__init__(
             base_platform=settings.platforms.sber,
             keyword_id=keyword_id,
