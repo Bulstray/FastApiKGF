@@ -243,6 +243,66 @@
           opacity: 0.7;
       }
 
+      .sources-bar {
+          display: flex;
+          align-items: center;
+          gap: 1.2rem;
+          margin-bottom: 2rem;
+          flex-wrap: wrap;
+      }
+
+      .sources-label {
+          font-size: 0.8rem;
+          font-weight: 700;
+          color: #94a3b8;
+          letter-spacing: 0.06em;
+          text-transform: uppercase;
+      }
+
+      .sources-icons {
+          display: flex;
+          align-items: center;
+          gap: 0.75rem;
+          flex-wrap: wrap;
+      }
+
+      .source-icon {
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+          background: white;
+          border: 1px solid var(--border-light);
+          border-radius: 12px;
+          padding: 0.6rem 1rem;
+          box-shadow: var(--card-shadow);
+          transition: all 0.2s;
+          cursor: default;
+      }
+
+      .source-icon i {
+          font-size: 1.5rem;
+          color: var(--primary-color);
+      }
+
+      .source-icon img {
+          width: 28px;
+          height: 28px;
+          object-fit: contain;
+          border-radius: 6px;
+      }
+
+      .source-icon:hover {
+          border-color: #93c5fd;
+          box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+          transform: translateY(-1px);
+      }
+
+      .source-name {
+          font-weight: 600;
+          font-size: 0.9rem;
+          color: #1e293b;
+      }
+
       @media (max-width: 768px) {
           .tenders-grid {
               grid-template-columns: 1fr;
@@ -273,44 +333,68 @@
       </h1>
     </div>
 
+
+    <div class="sources-bar">
+      <span class="sources-label">Источники:</span>
+      <div class="sources-icons">
+    <span class="source-icon" title="TekTorg">
+      <img src="{{ url_for("static", path='/icons_tender/large_Роснефть.png') }}">
+      <span class="source-name">TekTorg</span>
+    </span>
+        <span class="source-icon" title="ETPGPB">
+      <img src="{{ url_for("static", path='/icons_tender/gazprom.png') }}">
+      <span class="source-name">ETPGPB</span>
+    </span>
+        <span class="source-icon" title="Lukhoil">
+      <img src="{{ url_for("static", path='/icons_tender/lukhoil.jpg') }}">
+      <span class="source-name">Lukhoil</span>
+    </span>
+        <span class="source-icon" title="Sber">
+      <img src="{{ url_for("static", path='/icons_tender/sber.png') }}">
+      <span class="source-name">Sber AST</span>
+    </span>
+      </div>
+    </div>
+
+
     {% for keyword in keywords %}
       {% if keyword.tenders|length > 0 %}
-      <section class="keyword-section">
-        <div class="keyword-header">
-          <div class="keyword-title-group">
-            <span class="keyword-name">{{ keyword.decoding }}</span>
-          </div>
-          <button class="keyword-toggle"><i class="bi bi-chevron-down"></i></button>
-        </div>
-        <div class="tenders-grid">
-          {% for tender in keyword.tenders %}
-            <div class="tender-card" data-status="urgent">
-              <div class="card-top-row">
-              </div>
-              <h3 class="card-title">{{ tender.name }}</h3>
-              <div class="card-company"> Организатор: {{ tender.organizer }}</div>
-              <div class="card-meta">
-                <span class="meta-item"><i class="bi bi-calendar3"></i> {{ tender.pub_date }}</span>
-              </div>
-              <div class="card-footer">
-                <div>
-                  <div class="card-budget">{{ tender.price }}</div>
-                  {% set days_left = (tender.end_date - today).days + 1 %}
-                  {% if days_left % 10 in (0, 5, 6, 7, 8, 9) %}
-                    <div class="card-deadline"><i class="bi bi-clock"></i>{{ days_left }} дней</div>
-                  {% elif days_left % 10 == 1 %}
-                    <div class="card-deadline"><i class="bi bi-clock"></i>{{ days_left }} день</div>
-                  {% elif days_left % 10 in (2, 3, 4) %}
-                    <div class="card-deadline"><i class="bi bi-clock"></i>{{ days_left }} дня</div>
-                  {% endif %}
-                </div>
-                <a href="{{ tender.url }}" class="card-link" target="_blank" rel="noopener noreferrer">Подробнее <i
-                  class="bi bi-arrow-right"></i></a>
-              </div>
+        <section class="keyword-section">
+          <div class="keyword-header">
+            <div class="keyword-title-group">
+              <span class="keyword-name">{{ keyword.decoding }}</span>
             </div>
-          {% endfor %}
-        </div>
-      </section>
+            <button class="keyword-toggle"><i class="bi bi-chevron-down"></i></button>
+          </div>
+          <div class="tenders-grid">
+            {% for tender in keyword.tenders %}
+              <div class="tender-card" data-status="urgent">
+                <div class="card-top-row">
+                </div>
+                <h3 class="card-title">{{ tender.name }}</h3>
+                <div class="card-company"> Организатор: {{ tender.organizer }}</div>
+                <div class="card-meta">
+                  <span class="meta-item"><i class="bi bi-calendar3"></i> {{ tender.pub_date }}</span>
+                </div>
+                <div class="card-footer">
+                  <div>
+                    <div class="card-budget">{{ tender.price }}</div>
+                    {% set days_left = (tender.end_date - today).days + 1 %}
+                    {% if days_left % 10 in (0, 5, 6, 7, 8, 9) %}
+                      <div class="card-deadline"><i class="bi bi-clock"></i>{{ days_left }} дней</div>
+                    {% elif days_left % 10 == 1 %}
+                      <div class="card-deadline"><i class="bi bi-clock"></i>{{ days_left }} день</div>
+                    {% elif days_left % 10 in (2, 3, 4) %}
+                      <div class="card-deadline"><i class="bi bi-clock"></i>{{ days_left }} дня</div>
+                    {% endif %}
+                  </div>
+                  <a href="{{ tender.url }}" class="card-link" target="_blank" rel="noopener noreferrer">Подробнее <i
+                    class="bi bi-arrow-right"></i></a>
+                </div>
+              </div>
+            {% endfor %}
+          </div>
+        </section>
       {% endif %}
     {% endfor %}
   </div>
