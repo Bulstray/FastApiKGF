@@ -7,7 +7,6 @@ from .platform.etp_gpb.etp_gpb_fetcher import page_fetcher as etp_gpb_page_feche
 from .platform.lukh.lukh_fetch import page_fetcher as lukh_page_fetcher
 import logging
 
-
 logger = logging.getLogger(__name__)
 
 
@@ -34,6 +33,9 @@ class TenderParseCore:
         for parse_platform, page_fetcher in self.parsers:
             try:
                 source_html = page_fetcher(self.keyword)
+                if source_html is None:
+                    continue
+
                 parse_class = parse_platform(self.keyword, self.keyword_id, source_html)
                 tenders = parse_class.search_tenders()
 
@@ -41,9 +43,6 @@ class TenderParseCore:
                 logger.error("Не удалось создать сессию Chrome: %s", str(error))
                 logger.debug("Детали ошибка", exc_info=True)
 
-            except NoSuchElementException as error:
-                logger.error(("Ошибка при поиске элемента на странице: %s", str(error)))
-                logger.debug("Детали ошибки:", exc_info=True)
 
             except Exception as e:
                 print(e)
