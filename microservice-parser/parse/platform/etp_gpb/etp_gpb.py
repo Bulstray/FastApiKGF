@@ -14,13 +14,13 @@ from .etp_gpb_fetcher import page_fetcher
 class EtpgpbParser(BaseTenderPlatform):
     """Parser for ETP GPB tender platform."""
 
-    def __init__(self, key_word: str, keyword_id: int) -> None:
+    def __init__(
+        self,
+        key_word: str,
+        keyword_id: int,
+        source_html: str,
+    ) -> None:
         self.key_word = key_word.lower()
-
-        source_html = page_fetcher(
-            url=f"{settings.platforms.etp_gpb}",
-            params=self.get_params(key_word),
-        )
 
         super().__init__(
             base_platform=f"{settings.platforms.base_platform.base_etp_gpb}",
