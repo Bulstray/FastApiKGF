@@ -1,5 +1,5 @@
 from datetime import datetime
-from selenium.common.exceptions import SessionNotCreatedException
+from selenium.common.exceptions import SessionNotCreatedException, NoSuchElementException
 from .platform import EtpgpbParser, SberPlatform, TekTorgPlatform, LukhoilPlatform
 import logging
 
@@ -36,6 +36,10 @@ class TenderParseCore:
             except SessionNotCreatedException as error:
                 logger.error("Не удалось создать сессию Chrome: %s", str(error))
                 logger.debug("Детали ошибка", exc_info=True)
+
+            except NoSuchElementException as error:
+                logger.error(("Ошибка при поиске элемента на странице: %s", str(error)))
+                logger.debug("Детали ошибки:", exc_info=True)
 
             except Exception as e:
                 print(e)
