@@ -1,6 +1,10 @@
 from datetime import datetime
-
+from selenium.common.exceptions import SessionNotCreatedException
 from .platform import EtpgpbParser, SberPlatform, TekTorgPlatform, LukhoilPlatform
+import logging
+
+
+logger = logging.getLogger(__name__)
 
 
 class TenderParseCore:
@@ -28,6 +32,11 @@ class TenderParseCore:
             try:
                 parse_class = parse_platform(self.keyword, self.keyword_id)
                 tenders = parse_class.search_tenders()
+
+            except SessionNotCreatedException as error:
+                logger.error("Не удалось создать сессию Chrome: %s", str(error))
+                logger.debug("Детали ошибка", exc_info=True)
+
             except Exception as e:
                 print(e)
             else:
