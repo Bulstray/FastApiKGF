@@ -131,13 +131,6 @@ class TekTorgPlatform(BaseTenderPlatform):
             "%d.%m.%Y",
         )
 
-    @staticmethod
-    def get_params(key_word: str) -> dict[str, str | int]:
-        return {
-            "name": key_word,
-            "status[]": "Приём заявок",
-        }
-
     def get_cards_data(self) -> ResultSet[Tag]:
         soup = BeautifulSoup(self.html_source, "html.parser")
         return soup.find_all("div", class_="sc-6c01eeae-0 jtfzxc")
