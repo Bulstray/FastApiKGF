@@ -243,6 +243,34 @@
           opacity: 0.7;
       }
 
+      /* Блок с поисковыми тегами */
+      .search-context {
+          display: flex;
+          flex-direction: column;
+          gap: 0.6rem;
+          width: 100%;
+      }
+
+      .search-context-label {
+          display: flex;
+          align-items: center;
+          gap: 0.4rem;
+          font-size: 0.78rem;
+          font-weight: 700;
+          color: #64748b;
+          letter-spacing: 0.04em;
+          text-transform: uppercase;
+          background: #f1f5f9;
+          padding: 0.4rem 0.8rem;
+          border-radius: 8px;
+          width: fit-content;
+      }
+
+      .search-context-label i {
+          font-size: 0.9rem;
+          color: var(--primary-color);
+      }
+
       .sources-bar {
           display: flex;
           align-items: center;
@@ -320,17 +348,18 @@
   <div class="main-content">
     <!-- Заголовок -->
     <div class="page-header">
-      <div class="search-tags">
-        <i class="bi bi-search" style="color: #64748b; margin-right: 0.25rem;"></i>
-        {% for kw in keywords %}
-          <span class="search-tag">
-            <i class="bi bi-hash"></i> {{ kw.decoding }} ({{ kw.keyword }})
+      <div class="search-context">
+    <span class="search-context-label">
+      <i class="bi bi-bullseye"></i> Поиск ведётся по ключевым словам
+    </span>
+        <div class="search-tags" style="margin-bottom: 0;">
+          {% for kw in keywords %}
+            <span class="search-tag">
+          <i class="bi bi-hash"></i> {{ kw.decoding }} ({{ kw.keyword }})
         </span>
-        {% endfor %}
+          {% endfor %}
+        </div>
       </div>
-      <h1 class="page-title">
-        <i class="bi bi-file-earmark-text"></i> Актуальные тендера по последнему запросу
-      </h1>
     </div>
 
 
