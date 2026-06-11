@@ -11,8 +11,12 @@ from .sber_fetcher import page_fetcher
 
 
 class SberPlatform(BaseTenderPlatform):
-    def __init__(self, key_word: str, keyword_id: int):
-        source_html = page_fetcher(key_word)
+    def __init__(
+        self,
+        key_word: str,
+        keyword_id: int,
+        source_html: str,
+    ):
         self.keyword = key_word.lower()
         super().__init__(
             base_platform=settings.platforms.sber,
