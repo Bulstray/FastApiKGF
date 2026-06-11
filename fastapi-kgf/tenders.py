@@ -56,6 +56,12 @@ async def parse_tenders() -> None:
                 ],
             )
 
+        if active_tenders:
+            await tender_archive_service.add_all_from_active_tender(
+                active_tenders,
+            )
+            await tender_service.delete_table()
+
         for tender in tenders:
             archive_tender = await tender_service.get_archive_tender(
                 tender.url,
@@ -78,11 +84,5 @@ async def parse_tenders() -> None:
                     ]
             except Exception as e:
                 print(e)
-
-            if active_tenders:
-                await tender_archive_service.add_all_from_active_tender(
-                    active_tenders,
-                )
-                await tender_service.delete_table()
 
             await tender_service.add_tenders_in_db(tenders)
