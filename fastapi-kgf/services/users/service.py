@@ -14,22 +14,10 @@ class UserService(UserStorage):
         """Initialize the service with a database connection and user class"""
         super().__init__(session)
 
-    async def validate_basic_auth_user(self, request: Request) -> str | None:
-        async with request.form() as user_data:
-            user = UserLogin.model_validate(user_data)
-
-        is_user = await self.get_user_by_email(user.email.lower())
-
-        if is_user and bcrypt.checkpw(
-            password=user.password.encode("utf-8"),
-            hashed_password=is_user.hashed_password.encode("utf-8"),
-        ):
-            return await create_session(is_user)
-
-        return None
-
     async def update_user_data(
-        self, user_in: UserUpdateForm, user_id: int,
+        self,
+        user_in: UserUpdateForm,
+        user_id: int,
     ) -> None:
         user_data = UserUpdate(
             email=user_in.email,
