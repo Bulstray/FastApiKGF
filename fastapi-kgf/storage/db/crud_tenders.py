@@ -1,25 +1,29 @@
 from sqlalchemy import delete, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from core.models import ArchiveTender, Tender
+from core.schemas.tenders import TenderCreate as TenderSchema
 
-from .base_crud import BaseCRUD
+from core.models import Tender
 
 
-class TendersStorage(BaseCRUD):
-    def __init__(self, session: AsyncSession) -> None:
-        super().__init__(session, Tender)
+async def get_all_active_tenders(
+    session: AsyncSession,
+) -> list[Tender]:
+    stmt = select(Tender).order_by(Tender.id)
+    result = await session.scalars(stmt)
+    return list(result.all())
 
-    async def add_all(self, tenders: list[Tender]) -> None:
-        self.session.add_all(tenders)
-        await self.session.commit()
 
-    async def delete_table(self) -> None:
-        stmt = delete(Tender)
-        await self.session.execute(stmt)
-        await self.session.commit()
+async def clear_table(session: AsyncSession) -> None:
+    stmt = delete(Tender)
+    await session.execute(stmt)
+    await session.commit()
 
-    async def get_archive_tender(self, url: str) -> ArchiveTender | None:
-        stmt = select(ArchiveTender).where(ArchiveTender.url == url)
-        result = await self.session.scalars(stmt)
-        return result.first()
+
+async def add_tenders_in_db(
+    session: AsyncSession,
+    tenders: list[TenderSchema],
+) -> None:
+    tenders_models = [Tender(**tender.model_dump()) for tender in tenders]
+    session.add_all(tenders_models)
+    await session.commit()
