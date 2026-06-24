@@ -8,6 +8,7 @@ from core.config import settings
 from core.models import Base, User, db_helper
 from parsers.core import parse_tenders
 from services.users.service import UserService
+from storage.db.crud_user import get_user_by_email, create_user
 
 
 async def scheduler():
@@ -23,17 +24,13 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
         await conn.run_sync(Base.metadata.create_all)
 
     async with db_helper.session_factory() as session:
-
-        user_service = UserService(session)
-
-        check_user = await user_service.get_user_by_email(
-            email=settings.superuser.email,
+        check_user = await get_user_by_email(
+            session,
+            settings.superuser.email,
         )
 
         if check_user is None:
-            admin = User(**settings.superuser.model_dump())
-            await user_service.create(admin)
-
+            await create_user(session, settings.superuser)
     # Создаем папки
     await settings.uploads_program_dir.mkdir(exist_ok=True, parents=True)
     await settings.uploads_file_task_dir.mkdir(exist_ok=True, parents=True)
