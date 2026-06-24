@@ -2,10 +2,13 @@ from typing import Annotated
 
 from fastapi import APIRouter, Depends, Request, status
 from fastapi.responses import HTMLResponse, RedirectResponse
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from core.config.settings import SESSION_COOKIE_NAME
 from dependencies.auth_user import validate_basic_auth_user
 from templating.jinja_template import templates
+
+from core.models import db_helper
 
 router = APIRouter()
 
@@ -17,11 +20,16 @@ router = APIRouter()
 )
 async def login_submit(
     request: Request,
-    session_id: Annotated[
-        str | None,
-        Depends(validate_basic_auth_user),
+    session: Annotated[
+        AsyncSession,
+        Depends(db_helper.session_getter),
     ],
 ) -> HTMLResponse | RedirectResponse:
+
+    session_id = await validate_basic_auth_user(
+        request,
+        session,
+    )
 
     if session_id is None:
         return templates.TemplateResponse(
@@ -36,6 +44,9 @@ async def login_submit(
         status_code=status.HTTP_303_SEE_OTHER,
     )
 
-    redirect.set_cookie(key=SESSION_COOKIE_NAME, value=session_id)
+    redirect.set_cookie(
+        key=SESSION_COOKIE_NAME,
+        value=session_id,
+    )
 
     return redirect

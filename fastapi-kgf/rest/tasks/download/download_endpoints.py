@@ -4,7 +4,10 @@ from fastapi.responses import FileResponse
 router = APIRouter(prefix="/download")
 
 
-@router.get("/{name}/{file_path:path}", name="tasks:download")
+@router.get(
+    "/{name}/{file_path:path}",
+    name="tasks:download",
+)
 async def download_file(
     name: str,
     file_path: str,

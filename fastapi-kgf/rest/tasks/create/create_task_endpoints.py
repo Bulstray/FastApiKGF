@@ -3,8 +3,11 @@ from typing import Annotated
 from fastapi import APIRouter, Depends, Request, status
 from fastapi.responses import RedirectResponse
 
-from dependencies import ProjectFactory, TaskFactory
-from services import ProjectService
+from dependencies import TaskFactory
+from storage.db import crud_project
+
+from core.models import db_helper
+from sqlalchemy.ext.asyncio import AsyncSession
 
 router = APIRouter()
 
@@ -18,11 +21,20 @@ router = APIRouter()
 async def create_task(
     request: Request,
     project_id: int,
-    service: Annotated[TaskFactory, Depends(TaskFactory)],
-    project_service: Annotated[ProjectService, Depends(ProjectFactory)],
+    session: Annotated[
+        AsyncSession,
+        Depends(db_helper.session_getter),
+    ],
+    service: Annotated[
+        TaskFactory,
+        Depends(TaskFactory),
+    ],
 ) -> str:
 
-    project = await project_service.get_by_id(project_id)
+    project = await crud_project.get_project_by_id(
+        session,
+        project_id,
+    )
     if project is None:
         return "/"
 

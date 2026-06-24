@@ -8,10 +8,8 @@ from starlette.responses import HTMLResponse, RedirectResponse
 
 from core.schemas.user import UserRead
 from dependencies import (
-    ProjectFactory,
     TaskFactory,
     TaskMessageFactory,
-    UserServiceFactory,
 )
 from dependencies.session_auth import get_current_user
 from services import (
@@ -19,17 +17,19 @@ from services import (
 )
 from templating.jinja_template import templates
 
+from storage.db.crud_user import get_all_users
+from storage.db.crud_project import get_all_projects, get_project_by_id
+
+from core.models import db_helper
+from sqlalchemy.ext.asyncio import AsyncSession
+
 router = APIRouter()
 
 
 async def _get_user_and_user_service(
     user: Annotated[UserRead, Depends(get_current_user)],
-    user_service: Annotated[
-        UserServiceFactory,
-        Depends(UserServiceFactory),
-    ],
-) -> tuple[UserRead, UserService]:
-    return user, user_service
+) -> UserRead:
+    return user
 
 
 async def _build_context(
@@ -46,29 +46,26 @@ async def _build_context(
         TaskMessageFactory,
         Depends(TaskMessageFactory),
     ],
-    project_service: Annotated[
-        ProjectFactory,
-        Depends(ProjectFactory),
+    session: Annotated[
+        AsyncSession,
+        Depends(db_helper.session_getter),
     ],
 ) -> dict[str, Any]:
-    user, user_service = user_and_user_service
+    user = user_and_user_service
     count_unread_message = await message_service.get_unread_message(user.id)
-    workers_list = await user_service.get_all()
     tasks_for_users = await tasks_service.get_user_tasks_by_project_id(
         project_id,
         user.id,
     )
-    projects = await project_service.get_all()
-    project = await project_service.get_by_id(project_id)
 
     return {
-        "workers": workers_list,
+        "project_id": project_id,
+        "workers": await get_all_users(session),
         "user": user,
         "tasks": tasks_for_users,
         "unread_messages": count_unread_message,
-        "projects": projects,
-        "project_id": project_id,
-        "project": project,
+        "projects": await get_all_projects(session),
+        "project": await get_project_by_id(session, project_id),
         "today": datetime.datetime.now(tz=datetime.UTC).date(),
     }
 

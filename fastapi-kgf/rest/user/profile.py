@@ -6,11 +6,16 @@ from pydantic import ValidationError
 
 from core.config.settings import SESSION_COOKIE_NAME
 from core.schemas import UserRead, UserUpdateForm
-from dependencies import ProjectFactory
 from dependencies.session_auth import get_current_user
 from dependencies.user import UserServiceFactory
 from storage.redis.session import save_session
 from templating.jinja_template import templates
+from storage.db.crud_project import get_all_projects
+
+from sqlalchemy.ext.asyncio import AsyncSession
+from core.models import db_helper
+
+from storage.db.crud_user import update_data_user
 
 router = APIRouter(prefix="/profile")
 
@@ -22,19 +27,18 @@ async def profile_page(
         UserRead,
         Depends(get_current_user),
     ],
-    project_service: Annotated[
-        ProjectFactory,
-        Depends(ProjectFactory),
+    session: Annotated[
+        AsyncSession,
+        Depends(db_helper.session_getter),
     ],
 ) -> HTMLResponse:
-    projects = await project_service.get_all()
 
     return templates.TemplateResponse(
         "profile.html",
         context={
             "user": current_user,
-            "projects": projects,
             "request": request,
+            "projects": await get_all_projects(session),
         },
     )
 
@@ -42,20 +46,16 @@ async def profile_page(
 @router.post("/", name="profile:update")
 async def update_profile(
     request: Request,
-    user_service: Annotated[
-        UserServiceFactory,
-        Depends(UserServiceFactory),
-    ],
     current_user: Annotated[
         UserRead,
         Depends(get_current_user),
     ],
-    project_service: Annotated[
-        ProjectFactory,
-        Depends(ProjectFactory),
+    session: Annotated[
+        AsyncSession,
+        Depends(db_helper.session_getter),
     ],
 ) -> HTMLResponse:
-    projects = await project_service.get_all()
+    projects = await get_all_projects(session)
     async with request.form() as form_data:
 
         try:
@@ -73,7 +73,7 @@ async def update_profile(
             )
 
         else:
-            await user_service.update_user_data(
+            await update_data_user(
                 user_update,
                 current_user.id,
             )

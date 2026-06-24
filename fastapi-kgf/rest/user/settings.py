@@ -4,9 +4,12 @@ from fastapi import APIRouter, Depends, Request, status
 from fastapi.responses import HTMLResponse, RedirectResponse
 
 from core.schemas import UserRead
-from dependencies import ProjectFactory, UserSettingsServiceFactory
+from dependencies import UserSettingsServiceFactory
 from dependencies.session_auth import get_current_user
 from templating.jinja_template import templates
+from storage.db import crud_project, crud_user_settings
+from core.models import db_helper
+from sqlalchemy.ext.asyncio import AsyncSession
 
 router = APIRouter(prefix="/settings")
 
@@ -18,25 +21,22 @@ async def settings_page(
         UserRead,
         Depends(get_current_user),
     ],
-    project_service: Annotated[
-        ProjectFactory,
-        Depends(ProjectFactory),
-    ],
-    user_setting_factory: Annotated[
-        UserSettingsServiceFactory,
-        Depends(UserSettingsServiceFactory),
+    session: Annotated[
+        AsyncSession,
+        Depends(db_helper.session_getter),
     ],
 ) -> HTMLResponse:
-    projects = await project_service.get_all()
-    settings = await user_setting_factory.get_settings_by_user(current_user.id)
 
     return templates.TemplateResponse(
         "settings.html",
         context={
             "user": current_user,
-            "projects": projects,
             "request": request,
-            "settings": settings,
+            "projects": await crud_project.get_all_projects(session),
+            "settings": await crud_user_settings.get_settings_by_user(
+                session,
+                current_user.id,
+            ),
         },
     )
 

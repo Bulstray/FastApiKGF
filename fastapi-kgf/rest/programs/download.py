@@ -4,25 +4,27 @@ from aiopath import AsyncPath
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.responses import FileResponse, RedirectResponse
 
-from dependencies.programs.programs import ProgramsFactory
+from storage.db import crud_programs
+from sqlalchemy.ext.asyncio import AsyncSession
+from core.models import db_helper
 
 router = APIRouter()
 
 
 @router.get(
-    "/{_id}/download",
+    "/download/{_id}/",
     name="program:download",
     response_model=None,
 )
 async def download_program(
-    program_service: Annotated[
-        ProgramsFactory,
-        Depends(ProgramsFactory),
-    ],
     _id: int,
+    session: Annotated[
+        AsyncSession,
+        Depends(db_helper.session_getter),
+    ],
 ) -> RedirectResponse | FileResponse:
 
-    program = await program_service.get_by_id(_id)
+    program = await crud_programs.get_program_by_id(session, _id)
 
     if not program:
         raise HTTPException(
@@ -38,12 +40,7 @@ async def download_program(
             detail="File not found in server",
         )
 
-    try:
-        file_response = FileResponse(
-            str(file_path),
-            filename=file_path.name,
-        )
-    except Exception:
-        file_response = FileResponse(str(file_path))
-
-    return file_response
+    return FileResponse(
+        str(file_path),
+        filename=file_path.name,
+    )

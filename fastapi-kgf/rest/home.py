@@ -5,9 +5,11 @@ from fastapi.requests import Request
 from fastapi.responses import HTMLResponse
 
 from core.schemas.user import UserRead
-from dependencies import ProjectFactory
 from dependencies.session_auth import get_current_user
 from templating.jinja_template import templates
+from core.models import db_helper
+from storage.db import crud_project
+from sqlalchemy.ext.asyncio import AsyncSession
 
 router = APIRouter()
 
@@ -19,18 +21,17 @@ async def home(
         UserRead | None,
         Depends(get_current_user),
     ],
-    projects_service: Annotated[
-        ProjectFactory,
-        Depends(ProjectFactory),
+    session: Annotated[
+        AsyncSession,
+        Depends(db_helper.session_getter),
     ],
 ) -> HTMLResponse:
-    projects = await projects_service.get_all()
 
     return templates.TemplateResponse(
         request=request,
         name="home.html",
         context={
             "is_authenticated": is_authenticated,
-            "projects": projects,
+            "projects": await crud_project.get_all_projects(session),
         },
     )
