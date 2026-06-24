@@ -5,22 +5,23 @@ from fastapi import Depends, Request
 
 from core.schemas import UserLogin
 from services.auth.session_manager import create_session
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from .user import UserServiceFactory
+
+from storage.db.crud_user import get_user_by_email
 
 
 async def validate_basic_auth_user(
     request: Request,
-    user_service: Annotated[
-        UserServiceFactory,
-        Depends(UserServiceFactory),
-    ],
+    session: AsyncSession,
 ) -> str | None:
     async with request.form() as form_data:
         user = UserLogin.model_validate(form_data)
 
-    is_user = await user_service.get_user_by_email(
-        email=user.email.lower(),
+    is_user = await get_user_by_email(
+        session,
+        user.email.lower(),
     )
 
     if is_user and bcrypt.checkpw(
