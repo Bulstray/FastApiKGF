@@ -6,9 +6,14 @@ from starlette.requests import Request
 from starlette.responses import HTMLResponse
 
 from core.schemas.user import UserRead
-from dependencies import KeyWordFactory, ProjectFactory
+
 from dependencies.session_auth import get_current_user
 from templating.jinja_template import templates
+
+from storage.db import crud_project, crud_keyword_tenders
+
+from sqlalchemy.ext.asyncio import AsyncSession
+from core.models import db_helper
 
 router = APIRouter()
 
@@ -16,23 +21,25 @@ router = APIRouter()
 @router.get("/", name="tenders:page")
 async def tenders_page(
     request: Request,
-    keyword_service: Annotated[
-        KeyWordFactory,
-        Depends(KeyWordFactory),
+    session: Annotated[
+        AsyncSession,
+        Depends(db_helper.session_getter),
     ],
-    current_user: Annotated[UserRead, Depends(get_current_user)],
-    project_service: Annotated[ProjectFactory, Depends(ProjectFactory)],
+    current_user: Annotated[
+        UserRead,
+        Depends(get_current_user),
+    ],
 ) -> HTMLResponse:
-    key_words = await keyword_service.get_all()
-    projects = await project_service.get_all()
 
     return templates.TemplateResponse(
         request=request,
         name="tenders.html",
         context={
-            "keywords": key_words,
+            "keywords": await crud_keyword_tenders.get_all_keywords_tender(
+                session
+            ),
             "user": current_user,
-            "projects": projects,
+            "projects": await crud_project.get_all_projects(),
             "today": datetime.datetime.now(),
         },
     )
