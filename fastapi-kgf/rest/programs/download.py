@@ -3,8 +3,9 @@ from typing import TYPE_CHECKING, Annotated, cast
 from aiopath import AsyncPath
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.responses import FileResponse, RedirectResponse
-
-from dependencies.programs.programs import ProgramsFactory
+from storage.db import crud_programs
+from sqlalchemy.ext.asyncio import AsyncSession
+from core.models import db_helper
 
 if TYPE_CHECKING:
     from core.models import Program
@@ -13,20 +14,20 @@ router = APIRouter()
 
 
 @router.get(
-    "/{_id}/download",
+    "/download/{_id}",
     name="program:download",
     response_model=None,
 )
 async def download_program(
-    program_service: Annotated[
-        ProgramsFactory,
-        Depends(ProgramsFactory),
+    session: Annotated[
+        AsyncSession,
+        Depends(db_helper.session_getter),
     ],
     _id: int,
 ) -> RedirectResponse | FileResponse:
-    program = cast(
-        "Program",
-        await program_service.get_by_id(_id),
+    program = await crud_programs.get_program_by_id(
+        session,
+        _id,
     )
 
     if not program:
