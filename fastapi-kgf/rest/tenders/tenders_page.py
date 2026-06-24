@@ -39,7 +39,7 @@ async def tenders_page(
                 session
             ),
             "user": current_user,
-            "projects": await crud_project.get_all_projects(),
+            "projects": await crud_project.get_all_projects(session),
             "today": datetime.datetime.now(),
         },
     )
