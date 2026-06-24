@@ -35,7 +35,7 @@ async def _get_user_and_user_service(
 async def _build_context(
     project_id: int,
     user_and_user_service: Annotated[
-        tuple[UserRead, UserService],
+        UserRead,
         Depends(_get_user_and_user_service),
     ],
     tasks_service: Annotated[
