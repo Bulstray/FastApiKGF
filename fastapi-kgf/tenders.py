@@ -1,50 +1,35 @@
 import json
-from typing import cast, TYPE_CHECKING
 
 import aiohttp
 
 from core.models import db_helper
 from core.schemas import TenderCreate
-from services import (
-    ArchiveTendersService,
-    KeyWordService,
-    TendersService,
-    UserService,
+from storage.db import (
+    crud_arhive_tenders,
+    crud_user,
+    crud_keyword_tenders,
+    crud_tenders,
 )
 from tasks.new_tender_notification import send_new_tenders_email
-
-if TYPE_CHECKING:
-    from core.models import User, ParsingKeyword, Tender
 
 
 async def parse_tenders() -> None:
     async with db_helper.session_factory() as session:
-        keyword_service = KeyWordService(session)
-        tender_service = TendersService(session)
-        tender_archive_service = ArchiveTendersService(session)
-        user_service = UserService(session)
 
-        all_users = cast(
-            list["User"],
-            await user_service.get_all(),
+        all_users = await crud_user.get_all_users(session)
+
+        all_keywords = await crud_keyword_tenders.get_all_keywords_tender(
+            session
         )
 
-        all_keywords = cast(
-            list["ParsingKeyword"],
-            await keyword_service.get_all(),
-        )
-
-        active_tenders = cast(
-            list["Tender"],
-            await tender_service.get_all(),
-        )
+        active_tenders = await crud_tenders.get_all_active_tenders(session)
 
         tenders = []
         tender_for_send = []
 
         for keyword in all_keywords:
-            async with aiohttp.ClientSession() as session:
-                async with session.get(
+            async with aiohttp.ClientSession() as session_client:
+                async with session_client.get(
                     f"http://localhost:8002/api/v1/tenders/{keyword.keyword}/{keyword.id}",
                 ) as response:
                     api_tenders = json.loads(await response.text())
@@ -57,17 +42,23 @@ async def parse_tenders() -> None:
             )
 
         if active_tenders:
-            await tender_archive_service.add_all_from_active_tender(
+            await crud_arhive_tenders.add_all_from_active_tender(
                 active_tenders,
             )
-            await tender_service.delete_table()
+            await crud_tenders.clear_table(session)
 
         for tender in tenders:
-            archive_tender = await tender_service.get_archive_tender(
-                tender.url,
+            archive_tender = (
+                await crud_arhive_tenders.get_archive_tender_by_url(
+                    session,
+                    tender.url,
+                )
             )
             if archive_tender:
-                await tender_archive_service.delete(archive_tender)
+                await crud_arhive_tenders.delete_archive_tender(
+                    session,
+                    archive_tender,
+                )
             else:
                 tender_for_send.append(tender)
 
@@ -85,4 +76,4 @@ async def parse_tenders() -> None:
             except Exception as e:
                 print(e)
 
-            await tender_service.add_tenders_in_db(tenders)
+            await crud_tenders.add_tenders_in_db(session, tenders)
