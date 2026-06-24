@@ -7,6 +7,15 @@ from core.schemas import UserSettings as UserSchemaSchema
 from .base_crud import BaseCRUD
 
 
+async def get_settings_by_user(
+    session: AsyncSession,
+    user_id: int,
+) -> UserSettings | None:
+    stmt = select(UserSettings).where(UserSettings.user_id == user_id)
+    result = await session.execute(stmt)
+    return result.scalar_one_or_none()
+
+
 class UserSettingsStorage(BaseCRUD):
     def __init__(self, session: AsyncSession) -> None:
         super().__init__(session, UserSettings)
