@@ -12,13 +12,11 @@ from dependencies import (
     TaskMessageFactory,
 )
 from dependencies.session_auth import get_current_user
-from services import (
-    UserService,
-)
 from templating.jinja_template import templates
 
 from storage.db.crud_user import get_all_users
 from storage.db.crud_project import get_all_projects, get_project_by_id
+from storage.db import crud_tasks
 
 from core.models import db_helper
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -38,10 +36,6 @@ async def _build_context(
         UserRead,
         Depends(_get_user_and_user_service),
     ],
-    tasks_service: Annotated[
-        TaskFactory,
-        Depends(TaskFactory),
-    ],
     message_service: Annotated[
         TaskMessageFactory,
         Depends(TaskMessageFactory),
@@ -53,16 +47,16 @@ async def _build_context(
 ) -> dict[str, Any]:
     user = user_and_user_service
     count_unread_message = await message_service.get_unread_message(user.id)
-    tasks_for_users = await tasks_service.get_user_tasks_by_project_id(
-        project_id,
-        user.id,
-    )
 
     return {
         "project_id": project_id,
         "workers": await get_all_users(session),
         "user": user,
-        "tasks": tasks_for_users,
+        "tasks": await crud_tasks.get_tasks_by_project_id(
+            session,
+            project_id,
+            user.id,
+        ),
         "unread_messages": count_unread_message,
         "projects": await get_all_projects(session),
         "project": await get_project_by_id(session, project_id),
