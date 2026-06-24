@@ -1,4 +1,5 @@
 from sqlalchemy import and_, case, select, update
+from sqlalchemy.orm import selectinload
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from core.models import Task, TaskUsers
@@ -66,6 +67,9 @@ async def get_tasks_by_project_id(
 ) -> list[Task]:
     stmt = (
         select(Task)
+        .options(
+            selectinload(Task.created_by),
+        )
         .join(TaskUsers, Task.id == TaskUsers.task_id)
         .where(
             and_(
