@@ -1,9 +1,10 @@
 import uuid
+from typing import cast
 
 from aiopath import AsyncPath
-from fastapi import UploadFile
+from fastapi import Request, UploadFile
 from sqladmin import ModelView
-from wtforms import FileField
+from wtforms import FileField  # type: ignore
 
 from core.config import settings
 from core.models import Program
@@ -35,13 +36,13 @@ class ProgramAdmin(ModelView, model=Program):
 
     async def on_model_change(
         self,
-        data: dict,
+        data: dict[str, str | UploadFile],
         model: Program,
         is_created: bool,
-        request,
-    ):
+        request: Request,
+    ) -> None:
 
-        file: UploadFile = data.get("folder_path")
+        file: UploadFile = cast("UploadFile", data.get("folder_path"))
 
         file_path = (
             settings.uploads_program_dir / f"{uuid.uuid4().hex}"

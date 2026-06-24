@@ -31,7 +31,7 @@ class MessageStorage(BaseCRUD):
             select(Message)
             .where(Message.task_id == task_id)
             .order_by(Message.id)
-            .options(selectinload(Message.user_message))
+            .options(selectinload(Message.user))
         )
 
         result = await self.session.scalars(message)

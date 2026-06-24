@@ -89,7 +89,7 @@ class Task(Base):
 
 
 @event.listens_for(Task, "after_delete")
-def delete_file_after_delete(mapper, connection, target):  # type: ignore[unused-ignore]
+def delete_file_after_delete(mapper, connection, target):  # type: ignore
     folder_file = Path(target.folder_file)
     if folder_file.exists():
         folder_file.unlink()

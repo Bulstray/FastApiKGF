@@ -26,7 +26,7 @@ class UserUpdate(BaseModel):
 
 
 class UserUpdateForm(BaseModel):
-    email: EmailStr
+    email: EmailStr | None
     new_password: str | None
     confirm_password: str | None
 

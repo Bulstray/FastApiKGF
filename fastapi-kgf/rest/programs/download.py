@@ -1,30 +1,33 @@
-from typing import Annotated
+from typing import TYPE_CHECKING, Annotated, cast
 
 from aiopath import AsyncPath
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.responses import FileResponse, RedirectResponse
 
-from storage.db import crud_programs
-from sqlalchemy.ext.asyncio import AsyncSession
-from core.models import db_helper
+from dependencies.programs.programs import ProgramsFactory
+
+if TYPE_CHECKING:
+    from core.models import Program
 
 router = APIRouter()
 
 
 @router.get(
-    "/download/{_id}/",
+    "/{_id}/download",
     name="program:download",
     response_model=None,
 )
 async def download_program(
-    _id: int,
-    session: Annotated[
-        AsyncSession,
-        Depends(db_helper.session_getter),
+    program_service: Annotated[
+        ProgramsFactory,
+        Depends(ProgramsFactory),
     ],
+    _id: int,
 ) -> RedirectResponse | FileResponse:
-
-    program = await crud_programs.get_program_by_id(session, _id)
+    program = cast(
+        "Program",
+        await program_service.get_by_id(_id),
+    )
 
     if not program:
         raise HTTPException(
@@ -42,5 +45,5 @@ async def download_program(
 
     return FileResponse(
         str(file_path),
-        filename=file_path.name,
+        filename=f"{program.name}{file_path.suffix}",
     )

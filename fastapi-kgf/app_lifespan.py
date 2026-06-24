@@ -4,33 +4,44 @@ from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 
+from core import broker
 from core.config import settings
 from core.models import Base, User, db_helper
-from parsers.core import parse_tenders
 from services.users.service import UserService
-from storage.db.crud_user import get_user_by_email, create_user
+from tenders import parse_tenders
 
 
-async def scheduler():
+async def scheduler() -> None:
     while True:
-        await parse_tenders()
-        # Ждем 24 часа (86400 секунд)
-        await asyncio.sleep(86400)  # 24 * 60 * 60
+        try:
+            await parse_tenders()
+        except Exception as e:
+            print(e)
+        # Ждем 12 часов
+        await asyncio.sleep(43200)
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI) -> AsyncIterator[None]:
+
+    if not broker.is_worker_process:
+        await broker.startup()
+
     async with db_helper.engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
 
     async with db_helper.session_factory() as session:
-        check_user = await get_user_by_email(
-            session,
-            settings.superuser.email,
+
+        user_service = UserService(session)
+
+        check_user = await user_service.get_user_by_email(
+            email=settings.superuser.email,
         )
 
         if check_user is None:
-            await create_user(session, settings.superuser)
+            admin = User(**settings.superuser.model_dump())
+            await user_service.create(admin)
+
     # Создаем папки
     await settings.uploads_program_dir.mkdir(exist_ok=True, parents=True)
     await settings.uploads_file_task_dir.mkdir(exist_ok=True, parents=True)
@@ -46,3 +57,6 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
     yield None
 
     await db_helper.dispose()
+
+    if not broker.is_worker_process:
+        await broker.shutdown()

@@ -1,4 +1,4 @@
-from typing import Annotated
+from typing import TYPE_CHECKING, Annotated, cast
 
 from fastapi import APIRouter, Depends, Request, status
 from fastapi.responses import RedirectResponse
@@ -8,6 +8,9 @@ from storage.db import crud_project
 
 from core.models import db_helper
 from sqlalchemy.ext.asyncio import AsyncSession
+
+if TYPE_CHECKING:
+    from fastapi import UploadFile
 
 router = APIRouter()
 
@@ -39,7 +42,8 @@ async def create_task(
         return "/"
 
     async with request.form() as form:
-        content = await form.get("rar_file").read()
+        file = cast("UploadFile", form.get("rar_file"))
+        content = await file.read()
 
         await service.create_task(
             form=form,

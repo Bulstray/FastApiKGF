@@ -7,6 +7,7 @@ from .base import Base
 
 if TYPE_CHECKING:
     from .message_file import MessageFile
+    from .user import User
 
 
 class Message(Base):
@@ -32,6 +33,12 @@ class Message(Base):
 
     created_at: Mapped[str] = mapped_column(
         nullable=False,
+    )
+
+    user: Mapped["User"] = relationship(
+        "User",
+        back_populates="messages",
+        lazy="selectin",
     )
 
     file: Mapped["MessageFile"] = relationship(

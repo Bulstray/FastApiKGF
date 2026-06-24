@@ -61,9 +61,9 @@ class User(Base):
         back_populates="user_executors",
     )
 
-    user_message: Mapped[list["Message"]] = relationship(
+    messages: Mapped[list["Message"]] = relationship(
         "Message",
-        backref="user_message",
+        back_populates="user",
         lazy="selectin",
         cascade="all, delete-orphan",
     )
@@ -86,6 +86,6 @@ class User(Base):
 
 @event.listens_for(User, "before_insert")
 @event.listens_for(User, "before_update")
-def lowercase_email(mapper, connection, target):
+def lowercase_email(mapper, connection, target) -> None:  # type: ignore
     if target.email is not None:
         target.email = target.email.lower()

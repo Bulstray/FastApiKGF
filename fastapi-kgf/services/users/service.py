@@ -1,3 +1,5 @@
+from typing import TYPE_CHECKING, cast
+
 import bcrypt
 from fastapi import Request
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -5,6 +7,9 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from core.schemas import UserLogin, UserUpdate, UserUpdateForm
 from services.auth.session_manager import create_session
 from storage.db.crud_user import UserStorage
+
+if TYPE_CHECKING:
+    from core.models import User
 
 
 class UserService(UserStorage):
@@ -26,7 +31,7 @@ class UserService(UserStorage):
             ),
         )
 
-        user = await self.get_by_id(user_id)
+        user = cast("User", await self.get_by_id(user_id))
 
         if user_in.email == user.email:
             user_in.email = None

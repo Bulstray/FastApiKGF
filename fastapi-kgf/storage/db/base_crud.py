@@ -7,7 +7,7 @@ from core.types.model import Model
 class BaseCRUD:
     """Base CRUD class for all models"""
 
-    def __init__(self, session: AsyncSession, model: Model) -> None:
+    def __init__(self, session: AsyncSession, model: type[Model]) -> None:
         """
         Initialize the base CRUD with a database connection and an ORM object.
 
@@ -50,6 +50,10 @@ class BaseCRUD:
             id_ (int): The ID of the model to delete.
         """
         model = await self.get_by_id(id_)
+
+        if model is None:
+            return
+
         await self.delete(model)
 
     async def delete(self, model: Model) -> None:

@@ -1,13 +1,15 @@
+from typing import cast
+
 from aiopath import AsyncPath
 from sqlalchemy.ext.asyncio import AsyncSession
 from starlette.datastructures import FormData
 
-from core.models import MessageReadStatus, Task, TaskUsers
+from core.models import MessageReadStatus, Task, TaskUsers, User
 from core.schemas import TaskCreate, TaskRead
-from malling.send_email import send_email
 from services.files import FilesService
 from services.users.service import UserService
 from storage.db.crud_tasks import TaskStorage
+from tasks.new_task_for_user import send_new_task_email
 
 
 class TasksFilesService(TaskStorage):
@@ -22,13 +24,19 @@ class TasksFilesService(TaskStorage):
 
     @staticmethod
     def get_executor_ids(form: FormData) -> list[int]:
-        return [int(user_id) for user_id in form.getlist("executor_ids")]
+        return [
+            int(user_id)
+            for user_id in cast(
+                "list[str]",
+                form.getlist("executor_ids"),
+            )
+        ]
 
     async def save_file_if_exists(
         self,
         task_model: TaskCreate,
         content: bytes,
-    ) -> tuple[None, None] | tuple[str, str]:
+    ) -> tuple[None, None] | tuple[str, AsyncPath]:
         folder, filename = None, None
 
         if task_model.rar_file.filename:
@@ -77,9 +85,12 @@ class TasksFilesService(TaskStorage):
 
         # send message to email
         for user_id in users_ids:
-            user = await self.user_service.get_by_id(user_id)
+            user = cast(
+                "User",
+                await self.user_service.get_by_id(user_id),
+            )
             if user.settings and user.settings.task_notification:
-                await send_email(user.email, task_model)
+                await send_new_task_email.kiq(user.email, task_model)
 
         await self.created_task(
             task_in=task_model,

@@ -16,7 +16,7 @@ class Project(Base):
         unique=True,
     )
 
-    tasks: Mapped["Task"] = relationship(
+    tasks: Mapped[list["Task"]] = relationship(
         "Task",
         back_populates="project",
         lazy="selectin",

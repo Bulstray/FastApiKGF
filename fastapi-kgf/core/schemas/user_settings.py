@@ -12,7 +12,7 @@ class UserSettings(BaseModel):
         "message_notification",
         mode="before",
     )
-    def convert_checkbox_to_bool(cls, value):
+    def convert_checkbox_to_bool(cls, value: str | bool) -> bool:
         if type(value) is bool:
             return value
 
