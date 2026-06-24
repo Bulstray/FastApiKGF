@@ -12,7 +12,12 @@ from rest import router as main_router
 
 STATIC_PATH = BASE_DIR / "static"
 
-app = FastAPI(lifespan=lifespan)
+app = FastAPI(
+    lifespan=lifespan,
+    title="FastAPIWebKGF",
+    summary="Internal service for KGF employees",
+    version="0.0.1",
+)
 
 auth_backend = AdminAuth(
     secret_key=settings.secret_key_admin.secret_key,
