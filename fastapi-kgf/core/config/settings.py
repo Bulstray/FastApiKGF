@@ -3,7 +3,6 @@ from pathlib import Path
 from aiopath import AsyncPath
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
-from .api import ApiConfig
 from .database import DatabaseConfig
 from .platforms import PlatformConfig
 from .redis_db import RedisConfig
@@ -11,9 +10,24 @@ from .session import SessionConfig
 from .superuser import AdminSecretKey, SuperUserConfig
 from .taskiq_config import TaskiqConfig
 
+from pydantic import BaseModel
+
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
 SESSION_COOKIE_NAME = "web_app_session_id"
+
+
+class ApiV1Config(BaseModel):
+    prefix: str = "/v1"
+    programs: str = "/programs"
+    users: str = "/users"
+    login: str = "/login"
+    logout: str = "/logout"
+
+
+class ApiConfig(BaseModel):
+    prefix: str = "/api"
+    v1: ApiV1Config = ApiV1Config()
 
 
 class Settings(BaseSettings):
