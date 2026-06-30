@@ -5,7 +5,9 @@ from fastapi.responses import RedirectResponse
 
 from services.auth.session_manager import delete_session
 
-router = APIRouter(prefix="/logout")
+from core.config import settings
+
+router = APIRouter(prefix=settings.api.v1.logout)
 
 
 @router.get(
