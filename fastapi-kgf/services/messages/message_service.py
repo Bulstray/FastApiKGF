@@ -11,6 +11,25 @@ from storage.db.crud_message import MessageStorage
 from utils.file_size import get_file_size
 
 
+async def set_unread_count_message(
+    session: AsyncSession,
+    task_id: int,
+    author_id: int,
+) -> None:
+    users_in_task = await crud_task_users.get_task_users(
+        session,
+        task_id,
+    )
+
+    for user_id in users_in_task:
+        if author_id == user_id:
+            continue
+        await self.update_count_unread(
+            task_id=task_id,
+            user_id=user_id,
+        )
+
+
 class MessageManager(MessageStorage):
     """
     A manager for working with messages.
