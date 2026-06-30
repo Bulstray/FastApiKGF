@@ -18,6 +18,7 @@
           <i class="bi bi-briefcase"></i>
           <span>Тендера</span>
         </a>
+
         <div class="projects-header"><i class="bi bi-folder"></i><span>  Проекты</span></div>
 
         <!-- Список проектов -->
@@ -78,391 +79,391 @@
 {% macro style_navbar() %}
   <style>
 
-    .projects-header {
-      color: rgba(255, 255, 255, 0.6);
-      padding: 0.75rem 1.5rem;
-      font-size: 0.8rem;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      margin-top: 8px;
-    }
+      .projects-header {
+          color: rgba(255, 255, 255, 0.6);
+          padding: 0.75rem 1.5rem;
+          font-size: 0.8rem;
+          text-transform: uppercase;
+          letter-spacing: 0.5px;
+          margin-top: 8px;
+      }
 
-    .sidebar {
-      background: linear-gradient(180deg, var(--primary-color) 0%, var(--secondary-color) 100%);
-      color: white;
-      min-height: 100vh;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 280px;
-      z-index: 100;
-      box-shadow: 3px 0 15px rgba(0, 0, 0, 0.1);
-      transition: all 0.3s ease;
-      display: flex;
-      flex-direction: column;
-    }
-
-    .sidebar-brand {
-      padding: 1.5rem 1.5rem 2rem;
-      font-weight: 700;
-      font-size: 1.5rem;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    }
-
-    .sidebar-brand i {
-      color: var(--accent-color);
-      margin-right: 10px;
-    }
-
-    .sidebar-nav {
-      padding: 1rem 0;
-      flex-grow: 1;
-    }
-
-    .nav-item {
-      margin-bottom: 5px;
-    }
-
-    .nav-link {
-      color: rgba(255, 255, 255, 0.8);
-      padding: 0.75rem 1.5rem;
-      border-left: 3px solid transparent;
-      transition: all 0.2s;
-      display: block;
-      text-decoration: none;
-    }
-
-    .nav-link:hover, .nav-link.active {
-      color: white;
-      background-color: rgba(255, 255, 255, 0.1);
-      border-left-color: var(--accent-color);
-    }
-
-    .nav-link i {
-      width: 24px;
-      text-align: center;
-      margin-right: 10px;
-    }
-
-    /* Стили для авторизованного пользователя */
-    .sidebar-auth {
-      padding: 1rem;
-      border-top: 1px solid rgba(255, 255, 255, 0.1);
-      margin-top: auto;
-    }
-
-    .user-profile {
-      position: relative;
-      display: flex;
-      align-items: center;
-      padding: 0.75rem;
-      border-radius: 8px;
-      background-color: rgba(255, 255, 255, 0.05);
-      cursor: pointer;
-      transition: all 0.3s ease;
-    }
-
-    .user-profile:hover {
-      background-color: rgba(255, 255, 255, 0.1);
-    }
-
-    .user-avatar {
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      background-color: var(--accent-color);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-right: 12px;
-      font-size: 1.2rem;
-      color: white;
-    }
-
-    .user-info {
-      flex-grow: 1;
-    }
-
-    .user-name {
-      display: block;
-      font-weight: 600;
-      font-size: 0.9rem;
-    }
-
-    .user-role {
-      display: block;
-      font-size: 0.8rem;
-      color: rgba(255, 255, 255, 0.7);
-    }
-
-    /* Выпадающее меню */
-    .user-dropdown {
-      position: absolute;
-      bottom: 100%;
-      left: 0;
-      right: 0;
-      background: white;
-      border-radius: 8px;
-      box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
-      opacity: 0;
-      visibility: hidden;
-      transform: translateY(10px);
-      transition: all 0.3s ease;
-      z-index: 1000;
-      margin-bottom: 10px;
-    }
-
-    .user-profile:hover .user-dropdown {
-      opacity: 1;
-      visibility: visible;
-      transform: translateY(0);
-    }
-
-    .dropdown-item {
-      display: flex;
-      align-items: center;
-      padding: 0.75rem 1rem;
-      color: #333;
-      text-decoration: none;
-      transition: all 0.2s;
-      border-bottom: 1px solid #f0f0f0;
-    }
-
-    .dropdown-item:last-child {
-      border-bottom: none;
-    }
-
-    .dropdown-item:hover {
-      background-color: #f8f9fa;
-      color: var(--primary-color);
-    }
-
-    .dropdown-item i {
-      width: 24px;
-      margin-right: 10px;
-      color: #666;
-    }
-
-    .dropdown-item:hover i {
-      color: var(--primary-color);
-    }
-
-    .dropdown-divider {
-      height: 1px;
-      background-color: #f0f0f0;
-      margin: 0.5rem 0;
-    }
-
-    .dropdown-item.logout {
-      color: #dc3545;
-    }
-
-    .dropdown-item.logout i {
-      color: #dc3545;
-    }
-
-    .dropdown-item.logout:hover {
-      background-color: #fff5f5;
-    }
-
-    .sidebar-login {
-      padding: 1.5rem;
-      border-top: 1px solid rgba(255, 255, 255, 0.1);
-      margin-top: auto;
-    }
-
-    .login-btn {
-      display: flex;
-      align-items: center;
-      color: white;
-      background-color: rgba(255, 255, 255, 0.15);
-      padding: 0.75rem 1.5rem;
-      border-radius: 8px;
-      text-decoration: none;
-      transition: all 0.3s ease;
-      border: 1px solid rgba(255, 255, 255, 0.2);
-    }
-
-    .login-btn:hover {
-      background-color: rgba(255, 255, 255, 0.25);
-      transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-      color: white;
-      text-decoration: none;
-    }
-
-    .login-btn i {
-      font-size: 1.2rem;
-      margin-right: 10px;
-      color: var(--accent-color);
-    }
-
-    .login-btn span {
-      font-weight: 500;
-    }
-
-    @media (max-width: 992px) {
       .sidebar {
-        width: 70px;
-        overflow: hidden;
+          background: linear-gradient(180deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+          color: white;
+          min-height: 100vh;
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 280px;
+          z-index: 100;
+          box-shadow: 3px 0 15px rgba(0, 0, 0, 0.1);
+          transition: all 0.3s ease;
+          display: flex;
+          flex-direction: column;
       }
 
-      .sidebar:hover {
-        width: 280px;
+      .sidebar-brand {
+          padding: 1.5rem 1.5rem 2rem;
+          font-weight: 700;
+          font-size: 1.5rem;
+          border-bottom: 1px solid rgba(255, 255, 255, 0.1);
       }
 
-      .sidebar-brand span,
-      .nav-link span,
-      .user-name,
+      .sidebar-brand i {
+          color: var(--accent-color);
+          margin-right: 10px;
+      }
+
+      .sidebar-nav {
+          padding: 1rem 0;
+          flex-grow: 1;
+      }
+
+      .nav-item {
+          margin-bottom: 5px;
+      }
+
+      .nav-link {
+          color: rgba(255, 255, 255, 0.8);
+          padding: 0.75rem 1.5rem;
+          border-left: 3px solid transparent;
+          transition: all 0.2s;
+          display: block;
+          text-decoration: none;
+      }
+
+      .nav-link:hover, .nav-link.active {
+          color: white;
+          background-color: rgba(255, 255, 255, 0.1);
+          border-left-color: var(--accent-color);
+      }
+
+      .nav-link i {
+          width: 24px;
+          text-align: center;
+          margin-right: 10px;
+      }
+
+      /* Стили для авторизованного пользователя */
+      .sidebar-auth {
+          padding: 1rem;
+          border-top: 1px solid rgba(255, 255, 255, 0.1);
+          margin-top: auto;
+      }
+
+      .user-profile {
+          position: relative;
+          display: flex;
+          align-items: center;
+          padding: 0.75rem;
+          border-radius: 8px;
+          background-color: rgba(255, 255, 255, 0.05);
+          cursor: pointer;
+          transition: all 0.3s ease;
+      }
+
+      .user-profile:hover {
+          background-color: rgba(255, 255, 255, 0.1);
+      }
+
+      .user-avatar {
+          width: 40px;
+          height: 40px;
+          border-radius: 50%;
+          background-color: var(--accent-color);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          margin-right: 12px;
+          font-size: 1.2rem;
+          color: white;
+      }
+
+      .user-info {
+          flex-grow: 1;
+      }
+
+      .user-name {
+          display: block;
+          font-weight: 600;
+          font-size: 0.9rem;
+      }
+
       .user-role {
-        opacity: 0;
-        transition: opacity 0.3s;
-        white-space: nowrap;
+          display: block;
+          font-size: 0.8rem;
+          color: rgba(255, 255, 255, 0.7);
       }
 
-      .sidebar:hover .sidebar-brand span,
-      .sidebar:hover .nav-link span,
-      .sidebar:hover .user-name,
-      .sidebar:hover .user-role {
-        opacity: 1;
-      }
-
+      /* Выпадающее меню */
       .user-dropdown {
-        position: fixed;
-        left: 70px;
-        bottom: auto;
-        top: auto;
-        width: 200px;
+          position: absolute;
+          bottom: 100%;
+          left: 0;
+          right: 0;
+          background: white;
+          border-radius: 8px;
+          box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+          opacity: 0;
+          visibility: hidden;
+          transform: translateY(10px);
+          transition: all 0.3s ease;
+          z-index: 1000;
+          margin-bottom: 10px;
       }
 
-      .sidebar:hover .user-dropdown {
-        left: 0;
-        position: absolute;
+      .user-profile:hover .user-dropdown {
+          opacity: 1;
+          visibility: visible;
+          transform: translateY(0);
+      }
+
+      .dropdown-item {
+          display: flex;
+          align-items: center;
+          padding: 0.75rem 1rem;
+          color: #333;
+          text-decoration: none;
+          transition: all 0.2s;
+          border-bottom: 1px solid #f0f0f0;
+      }
+
+      .dropdown-item:last-child {
+          border-bottom: none;
+      }
+
+      .dropdown-item:hover {
+          background-color: #f8f9fa;
+          color: var(--primary-color);
+      }
+
+      .dropdown-item i {
+          width: 24px;
+          margin-right: 10px;
+          color: #666;
+      }
+
+      .dropdown-item:hover i {
+          color: var(--primary-color);
+      }
+
+      .dropdown-divider {
+          height: 1px;
+          background-color: #f0f0f0;
+          margin: 0.5rem 0;
+      }
+
+      .dropdown-item.logout {
+          color: #dc3545;
+      }
+
+      .dropdown-item.logout i {
+          color: #dc3545;
+      }
+
+      .dropdown-item.logout:hover {
+          background-color: #fff5f5;
+      }
+
+      .sidebar-login {
+          padding: 1.5rem;
+          border-top: 1px solid rgba(255, 255, 255, 0.1);
+          margin-top: auto;
       }
 
       .login-btn {
-        justify-content: center;
+          display: flex;
+          align-items: center;
+          color: white;
+          background-color: rgba(255, 255, 255, 0.15);
+          padding: 0.75rem 1.5rem;
+          border-radius: 8px;
+          text-decoration: none;
+          transition: all 0.3s ease;
+          border: 1px solid rgba(255, 255, 255, 0.2);
       }
 
-      .sidebar:hover .login-btn {
-        justify-content: flex-start;
+      .login-btn:hover {
+          background-color: rgba(255, 255, 255, 0.25);
+          transform: translateY(-2px);
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+          color: white;
+          text-decoration: none;
       }
-    }
 
-    /* Стили для списка проектов - только эти */
-    .projects-submenu {
-      list-style: none;
-      padding: 0;
-      margin: 0;
-    }
-
-    .project-item {
-      margin: 0;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-    }
-
-    .project-link {
-      display: flex;
-      align-items: center;
-      padding: 0.6rem 1.5rem 0.6rem 3rem;
-      color: rgba(255, 255, 255, 0.7);
-      text-decoration: none;
-      font-size: 0.85rem;
-    }
-
-    .project-link:hover {
-      color: white;
-      background-color: rgba(255, 255, 255, 0.1);
-      padding-left: 3.2rem;
-    }
-
-    .project-link i {
-      width: 24px;
-      margin-right: 8px;
-    }
-
-
-    #modal-toggle {
-      display: none;
-    }
-
-    .modal-overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.5);
-      display: none;
-      justify-content: center;
-      align-items: center;
-      z-index: 2000;
-    }
-
-    #modal-toggle:checked + .modal-overlay {
-      display: flex;
-    }
-
-    .modal-window {
-      background: white;
-      border-radius: 24px;
-      max-width: 400px;
-      width: 90%;
-      padding: 1.5rem;
-      position: relative;
-    }
-
-    .modal-close {
-      position: absolute;
-      top: 1rem;
-      right: 1rem;
-      font-size: 1.5rem;
-      cursor: pointer;
-    }
-
-    .modal-window input {
-      width: 100%;
-      padding: 0.7rem;
-      margin: 1rem 0;
-      border: 1px solid #e2e8f0;
-      border-radius: 12px;
-    }
-
-    .modal-window button {
-      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-      border: none;
-      padding: 0.6rem 1.5rem;
-      border-radius: 40px;
-      color: white;
-      cursor: pointer;
-    }
-
-    /* Стили для элемента проекта с кнопкой удаления */
-    .project-item {
-      position: relative;
-    }
-
-    .project-item-wrapper {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding-right: 0.5rem;
-    }
-
-    .project-link {
-      flex: 1;
-      padding: 0.6rem 1.5rem 0.6rem 3rem;
-
-
-      @keyframes modalFadeIn {
-        from {
-          opacity: 0;
-          transform: scale(0.95);
-        }
-        to {
-          opacity: 1;
-          transform: scale(1);
-        }
+      .login-btn i {
+          font-size: 1.2rem;
+          margin-right: 10px;
+          color: var(--accent-color);
       }
+
+      .login-btn span {
+          font-weight: 500;
+      }
+
+      @media (max-width: 992px) {
+          .sidebar {
+              width: 70px;
+              overflow: hidden;
+          }
+
+          .sidebar:hover {
+              width: 280px;
+          }
+
+          .sidebar-brand span,
+          .nav-link span,
+          .user-name,
+          .user-role {
+              opacity: 0;
+              transition: opacity 0.3s;
+              white-space: nowrap;
+          }
+
+          .sidebar:hover .sidebar-brand span,
+          .sidebar:hover .nav-link span,
+          .sidebar:hover .user-name,
+          .sidebar:hover .user-role {
+              opacity: 1;
+          }
+
+          .user-dropdown {
+              position: fixed;
+              left: 70px;
+              bottom: auto;
+              top: auto;
+              width: 200px;
+          }
+
+          .sidebar:hover .user-dropdown {
+              left: 0;
+              position: absolute;
+          }
+
+          .login-btn {
+              justify-content: center;
+          }
+
+          .sidebar:hover .login-btn {
+              justify-content: flex-start;
+          }
+      }
+
+      /* Стили для списка проектов - только эти */
+      .projects-submenu {
+          list-style: none;
+          padding: 0;
+          margin: 0;
+      }
+
+      .project-item {
+          margin: 0;
+          border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      }
+
+      .project-link {
+          display: flex;
+          align-items: center;
+          padding: 0.6rem 1.5rem 0.6rem 3rem;
+          color: rgba(255, 255, 255, 0.7);
+          text-decoration: none;
+          font-size: 0.85rem;
+      }
+
+      .project-link:hover {
+          color: white;
+          background-color: rgba(255, 255, 255, 0.1);
+          padding-left: 3.2rem;
+      }
+
+      .project-link i {
+          width: 24px;
+          margin-right: 8px;
+      }
+
+
+      #modal-toggle {
+          display: none;
+      }
+
+      .modal-overlay {
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background: rgba(0, 0, 0, 0.5);
+          display: none;
+          justify-content: center;
+          align-items: center;
+          z-index: 2000;
+      }
+
+      #modal-toggle:checked + .modal-overlay {
+          display: flex;
+      }
+
+      .modal-window {
+          background: white;
+          border-radius: 24px;
+          max-width: 400px;
+          width: 90%;
+          padding: 1.5rem;
+          position: relative;
+      }
+
+      .modal-close {
+          position: absolute;
+          top: 1rem;
+          right: 1rem;
+          font-size: 1.5rem;
+          cursor: pointer;
+      }
+
+      .modal-window input {
+          width: 100%;
+          padding: 0.7rem;
+          margin: 1rem 0;
+          border: 1px solid #e2e8f0;
+          border-radius: 12px;
+      }
+
+      .modal-window button {
+          background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+          border: none;
+          padding: 0.6rem 1.5rem;
+          border-radius: 40px;
+          color: white;
+          cursor: pointer;
+      }
+
+      /* Стили для элемента проекта с кнопкой удаления */
+      .project-item {
+          position: relative;
+      }
+
+      .project-item-wrapper {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          padding-right: 0.5rem;
+      }
+
+      .project-link {
+          flex: 1;
+          padding: 0.6rem 1.5rem 0.6rem 3rem;
+
+
+          @keyframes modalFadeIn {
+              from {
+                  opacity: 0;
+                  transform: scale(0.95);
+              }
+              to {
+                  opacity: 1;
+                  transform: scale(1);
+              }
+          }
   </style>
 {% endmacro %}
