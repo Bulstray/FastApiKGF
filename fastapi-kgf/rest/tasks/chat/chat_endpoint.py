@@ -9,47 +9,28 @@ from dependencies import TaskMessageFactory
 from storage.db import crud_message
 from utils import get_file_size
 
+from core.schemas.messages import MessageRead
+from core.models import Message
+
 router = APIRouter()
 
 
-@router.get("/chat/{task_id}", name="message:task")
+@router.get(
+    "/chat/{task_id}",
+    name="message:task",
+    response_model=list[MessageRead],
+)
 async def get_messages_by_id(
     task_id: int,
     message_service: Annotated[
         TaskMessageFactory,
         Depends(TaskMessageFactory),
     ],
-) -> list[dict[str, str | int | dict[str, str]]]:
+) -> list[Message]:
 
-    messages = await message_service.get_messages_for_task(
+    return await message_service.get_messages_for_task(
         task_id,
     )
-
-    messages_list = []
-
-    for message in messages:
-        msg = {
-            "id": message.id,
-            "text": message.text,
-            "author": message.user.full_name,
-            "created_at": message.created_at,
-            "initials": message.user.initials,
-        }
-
-        if message.file:
-
-            size = await get_file_size(AsyncPath(message.file.folder_path))
-            msg.update(
-                file={
-                    "name": message.file.name,
-                    "folder_path": message.file.folder_path,
-                    "size": size,
-                },
-            )
-
-        messages_list.append(msg)
-
-    return messages_list
 
 
 @router.post("/mark_read/{task_id}/{user_id}", name="message:mark_read")
