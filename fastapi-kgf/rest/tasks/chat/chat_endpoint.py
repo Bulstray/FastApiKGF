@@ -30,7 +30,10 @@ async def get_messages_by_id(
     )
 
 
-@router.post("/mark_read/{task_id}/{user_id}", name="message:mark_read")
+@router.post(
+    "/mark_read/{task_id}/{user_id}",
+    name="message:mark_read",
+)
 async def mark_read(
     task_id: int,
     user_id: int,
