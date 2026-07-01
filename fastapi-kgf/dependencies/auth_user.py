@@ -1,13 +1,10 @@
-from typing import Annotated
-
 import bcrypt
-from fastapi import Depends, Request
+from fastapi import Request
 
 from core.schemas import UserLogin
 from services.auth.session_manager import create_session
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from .user import UserServiceFactory
 
 from storage.db.crud_user import get_user_by_email
 
