@@ -10,6 +10,7 @@ from core.schemas import UserRead
 from dependencies import TaskMessageFactory, UserServiceFactory
 from managers.message_manager import message_manager
 from services import MessageManager, UserService
+from storage.db import crud_user
 
 router = APIRouter()
 
@@ -32,16 +33,15 @@ async def websocket_endpoint(
     websocket: WebSocket,
     task_id: int,
     user_id: int,
-    services: Annotated[
-        tuple[MessageManager, UserService],
-        Depends(_build_services),
+    message_service: Annotated[
+        TaskMessageFactory,
+        Depends(TaskMessageFactory),
     ],
     session: Annotated[
         AsyncSession,
         Depends(db_helper.session_getter),
     ],
 ) -> None:
-    message_service, user_service = services
 
     await message_manager.connect(websocket, task_id, user_id)
     try:
@@ -52,7 +52,8 @@ async def websocket_endpoint(
             message_data = await message_service.process_message(data)
 
             user = UserRead.model_validate(
-                await user_service.get_by_id(
+                await crud_user.get_user_by_id(
+                    session,
                     int(message_data["author"]),
                 ),
             )
