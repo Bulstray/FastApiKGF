@@ -7,6 +7,13 @@ from .base_crud import BaseCRUD
 from core.config.superuser import SuperUserConfig
 
 
+async def get_user_by_id(
+    session: AsyncSession,
+    user_id: int,
+) -> User | None:
+    return await session.get(User, user_id)
+
+
 async def get_all_users(
     session: AsyncSession,
 ) -> list[User]:
