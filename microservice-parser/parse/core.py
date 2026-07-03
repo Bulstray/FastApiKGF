@@ -36,7 +36,7 @@ class TenderParseCore:
                 if source_html is None:
                     continue
 
-                parse_class = parse_platform(self.keyword, self.keyword_id, source_html)
+                parse_class = parse_platform(self.keyword_id, source_html)
                 tenders = parse_class.search_tenders()
 
             except SessionNotCreatedException as error:
