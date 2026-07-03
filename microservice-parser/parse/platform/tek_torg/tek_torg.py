@@ -17,9 +17,12 @@ class TekTorgPlatform(BaseTenderPlatform):
 
     def __init__(
         self,
+        keyword: str,
         keyword_id: int,
         source_html: str,
     ) -> None:
+
+        self.keyword = keyword
 
         super().__init__(
             base_platform=f"{settings.platforms.base_platform.base_tek_torg}",

@@ -14,9 +14,12 @@ class EtpgpbParser(BaseTenderPlatform):
 
     def __init__(
         self,
+        keyword: str,
         keyword_id: int,
         source_html: str,
     ) -> None:
+
+        self.keyword = keyword
 
         super().__init__(
             base_platform=f"{settings.platforms.base_platform.base_etp_gpb}",
@@ -47,7 +50,7 @@ class EtpgpbParser(BaseTenderPlatform):
             class_="vTitle vTitle--1",
         )
 
-        if name_tag is None or self.key_word not in name_tag.text.lower():
+        if name_tag is None or self.keyword not in name_tag.text.lower():
             return None
         return f"{name_tag.text}", f"{name_tag.get('href')}"
 
