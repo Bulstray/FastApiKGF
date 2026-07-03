@@ -43,6 +43,7 @@ async def parse_tenders() -> None:
 
         if active_tenders:
             await crud_arhive_tenders.add_all_from_active_tender(
+                session,
                 active_tenders,
             )
             await crud_tenders.clear_table(session)
