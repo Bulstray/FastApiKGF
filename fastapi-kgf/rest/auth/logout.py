@@ -13,16 +13,14 @@ router = APIRouter(prefix=settings.api.v1.logout)
 @router.get(
     "/",
     name="auth:logout",
-    response_model=None,
+    status_code=status.HTTP_303_SEE_OTHER,
+    response_class=RedirectResponse,
 )
 async def logout_page(
     _: Annotated[
         None,
         Depends(delete_session),
     ],
-) -> RedirectResponse:
+) -> str:
 
-    return RedirectResponse(
-        url="/login",
-        status_code=status.HTTP_303_SEE_OTHER,
-    )
+    return "/login"

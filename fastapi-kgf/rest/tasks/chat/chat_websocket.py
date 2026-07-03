@@ -7,25 +7,11 @@ from starlette.websockets import WebSocket, WebSocketDisconnect
 
 from core.models import db_helper
 from core.schemas import UserRead
-from dependencies import TaskMessageFactory, UserServiceFactory
+from dependencies import TaskMessageFactory
 from managers.message_manager import message_manager
-from services import MessageManager, UserService
 from storage.db import crud_user
 
 router = APIRouter()
-
-
-async def _build_services(
-    message_service: Annotated[
-        TaskMessageFactory,
-        Depends(TaskMessageFactory),
-    ],
-    user_service: Annotated[
-        UserServiceFactory,
-        Depends(UserServiceFactory),
-    ],
-) -> tuple[MessageManager, UserService]:
-    return message_service, user_service
 
 
 @router.websocket("/ws/task/{task_id}/{user_id}", name="chat:task")

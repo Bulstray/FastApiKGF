@@ -14,9 +14,6 @@ STATIC_PATH = BASE_DIR / "static"
 
 app = FastAPI(
     lifespan=lifespan,
-    title="FastAPIWebKGF",
-    summary="Internal service for KGF employees",
-    version="0.0.1",
 )
 
 auth_backend = AdminAuth(
@@ -42,6 +39,6 @@ app.include_router(main_router)
 if __name__ == "__main__":
     uvicorn.run(
         "main:app",
-        host="0.0.0.0",
-        port=8000,
+        # host="0.0.0.0",
+        # port=8000,
     )

@@ -58,7 +58,10 @@ async def _build_context(
 )
 async def tasks_page(
     request: Request,
-    context: Annotated[dict[str, Any], Depends(_build_context)],
+    context: Annotated[
+        dict[str, Any],
+        Depends(_build_context),
+    ],
 ) -> HTMLResponse | RedirectResponse:
 
     if not context.get("project"):

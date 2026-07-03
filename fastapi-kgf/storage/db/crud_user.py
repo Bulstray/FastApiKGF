@@ -5,6 +5,7 @@ from core.models.user import User
 
 from .base_crud import BaseCRUD
 from core.config.superuser import SuperUserConfig
+from core.schemas import UserUpdateForm
 
 
 async def get_user_by_id(

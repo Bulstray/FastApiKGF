@@ -6,7 +6,6 @@ from fastapi.responses import HTMLResponse
 from core.config.settings import SESSION_COOKIE_NAME
 from core.schemas import UserRead, UserUpdateForm
 from dependencies.session_auth import get_current_user
-from dependencies.user import UserServiceFactory
 from storage.redis.session import save_session
 from templating.jinja_template import templates
 from storage.db.crud_project import get_all_projects
@@ -14,7 +13,7 @@ from storage.db.crud_project import get_all_projects
 from sqlalchemy.ext.asyncio import AsyncSession
 from core.models import db_helper
 
-from storage.db.crud_user import update_data_user
+from storage.db import crud_user
 
 router = APIRouter(prefix="/profile")
 
@@ -73,8 +72,9 @@ async def update_profile(
             )
 
         else:
-            await update_data_user(
-                user_update,
+            await crud_user.update_data_user(
+                session,
+                user_update.model_dump(exclude_none=True),
                 current_user.id,
             )
 

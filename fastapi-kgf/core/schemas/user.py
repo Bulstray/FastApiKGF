@@ -31,14 +31,17 @@ class UserUpdateForm(BaseModel):
     confirm_password: str | None
 
     @model_validator(mode="after")
-    def check_password_match(self) -> "UserUpdateForm":
+    def check_password_match(self) -> "UserUpdate":
         if self.new_password != self.confirm_password:
             raise ValidationError("Passwords do not match")
 
         if not self.new_password:
             self.new_password = self.confirm_password = None
 
-        return self
+        return UserUpdate(
+            email=self.email,
+            hashed_password=self.confirm_password,
+        )
 
 
 class UserBase(BaseModel):

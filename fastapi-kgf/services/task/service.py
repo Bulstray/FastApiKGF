@@ -7,9 +7,9 @@ from starlette.datastructures import FormData
 from core.models import MessageReadStatus, Task, TaskUsers, User
 from core.schemas import TaskCreate, TaskRead
 from services.files import FilesService
-from services.users.service import UserService
 from storage.db.crud_tasks import TaskStorage
 from tasks.new_task_for_user import send_new_task_email
+from storage.db import crud_user
 
 
 class TasksFilesService(TaskStorage):
@@ -20,7 +20,6 @@ class TasksFilesService(TaskStorage):
     ) -> None:
         super().__init__(session=session)
         self.file_service = FilesService(uploads_path=uploads_path)
-        self.user_service = UserService(session=session)
 
     @staticmethod
     def get_executor_ids(form: FormData) -> list[int]:
@@ -87,7 +86,7 @@ class TasksFilesService(TaskStorage):
         for user_id in users_ids:
             user = cast(
                 "User",
-                await self.user_service.get_by_id(user_id),
+                await crud_user.get_user_by_id(self.session, user_id),
             )
             if user.settings and user.settings.task_notification:
                 await send_new_task_email.kiq(user.email, task_model)

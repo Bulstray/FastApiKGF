@@ -4,12 +4,15 @@ from fastapi import APIRouter, Depends, Request, status
 from fastapi.responses import HTMLResponse, RedirectResponse
 
 from core.schemas import UserRead
-from dependencies import UserSettingsServiceFactory
 from dependencies.session_auth import get_current_user
 from templating.jinja_template import templates
-from storage.db import crud_project, crud_user_settings
+from storage.db import crud_project
 from core.models import db_helper
 from sqlalchemy.ext.asyncio import AsyncSession
+
+from storage.db import crud_user_settings
+
+from core.schemas import UserSettings
 
 router = APIRouter(prefix="/settings")
 
@@ -44,24 +47,50 @@ async def settings_page(
 @router.post(
     "/",
     name="settings:update",
-    response_class=RedirectResponse,
     status_code=status.HTTP_303_SEE_OTHER,
 )
 async def update_settings(
     request: Request,
-    user_setting_service: Annotated[
-        UserSettingsServiceFactory,
-        Depends(UserSettingsServiceFactory),
-    ],
     current_user: Annotated[
         UserRead,
         Depends(get_current_user),
     ],
-) -> str:
+    session: Annotated[
+        AsyncSession,
+        Depends(db_helper.session_getter),
+    ],
+) -> HTMLResponse:
     async with request.form() as form_data:
-        await user_setting_service.update_settings_service(
+        settings_schema = UserSettings.model_validate(form_data)
+
+        user_settings = await crud_user_settings.get_settings_by_user(
+            session,
             current_user.id,
-            form_data,
         )
 
-    return "/users/settings"
+        if user_settings:
+            await crud_user_settings.update_settings(
+                session,
+                current_user.id,
+                settings_schema,
+            )
+        else:
+            await crud_user_settings.create_user_settings(
+                session,
+                current_user.id,
+                settings_schema,
+            )
+
+    return templates.TemplateResponse(
+        "settings.html",
+        context={
+            "user": current_user,
+            "request": request,
+            "projects": await crud_project.get_all_projects(session),
+            "settings": await crud_user_settings.get_settings_by_user(
+                session,
+                current_user.id,
+            ),
+            "success": "Настройки успешно сохраненны",
+        },
+    )

@@ -6,18 +6,18 @@ from fastapi import FastAPI
 
 from core import broker
 from core.config import settings
-from core.models import Base, User, db_helper
-from services.users.service import UserService
-from tenders import parse_tenders
+from core.models import Base, db_helper
+
+from storage.db import crud_user
 
 
 async def scheduler() -> None:
     while True:
-        try:
-            await parse_tenders()
-        except Exception as e:
-            print(e)
-        # Ждем 12 часов
+        #     try:
+        #         await parse_tenders()
+        #     except Exception as e:
+        #         print(e)
+        # # Ждем 12 часов
         await asyncio.sleep(43200)
 
 
@@ -32,15 +32,16 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
 
     async with db_helper.session_factory() as session:
 
-        user_service = UserService(session)
-
-        check_user = await user_service.get_user_by_email(
+        check_user = await crud_user.get_user_by_email(
+            session=session,
             email=settings.superuser.email,
         )
 
         if check_user is None:
-            admin = User(**settings.superuser.model_dump())
-            await user_service.create(admin)
+            await crud_user.create_user(
+                session,
+                settings.superuser,
+            )
 
     # Создаем папки
     await settings.uploads_program_dir.mkdir(exist_ok=True, parents=True)
