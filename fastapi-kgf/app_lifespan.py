@@ -9,21 +9,21 @@ from core.config import settings
 from core.models import Base, db_helper
 
 from storage.db import crud_user
+from tenders import parse_tenders
 
 
 async def scheduler() -> None:
     while True:
-        #     try:
-        #         await parse_tenders()
-        #     except Exception as e:
-        #         print(e)
-        # # Ждем 12 часов
+        try:
+            await parse_tenders()
+        except Exception as e:
+            print(e)
+        # Ждем 12 часов
         await asyncio.sleep(43200)
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI) -> AsyncIterator[None]:
-
     if not broker.is_worker_process:
         await broker.startup()
 
