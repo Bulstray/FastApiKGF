@@ -6,7 +6,6 @@ from core.schemas.tenders import TenderCreate
 
 
 async def add_all_from_active_tender(
-    self,
     session: AsyncSession,
     tenders: list[Tender],
 ) -> None:
@@ -16,7 +15,7 @@ async def add_all_from_active_tender(
     ]
 
     session.add_all(archive_tenders)
-    await self.session.commit()
+    await session.commit()
 
 
 async def delete_archive_tender(
