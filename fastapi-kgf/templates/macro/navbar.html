@@ -19,59 +19,58 @@
           <span>Тендера</span>
         </a>
 
-        <div class="projects-header"><i class="bi bi-folder"></i><span>  Проекты</span></div>
-
-        <!-- Список проектов -->
-        <ul class="projects-submenu">
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+          <i class="bi bi-folder"></i><span>  Проекты</span>
+        </a>
+        <ul class="dropdown-menu dropdown-menu-end">
           {% for project in projects %}
-            <li class="project-item">
-              <div class="project-item-wrapper">
-                <a href="{{ url_for("project:page", project_id=project.id) }}" class="project-link">
-                  <i class="bi bi-folder2"></i>
-                  <span>{{ project.name }}</span>
-                </a>
-              </div>
+            <li>
+              <a class="dropdown-item" href="{{ url_for("project:page", project_id=project.id) }}">
+                <i class="bi bi-folder2"></i> {{ project.name }}
+              </a>
             </li>
           {% endfor %}
         </ul>
-    </ul>     <!-- Закрываем sidebar-nav -->
+      </li>
 
-    <!-- БЛОК АВТОРИЗАЦИИ ПЕРЕМЕЩАЕМ СЮДА (ПОСЛЕ ЗАКРЫТИЯ UL) -->
-    {% if auth %}
-      <div class="sidebar-auth">
-        <div class="user-profile">
-          <div class="user-avatar">
-            <i class="bi bi-person-check-fill"></i>
-          </div>
-          <div class="user-info">
-            <span class="user-name">{{ auth.name }} {{ auth.surname }}</span>
-            <span class="user-role">{{ auth.role }}</span>
-          </div>
-          <div class="user-dropdown">
-            <a href="{{ url_for('profile:page') }}" class="dropdown-item">
-              <i class="bi bi-person"></i>
-              <span>Мой профиль</span>
-            </a>
-            <a href="{{ url_for('settings:page') }}" class="dropdown-item">
-              <i class="bi bi-gear"></i>
-              <span>Настройки</span>
-            </a>
-            <a href="{{ url_for('auth:logout') }}"
-               class="dropdown-item logout">
-              <i class="bi bi-box-arrow-right"></i>
-              <span>Выйти</span>
-            </a>
+
+      <!-- БЛОК АВТОРИЗАЦИИ ПЕРЕМЕЩАЕМ СЮДА (ПОСЛЕ ЗАКРЫТИЯ UL) -->
+      {% if auth %}
+        <div class="sidebar-auth">
+          <div class="user-profile">
+            <div class="user-avatar">
+              <i class="bi bi-person-check-fill"></i>
+            </div>
+            <div class="user-info">
+              <span class="user-name">{{ auth.name }} {{ auth.surname }}</span>
+              <span class="user-role">{{ auth.role }}</span>
+            </div>
+            <div class="user-dropdown">
+              <a href="{{ url_for('profile:page') }}" class="dropdown-item">
+                <i class="bi bi-person"></i>
+                <span>Мой профиль</span>
+              </a>
+              <a href="{{ url_for('settings:page') }}" class="dropdown-item">
+                <i class="bi bi-gear"></i>
+                <span>Настройки</span>
+              </a>
+              <a href="{{ url_for('auth:logout') }}"
+                 class="dropdown-item logout">
+                <i class="bi bi-box-arrow-right"></i>
+                <span>Выйти</span>
+              </a>
+            </div>
           </div>
         </div>
-      </div>
-    {% else %}
-      <div class="sidebar-login">
-        <a href="{{ url_for('login:get') }}" class="login-btn">
-          <i class="bi bi-person-circle"></i>
-          <span>Войти</span>
-        </a>
-      </div>
-    {% endif %}
+      {% else %}
+        <div class="sidebar-login">
+          <a href="{{ url_for('login:get') }}" class="login-btn">
+            <i class="bi bi-person-circle"></i>
+            <span>Войти</span>
+          </a>
+        </div>
+      {% endif %}
   </nav>
 {% endmacro %}
 
