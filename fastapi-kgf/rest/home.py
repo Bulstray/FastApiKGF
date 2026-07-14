@@ -14,7 +14,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 router = APIRouter()
 
 
-@router.get("/", name="home")
+@router.get("/", name="home:page")
 async def home(
     request: Request,
     is_authenticated: Annotated[

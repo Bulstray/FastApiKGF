@@ -1,0 +1,47 @@
+{% macro footer() %}
+  <!-- Футер -->
+  <footer class="bg-dark text-white border-top border-secondary mt-5">
+    <div class="container py-4">
+      <div class="row">
+        <div class="col-md-4 mb-3">
+          <h5>
+            <i class="bi bi-building me-2"></i>KGF Service
+          </h5>
+          <p class="text-white-50 small">Хранилище программного обеспечения для сотрудников компании.</p>
+        </div>
+        <div class="col-md-4 mb-3">
+          <h6>Навигация</h6>
+          <ul class="list-unstyled">
+            <li><a href="{{ url_for('home:page') }}"
+                   class="text-white-50 text-decoration-none small">
+              <i class="bi bi-house me-1"></i>Главная</a>
+            </li>
+            <li><a href="{{ url_for('programs:page') }}"
+                   class="text-white-50 text-decoration-none small">
+              <i class="bi bi-box-seam me-1"></i>Хранилище</a>
+            </li>
+            <li><a href="#" class="text-white-50 text-decoration-none small"><i class="bi bi-question-circle me-1"></i>Помощь</a>
+            </li>
+          </ul>
+        </div>
+        <div class="col-md-4 mb-3">
+          <h6>Контакты</h6>
+          <ul class="list-unstyled text-white-50 small">
+            <li><i class="bi bi-envelope me-1"></i>support@kgf.ru</li>
+            <li><i class="bi bi-telephone me-1"></i>+7 (999) 123-45-67</li>
+            <li><i class="bi bi-geo-alt me-1"></i>г. Казань, ул. Примерная, 1</li>
+          </ul>
+        </div>
+      </div>
+      <hr class="border-secondary">
+      <div class="d-flex justify-content-between align-items-center">
+        <small class="text-white-50">&copy; 2025 KGF Service. Все права защищены.</small>
+        <div>
+          <a href="#" class="text-white-50 me-2"><i class="bi bi-telegram"></i></a>
+          <a href="#" class="text-white-50 me-2"><i class="bi bi-github"></i></a>
+          <a href="#" class="text-white-50"><i class="bi bi-envelope"></i></a>
+        </div>
+      </div>
+    </div>
+  </footer>
+{% endmacro %}

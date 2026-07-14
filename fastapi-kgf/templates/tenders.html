@@ -344,91 +344,152 @@
 {% endblock %}
 
 {% block main %}
-  {{ navbar(user, projects) }}
-  <div class="main-content">
-    <h1 class="page-title" style="margin-bottom: 30px;">
-      <i class="bi bi-file-earmark-text"></i> Актуальные тендера по последнему запросу
-    </h1>
-    <!-- Заголовок -->
-    <div class="page-header">
-      <div class="search-context">
-    <span class="search-context-label">
-      <i class="bi bi-bullseye"></i> Поиск ведётся по ключевым словам
-    </span>
-        <div class="search-tags" style="margin-bottom: 0;">
-          {% for kw in keywords %}
-            <span class="search-tag">
-          <i class="bi bi-hash"></i> {{ kw.decoding }} ({{ kw.keyword }})
-        </span>
-          {% endfor %}
+  <main>
+    <section class="py-5 text-center container-fluid px-0 position-relative"
+             style="min-height: 500px; overflow: hidden;">
+
+      <!-- Фоновое изображение -->
+      <img src="{{ url_for('static', path='/pic/111img1053.jpg') }}"
+           class="position-absolute top-0 start-0 w-100 h-100"
+           alt="Фон"
+           style="filter: brightness(0.35); object-fit: cover;">
+
+      <!-- Контент поверх изображения -->
+      <div class="position-relative d-flex align-items-center justify-content-center"
+           style="min-height: 500px; z-index: 1;">
+        <div class="row py-lg-5 mx-0">
+          <div class="col-lg-8 col-md-10 mx-auto">
+            <h1 class="fw-bold text-white mb-3">Активные тендера</h1>
+            <p class="lead text-white-50 mb-4">
+              Автоматический поиск закупок по геофизическим исследованиям скважин.
+              Сервис обновляется дважды в сутки и охватывает ключевые торговые площадки.
+              Подключите уведомления на email и первыми получайте информацию о новых тендерах.
+            </p>
+
+            <!-- Поиск -->
+            <form action="{{ url_for('tenders:page') }}" method="get" class="row justify-content-center">
+              <div class="col-md-8">
+                <div class="input-group input-group-lg shadow">
+                  <span class="input-group-text bg-white border-0">
+                    <i class="bi bi-search"></i>
+                  </span>
+                  <input type="text"
+                         name="search"
+                         value="{{ search }}"
+                         class="form-control border-0"
+                         placeholder="Поиск тендеров по последнему запросу..."
+                         aria-label="Поиск тендеров">
+                  <button class="btn btn-primary px-4" type="submit">
+                    <i class="bi bi-search me-1"></i> Найти
+                  </button>
+                  {% if search %}
+                    <a href="{{ url_for('tenders:page') }}" class="btn btn-outline-secondary px-3"
+                       title="Очистить поиск">
+                      <i class="bi bi-x-lg"></i>
+                    </a>
+                  {% endif %}
+                </div>
+                <div class="text-center mt-3">
+                  <small class="text-white-50 d-block mb-2">
+                    <i class="bi bi-globe2 me-1"></i>Поиск ведется по площадкам:
+                  </small>
+
+                  <!-- Площадки под поиском -->
+                  <div class="d-flex justify-content-center flex-wrap gap-2 mt-3">
+                    <span class="badge bg-white text-dark rounded-pill px-3 py-2 shadow-sm">
+                      <img src="{{ url_for('static', path='/pic/tenders/sber.png') }}"
+                           alt="" width="16" height="16" class="me-1">
+                      Сбербанк-АСТ
+                    </span>
+                    <span class="badge bg-white text-dark rounded-pill px-3 py-2 shadow-sm">
+                      <img src="{{ url_for('static', path='/pic/tenders/lukhoil.jpg') }}"
+                           alt="" width="16" height="16" class="me-1">
+                      Лукоил
+                    </span>
+                    <span class="badge bg-white text-dark rounded-pill px-3 py-2 shadow-sm">
+                      <img src="{{ url_for('static', path='/pic/tenders/large_Роснефть.png') }}"
+                           alt="" width="16" height="16" class="me-1">
+                      Тэк-Торг
+                    </span>
+                    <span class="badge bg-white text-dark rounded-pill px-3 py-2 shadow-sm">
+                      <img src="{{ url_for('static', path='/pic/tenders/gazprom.png') }}"
+                           alt="" width="16" height="16" class="me-1">
+                      Газпром
+                    </span>
+                  </div>
+                </div>
+
+                {% if search %}
+                  <div class="text-white-50 mt-3 small">
+                    Результаты поиска: <strong class="text-white">{{ search }}</strong>
+                  </div>
+                {% endif %}
+              </div>
+            </form>
+          </div>
         </div>
       </div>
-    </div>
-
-    <div class="sources-bar" style="margin-top: 30px;">
-      <span class="sources-label">Источники:</span>
-      <div class="sources-icons">
-    <span class="source-icon">
-      <img src="{{ url_for("static", path='/icons_tender/large_Роснефть.png') }}">
-      <span class="source-name">ТЭК-Торг</span>
-    </span>
-        <span class="source-icon">
-      <img src="{{ url_for("static", path='/icons_tender/gazprom.png') }}">
-      <span class="source-name">ЭТП ГПБ</span>
-    </span>
-        <span class="source-icon">
-      <img src="{{ url_for("static", path='/icons_tender/lukhoil.jpg') }}">
-      <span class="source-name">Лукойл</span>
-    </span>
-        <span class="source-icon">
-      <img src="{{ url_for("static", path='/icons_tender/sber.png') }}">
-      <span class="source-name">Сбер А</span>
-    </span>
-      </div>
-    </div>
-
-
-    {% for keyword in keywords %}
-      {% if keyword.tenders|length > 0 %}
-        <section class="keyword-section">
-          <div class="keyword-header">
-            <div class="keyword-title-group">
-              <span class="keyword-name">{{ keyword.decoding }}</span>
+    </section>
+    <section class="py-4 bg-light border-bottom">
+      <div class="container">
+        <div class="row justify-content-center">
+          <div class="col-lg-8 text-center">
+            <small class="text-muted d-block mb-2">
+              <i class="bi bi-gear me-1"></i>Методы закупок:
+            </small>
+            <div class="d-flex justify-content-center flex-wrap gap-2">
+              {% for kw in keywords %}
+                <span class="badge bg-white text-dark border rounded-pill px-3 py-2 shadow-sm">
+                {{ kw.decoding }}
+              </span>
+              {% endfor %}
             </div>
-            <button class="keyword-toggle"><i class="bi bi-chevron-down"></i></button>
           </div>
-          <div class="tenders-grid">
-            {% for tender in keyword.tenders %}
-              <div class="tender-card" data-status="urgent">
-                <div class="card-top-row">
-                </div>
-                <h3 class="card-title">{{ tender.name }}</h3>
-                <div class="card-company"> Организатор: {{ tender.organizer }}</div>
-                <div class="card-meta">
-                  <span class="meta-item"><i class="bi bi-calendar3"></i> {{ tender.pub_date }}</span>
-                </div>
-                <div class="card-footer">
-                  <div>
-                    <div class="card-budget">{{ tender.price }}</div>
-                    {% set days_left = (tender.end_date - today).days + 1 %}
-                    {% if days_left % 10 in (0, 5, 6, 7, 8, 9) %}
-                      <div class="card-deadline"><i class="bi bi-clock"></i>{{ days_left }} дней</div>
-                    {% elif days_left % 10 == 1 %}
-                      <div class="card-deadline"><i class="bi bi-clock"></i>{{ days_left }} день</div>
-                    {% elif days_left % 10 in (2, 3, 4) %}
-                      <div class="card-deadline"><i class="bi bi-clock"></i>{{ days_left }} дня</div>
-                    {% endif %}
-                  </div>
-                  <a href="{{ tender.url }}" class="card-link" target="_blank" rel="noopener noreferrer">Подробнее <i
-                    class="bi bi-arrow-right"></i></a>
-                </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  {% for keyword in keywords %}
+    {% if keyword.tenders|length > 0 %}
+      <section class="keyword-section">
+        <div class="keyword-header">
+          <div class="keyword-title-group">
+            <span class="keyword-name">{{ keyword.decoding }}</span>
+          </div>
+          <button class="keyword-toggle"><i class="bi bi-chevron-down"></i></button>
+        </div>
+        <div class="tenders-grid">
+          {% for tender in keyword.tenders %}
+            <div class="tender-card" data-status="urgent">
+              <div class="card-top-row">
               </div>
-            {% endfor %}
-          </div>
-        </section>
-      {% endif %}
-    {% endfor %}
-  </div>
+              <h3 class="card-title">{{ tender.name }}</h3>
+              <div class="card-company"> Организатор: {{ tender.organizer }}</div>
+              <div class="card-meta">
+                <span class="meta-item"><i class="bi bi-calendar3"></i> {{ tender.pub_date }}</span>
+              </div>
+              <div class="card-footer">
+                <div>
+                  <div class="card-budget">{{ tender.price }}</div>
+                  {% set days_left = (tender.end_date - today).days + 1 %}
+                  {% if days_left % 10 in (0, 5, 6, 7, 8, 9) %}
+                    <div class="card-deadline"><i class="bi bi-clock"></i>{{ days_left }} дней</div>
+                  {% elif days_left % 10 == 1 %}
+                    <div class="card-deadline"><i class="bi bi-clock"></i>{{ days_left }} день</div>
+                  {% elif days_left % 10 in (2, 3, 4) %}
+                    <div class="card-deadline"><i class="bi bi-clock"></i>{{ days_left }} дня</div>
+                  {% endif %}
+                </div>
+                <a href="{{ tender.url }}" class="card-link" target="_blank" rel="noopener noreferrer">Подробнее <i
+                  class="bi bi-arrow-right"></i></a>
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+      </section>
+    {% endif %}
+  {% endfor %}
 
 {% endblock %}
 

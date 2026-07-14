@@ -1,0 +1,50 @@
+{% macro navbar(user) %}
+  <nav class="navbar navbar-expand-lg bg-dark navbar-dark border-bottom border-secondary">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="{{ url_for('home:page') }}">KGF Service</a>
+      <button class="navbar-toggler"
+              type="button"
+              data-bs-toggle="collapse"
+              data-bs-target="#navbarSupportedContent"
+              aria-controls="navbarSupportedContent"
+              aria-expanded="false"
+              aria-label="Toggle navigation"
+      >
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item ms-3">
+            <a class="nav-link {% if request.path == '/' %}active{% endif %}" aria-current="page"
+               href="{{ url_for("home:page") }}">Главная</a>
+          </li>
+          <li class="nav-item ms-2">
+            <a class="nav-link {% if request.path == '/programs/' %}active{% endif %}"
+               href="{{ url_for("programs:page") }}">Хранилище</a>
+          </li>
+          <li class="nav-item ms-2">
+            <a class="nav-link {% if request.path == '/tenders/' %}active{% endif %}"
+               href="{{ url_for("tenders:page") }}">Тендера</a>
+          </li>
+        </ul>
+        <div class="dropdown text-end">
+          <a href="#" class="d-block link-light text-decoration-none dropdown-toggle" id="dropdownUser1"
+             data-bs-toggle="dropdown" aria-expanded="false">
+            <div class="bg-primary rounded-circle d-inline-flex align-items-center justify-content-center"
+                 style="width: 32px; height: 32px;">
+              <span class="text-white small fw-bold">{{user.name[0]}}{{ user.surname[0] }}</span>
+            </div>
+          </a>
+          <ul class="dropdown-menu dropdown-menu-end dropdown-menu-dark text-small" aria-labelledby="dropdownUser1">
+            <li><a class="dropdown-item" href="{{ url_for("profile:page") }}">Профиль</a></li>
+            <li><a class="dropdown-item" href="#">Настройки</a></li>
+            <li>
+              <hr class="dropdown-divider">
+            </li>
+            <li><a class="dropdown-item" href="#">Выйти</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </nav>
+{% endmacro %}
