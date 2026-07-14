@@ -5,506 +5,244 @@
 
 {% block style %}
   <style>
-      :root {
-          --sidebar-width: 280px;
-          --bg-page: #f8fafc;
-          --text-main: #0f172a;
-          --text-secondary: #475569;
-          --border-light: #e2e8f0;
-          --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
-          --card-hover-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.02);
-          --radius-lg: 20px;
-          --radius-md: 14px;
-      }
-
-      .main-content {
-          margin-left: var(--sidebar-width);
-          flex: 1;
-          padding: 2.5rem 2.5rem 4rem;
-          max-width: 1400px;
-          width: 100%;
-      }
-
-      /* Заголовок */
-      .page-header {
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          margin-bottom: 1.5rem;
-          flex-wrap: wrap;
-          gap: 1rem;
-      }
-
-      .page-title {
-          font-size: 2rem;
+      /* Минимальные дополнительные стили */
+      .search-context-label {
+          font-size: 0.78rem;
           font-weight: 700;
-          letter-spacing: -0.03em;
-          display: flex;
-          align-items: center;
-          gap: 0.75rem;
-      }
-
-      .page-title i {
-          color: var(--primary-color);
-          font-size: 1.8rem;
-          background: #dbeafe;
-          padding: 0.5rem;
-          border-radius: 14px;
-      }
-
-      /* Секция */
-      .keyword-section {
-          margin-bottom: 3.5rem;
-      }
-
-      .keyword-header {
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          margin-bottom: 1.25rem;
-      }
-
-      .keyword-title-group {
-          display: flex;
-          align-items: baseline;
-          gap: 0.8rem;
+          letter-spacing: 0.04em;
       }
 
       .keyword-name {
           font-size: 1.1rem;
           font-weight: 600;
-          color: var(--text-main);
-          letter-spacing: -0.02em;
-      }
-
-
-      .keyword-toggle {
-          background: white;
-          border: 1px solid var(--border-light);
-          color: #64748b;
-          width: 34px;
-          height: 34px;
-          border-radius: 10px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          cursor: pointer;
-          transition: all 0.2s;
-          box-shadow: var(--card-shadow);
-      }
-
-      .keyword-toggle:hover {
-          border-color: #cbd5e1;
-          color: var(--text-main);
-      }
-
-      /* Сетка */
-      .tenders-grid {
-          display: grid;
-          grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
-          gap: 1.25rem;
-      }
-
-      /* Карточка */
-      .tender-card {
-          background: white;
-          border: 1px solid var(--border-light);
-          border-radius: var(--radius-lg);
-          padding: 1.5rem;
-          display: flex;
-          flex-direction: column;
-          gap: 1.1rem;
-          transition: all 0.25s cubic-bezier(0.25, 0.1, 0.25, 1);
-          box-shadow: var(--card-shadow);
-          position: relative;
-      }
-
-      .tender-card:hover {
-          box-shadow: var(--card-hover-shadow);
-          border-color: #cbd5e1;
-          transform: translateY(-2px);
-      }
-
-      .card-top-row {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-      }
-
-
-      .card-title {
-          font-size: 1.05rem;
-          font-weight: 600;
-          line-height: 1.35;
-          color: var(--text-main);
-          letter-spacing: -0.01em;
-
-          /* Обрезать текст */
-          overflow: hidden;
-          display: -webkit-box;
-          -webkit-line-clamp: 2; /* Максимум 2 строки */
-          -webkit-box-orient: vertical;
-          word-break: break-word;
-      }
-
-      .card-company {
-          display: flex;
-          align-items: center;
-          gap: 0.6rem;
-          font-size: 0.85rem;
-          color: var(--text-secondary);
-      }
-
-      .card-meta {
-          display: flex;
-          gap: 1.2rem;
-          font-size: 0.82rem;
-          color: #64748b;
-      }
-
-      .meta-item {
-          display: flex;
-          align-items: center;
-          gap: 0.4rem;
-      }
-
-      .meta-item i {
-          font-size: 1rem;
-          color: #94a3b8;
-      }
-
-
-      .card-footer {
-          background-color: white;
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          padding-top: 0.8rem;
-          border-top: 1px solid #f1f5f9;
-          margin-top: auto;
-      }
-
-      .card-budget {
-          font-weight: 700;
-          font-size: 1.1rem;
-          letter-spacing: -0.02em;
-      }
-
-      .card-deadline {
-          font-size: 0.78rem;
-          color: #94a3b8;
-          display: flex;
-          align-items: center;
-          gap: 0.3rem;
-      }
-
-      .card-link {
-          font-size: 0.85rem;
-          font-weight: 600;
-          color: var(--primary-color);
-          text-decoration: none;
-          display: flex;
-          align-items: center;
-          gap: 0.3rem;
-          transition: gap 0.2s, color 0.2s;
-          padding: 0.4rem 0.8rem;
-          border-radius: 8px;
-      }
-
-      .card-link:hover {
-          gap: 0.55rem;
-          background: #eff6ff;
-          color: #1e40af;
-      }
-
-      /* Поисковые теги */
-      .search-tags {
-          display: flex;
-          flex-wrap: wrap;
-          gap: 0.5rem;
-          margin-bottom: 2.5rem;
-      }
-
-      .search-tag {
-          background: #eff6ff;
-          color: #1e40af;
-          padding: 0.4rem 0.9rem;
-          border-radius: 40px;
-          font-size: 0.82rem;
-          font-weight: 500;
-          display: flex;
-          align-items: center;
-          gap: 0.4rem;
-          border: 1px solid #bfdbfe;
-      }
-
-      .search-tag i {
-          font-size: 0.75rem;
-          opacity: 0.7;
-      }
-
-      /* Блок с поисковыми тегами */
-      .search-context {
-          display: flex;
-          flex-direction: column;
-          gap: 0.6rem;
-          width: 100%;
-      }
-
-      .search-context-label {
-          display: flex;
-          align-items: center;
-          gap: 0.4rem;
-          font-size: 0.78rem;
-          font-weight: 700;
-          color: #64748b;
-          letter-spacing: 0.04em;
-          text-transform: uppercase;
-          background: #f1f5f9;
-          padding: 0.4rem 0.8rem;
-          border-radius: 8px;
-          width: fit-content;
-      }
-
-      .search-context-label i {
-          font-size: 0.9rem;
-          color: var(--primary-color);
-      }
-
-      .sources-bar {
-          display: flex;
-          align-items: center;
-          gap: 1.2rem;
-          margin-bottom: 2rem;
-          flex-wrap: wrap;
       }
 
       .sources-label {
           font-size: 0.8rem;
           font-weight: 700;
-          color: #94a3b8;
           letter-spacing: 0.06em;
-          text-transform: uppercase;
       }
 
-      .sources-icons {
-          display: flex;
-          align-items: center;
-          gap: 0.75rem;
-          flex-wrap: wrap;
-      }
-
-      .source-icon {
-          display: flex;
-          align-items: center;
-          gap: 0.5rem;
-          background: white;
-          border: 1px solid var(--border-light);
-          border-radius: 12px;
-          padding: 0.6rem 1rem;
-          box-shadow: var(--card-shadow);
-          transition: all 0.2s;
-          cursor: default;
-      }
-
-      .source-icon i {
-          font-size: 1.5rem;
-          color: var(--primary-color);
-      }
-
-      .source-icon img {
-          width: 28px;
-          height: 28px;
-          object-fit: contain;
-          border-radius: 6px;
-      }
-
-      .source-icon:hover {
-          border-color: #93c5fd;
-          box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-          transform: translateY(-1px);
-      }
-
-      .source-name {
+      .card-title {
+          font-size: 1.05rem;
           font-weight: 600;
-          font-size: 0.9rem;
-          color: #1e293b;
+          line-height: 1.4;
       }
 
-      @media (max-width: 768px) {
-          .tenders-grid {
-              grid-template-columns: 1fr;
-          }
+      .card-budget {
+          font-weight: 700;
+          font-size: 1.1rem;
+      }
 
-          .main-content {
-              padding: 1.5rem 1rem;
-          }
+      .tender-card {
+          transition: all 0.2s ease;
+      }
+
+      .tender-card:hover {
+          transform: translateY(-2px);
       }
   </style>
 {% endblock %}
 
 {% block main %}
   {{ navbar(user) }}
+
   <main>
-    <section class="py-5 text-center container-fluid px-0 position-relative"
-             style="min-height: 500px; overflow: hidden;">
-
-      <!-- Фоновое изображение -->
-      <img src="{{ url_for('static', path='/pic/111img1053.jpg') }}"
-           class="position-absolute top-0 start-0 w-100 h-100"
-           alt="Фон"
-           style="filter: brightness(0.35); object-fit: cover;">
-
-      <!-- Контент поверх изображения -->
-      <div class="position-relative d-flex align-items-center justify-content-center"
-           style="min-height: 500px; z-index: 1;">
-        <div class="row py-lg-5 mx-0">
-          <div class="col-lg-8 col-md-10 mx-auto">
-            <h1 class="fw-bold text-white mb-3">Активные тендера</h1>
-            <p class="lead text-white-50 mb-4">
-              Автоматический поиск закупок по геофизическим исследованиям скважин.
-              Сервис обновляется дважды в сутки и охватывает ключевые торговые площадки.
-              Подключите уведомления на email и первыми получайте информацию о новых тендерах.
+    <!-- Компактная верхняя секция с описанием и поиском -->
+    <section class="bg-light border-bottom py-4">
+      <div class="container">
+        <div class="row align-items-center g-3">
+          <!-- Левая часть с описанием -->
+          <div class="col-lg-5">
+            <h4 class="fw-bold text-dark mb-2">
+              Активные тендера
+            </h4>
+            <p class="text-muted small mb-0">
+              Автоматический поиск закупок по геофизическим исследованиям скважин. Обновление дважды в сутки.
             </p>
 
-            <!-- Поиск -->
-            <form action="{{ url_for('tenders:page') }}" method="get" class="row justify-content-center">
-              <div class="col-md-8">
-                <div class="input-group input-group-lg shadow">
-                  <span class="input-group-text bg-white border-0">
-                    <i class="bi bi-search"></i>
-                  </span>
-                  <input type="text"
-                         name="search"
-                         value="{{ search }}"
-                         class="form-control border-0"
-                         placeholder="Поиск тендеров по последнему запросу..."
-                         aria-label="Поиск тендеров">
-                  <button class="btn btn-primary px-4" type="submit">
-                    <i class="bi bi-search me-1"></i> Найти
-                  </button>
-                  {% if search %}
-                    <a href="{{ url_for('tenders:page') }}" class="btn btn-outline-secondary px-3"
-                       title="Очистить поиск">
-                      <i class="bi bi-x-lg"></i>
-                    </a>
-                  {% endif %}
-                </div>
-                <div class="text-center mt-3">
-                  <small class="text-white-50 d-block mb-2">
-                    <i class="bi bi-globe2 me-1"></i>Поиск ведется по площадкам:
-                  </small>
-
-                  <!-- Площадки под поиском -->
-                  <div class="d-flex justify-content-center flex-wrap gap-2 mt-3">
-                    <span class="badge bg-white text-dark rounded-pill px-3 py-2 shadow-sm">
-                      <img src="{{ url_for('static', path='/pic/tenders/sber.png') }}"
-                           alt="" width="16" height="16" class="me-1">
-                      Сбербанк-АСТ
-                    </span>
-                    <span class="badge bg-white text-dark rounded-pill px-3 py-2 shadow-sm">
-                      <img src="{{ url_for('static', path='/pic/tenders/lukhoil.jpg') }}"
-                           alt="" width="16" height="16" class="me-1">
-                      Лукоил
-                    </span>
-                    <span class="badge bg-white text-dark rounded-pill px-3 py-2 shadow-sm">
-                      <img src="{{ url_for('static', path='/pic/tenders/large_Роснефть.png') }}"
-                           alt="" width="16" height="16" class="me-1">
-                      Тэк-Торг
-                    </span>
-                    <span class="badge bg-white text-dark rounded-pill px-3 py-2 shadow-sm">
-                      <img src="{{ url_for('static', path='/pic/tenders/gazprom.png') }}"
-                           alt="" width="16" height="16" class="me-1">
-                      Газпром
-                    </span>
-                  </div>
-                </div>
-
-                {% if search %}
-                  <div class="text-white-50 mt-3 small">
-                    Результаты поиска: <strong class="text-white">{{ search }}</strong>
-                  </div>
-                {% endif %}
-              </div>
-            </form>
-          </div>
-        </div>
-      </div>
-    </section>
-    <section class="py-4 bg-light border-bottom">
-      <div class="container">
-        <div class="row justify-content-center">
-          <div class="col-lg-8 text-center">
-            <small class="text-muted d-block mb-2">
-              <i class="bi bi-gear me-1"></i>Методы закупок:
-            </small>
-            <div class="d-flex justify-content-center flex-wrap gap-2">
+            <!-- Методы закупок -->
+            <div class="mt-2 d-flex flex-wrap gap-1">
+              <small class="text-muted me-2 align-self-center">Методы:</small>
               {% for kw in keywords %}
-                <span class="badge bg-white text-dark border rounded-pill px-3 py-2 shadow-sm">
-                {{ kw.decoding }}
-              </span>
+                <span class="badge bg-white text-dark border rounded-pill px-2 py-1 small">
+                  {{ kw.decoding }}
+                </span>
               {% endfor %}
             </div>
           </div>
+
+          <!-- Правая часть с поиском и площадками -->
+          <div class="col-lg-7">
+            <!-- Форма поиска -->
+            <form action="{{ url_for('tenders:page') }}" method="get" class="mb-2">
+              <div class="input-group shadow-sm">
+                <span class="input-group-text bg-white border-0">
+                  <i class="bi bi-search"></i>
+                </span>
+                <input type="text"
+                       name="search"
+                       value="{{ search }}"
+                       class="form-control border-0"
+                       placeholder="Поиск тендеров..."
+                       aria-label="Поиск тендеров">
+                <button class="btn btn-primary px-3" type="submit">
+                  <i class="bi bi-search me-1"></i> Найти
+                </button>
+                {% if search %}
+                  <a href="{{ url_for('tenders:page') }}" class="btn btn-outline-secondary px-2"
+                     title="Очистить поиск">
+                    <i class="bi bi-x-lg"></i>
+                  </a>
+                {% endif %}
+              </div>
+            </form>
+
+            <!-- Площадки -->
+            <div class="d-flex flex-wrap align-items-center gap-2">
+              <small class="text-muted">
+                <i class="bi bi-globe2 me-1"></i>Площадки:
+              </small>
+              <span class="badge bg-white text-dark border rounded-pill px-2 py-1 small">
+                <img src="{{ url_for('static', path='/pic/tenders/sber.png') }}"
+                     alt="" width="14" height="14" class="me-1">
+                Сбербанк-АСТ
+              </span>
+              <span class="badge bg-white text-dark border rounded-pill px-2 py-1 small">
+                <img src="{{ url_for('static', path='/pic/tenders/lukhoil.jpg') }}"
+                     alt="" width="14" height="14" class="me-1">
+                Лукоил
+              </span>
+              <span class="badge bg-white text-dark border rounded-pill px-2 py-1 small">
+                <img src="{{ url_for('static', path='/pic/tenders/large_Роснефть.png') }}"
+                     alt="" width="14" height="14" class="me-1">
+                Тэк-Торг
+              </span>
+              <span class="badge bg-white text-dark border rounded-pill px-2 py-1 small">
+                <img src="{{ url_for('static', path='/pic/tenders/gazprom.png') }}"
+                     alt="" width="14" height="14" class="me-1">
+                Газпром
+              </span>
+            </div>
+
+            {% if search %}
+              <div class="mt-2">
+                <small class="text-primary">
+                  <i class="bi bi-search me-1"></i>
+                  Результаты поиска: <strong>{{ search }}</strong>
+                </small>
+              </div>
+            {% endif %}
+          </div>
         </div>
       </div>
     </section>
-  </main>
 
-<div class="container mt-5">
-  {% for keyword in keywords %}
-    {% if keyword.tenders|length > 0 %}
-      <section class="keyword-section">
-        <div class="keyword-header">
-          <div class="keyword-title-group">
-            <span class="keyword-name">{{ keyword.decoding }}</span>
-          </div>
-          <button class="keyword-toggle"><i class="bi bi-chevron-down"></i></button>
-        </div>
-        <div class="tenders-grid">
-          {% for tender in keyword.tenders %}
-            <div class="tender-card" data-status="urgent">
-              <div class="card-top-row">
-              </div>
-              <h3 class="card-title">{{ tender.name }}</h3>
-              <div class="card-company"> Организатор: {{ tender.organizer }}</div>
-              <div class="card-meta">
-                <span class="meta-item"><i class="bi bi-calendar3"></i> {{ tender.pub_date }}</span>
-              </div>
-              <div class="card-footer">
-                <div>
-                  <div class="card-budget">{{ tender.price }}</div>
-                  {% set days_left = (tender.end_date - today).days + 1 %}
-                  {% if days_left % 10 in (0, 5, 6, 7, 8, 9) %}
-                    <div class="card-deadline"><i class="bi bi-clock"></i>{{ days_left }} дней</div>
-                  {% elif days_left % 10 == 1 %}
-                    <div class="card-deadline"><i class="bi bi-clock"></i>{{ days_left }} день</div>
-                  {% elif days_left % 10 in (2, 3, 4) %}
-                    <div class="card-deadline"><i class="bi bi-clock"></i>{{ days_left }} дня</div>
-                  {% endif %}
-                </div>
-                <a href="{{ tender.url }}" class="card-link" target="_blank" rel="noopener noreferrer">Подробнее <i
-                  class="bi bi-arrow-right"></i></a>
-              </div>
+    <!-- Основной контент с тендерами - виден сразу -->
+    <div class="container py-4">
+      {% for keyword in keywords %}
+        {% if keyword.tenders|length > 0 %}
+          <section class="mb-4">
+            <!-- Заголовок секции с кнопкой сворачивания -->
+            <div class="d-flex justify-content-between align-items-center mb-3 pb-2 border-bottom">
+              <h5 class="fw-semibold mb-0 text-dark">
+                <i class="bi bi-collection text-primary me-2"></i>
+                {{ keyword.decoding }}
+                <span class="badge bg-primary ms-2">{{ keyword.tenders|length }}</span>
+              </h5>
+              <button class="btn btn-light btn-sm rounded-3 keyword-toggle" type="button">
+                <i class="bi bi-chevron-down"></i>
+              </button>
             </div>
-          {% endfor %}
+
+            <!-- Сетка тендеров -->
+            <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-3">
+              {% for tender in keyword.tenders %}
+                <div class="col">
+                  <div class="card h-100 shadow-sm border tender-card">
+                    <div class="card-body d-flex flex-column p-3">
+                      <!-- Заголовок тендера -->
+                      <h6 class="card-title mb-2 text-dark">{{ tender.name }}</h6>
+
+                      <!-- Организатор -->
+                      <div class="d-flex align-items-center gap-2 mb-2 text-muted small">
+                        <i class="bi bi-building"></i>
+                        <span>{{ tender.organizer }}</span>
+                      </div>
+
+                      <!-- Дата публикации -->
+                      <div class="mb-3">
+                        <small class="text-muted">
+                          <i class="bi bi-calendar3 me-1"></i>
+                          {{ tender.pub_date }}
+                        </small>
+                      </div>
+
+                      <!-- Футер карточки -->
+                      <div class="mt-auto pt-3 border-top">
+                        <div class="d-flex justify-content-between align-items-center">
+                          <div>
+                            <div class="card-budget text-primary">{{ tender.price }}</div>
+                            {% set days_left = (tender.end_date - today).days + 1 %}
+                            <small class="text-muted">
+                              <i class="bi bi-clock me-1"></i>
+                              {{ days_left }}
+                              {% if days_left % 10 in (0, 5, 6, 7, 8, 9) %}
+                                дней
+                              {% elif days_left % 10 == 1 %}
+                                день
+                              {% elif days_left % 10 in (2, 3, 4) %}
+                                дня
+                              {% endif %}
+                            </small>
+                          </div>
+                          <a href="{{ tender.url }}"
+                             class="btn btn-outline-primary btn-sm rounded-pill px-3"
+                             target="_blank"
+                             rel="noopener noreferrer">
+                            <i class="bi bi-box-arrow-up-right me-1"></i>Подробнее
+                          </a>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              {% endfor %}
+            </div>
+          </section>
+        {% endif %}
+      {% endfor %}
+
+      {% if not keywords or keywords|selectattr('tenders')|list|length == 0 %}
+        <!-- Сообщение если нет тендеров -->
+        <div class="text-center py-5">
+          <i class="bi bi-inbox display-1 text-muted"></i>
+          <h4 class="text-muted mt-3">Тендеры не найдены</h4>
+          <p class="text-muted">Попробуйте изменить параметры поиска</p>
         </div>
-      </section>
-    {% endif %}
-  {% endfor %}
+      {% endif %}
+    </div>
+  </main>
 {% endblock %}
-</div>
 
 {% block script %}
   <script>
       document.querySelectorAll('.keyword-toggle').forEach(btn => {
           btn.addEventListener('click', function () {
-              const grid = this.closest('.keyword-section').querySelector('.tenders-grid');
+              const section = this.closest('section');
+              const grid = section.querySelector('.row');
               const isHidden = grid.style.display === 'none';
               grid.style.display = isHidden ? '' : 'none';
-              this.style.transform = isHidden ? 'rotate(0deg)' : 'rotate(180deg)';
+
+              const icon = this.querySelector('i');
+              if (isHidden) {
+                  icon.classList.remove('bi-chevron-up');
+                  icon.classList.add('bi-chevron-down');
+              } else {
+                  icon.classList.remove('bi-chevron-down');
+                  icon.classList.add('bi-chevron-up');
+              }
           });
       });
   </script>
-
 {% endblock %}
