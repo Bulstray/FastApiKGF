@@ -451,46 +451,49 @@
     </section>
   </main>
 
-  {% for keyword in keywords %}
-    {% if keyword.tenders|length > 0 %}
-      <section class="keyword-section">
-        <div class="keyword-header">
-          <div class="keyword-title-group">
-            <span class="keyword-name">{{ keyword.decoding }}</span>
-          </div>
-          <button class="keyword-toggle"><i class="bi bi-chevron-down"></i></button>
-        </div>
-        <div class="tenders-grid">
-          {% for tender in keyword.tenders %}
-            <div class="tender-card" data-status="urgent">
-              <div class="card-top-row">
+  <section class="py-5 bg-light">
+
+      {% for keyword in keywords %}
+        {% if keyword.tenders|length > 0 %}
+          <section class="keyword-section">
+            <div class="keyword-header">
+              <div class="keyword-title-group">
+                <span class="keyword-name">{{ keyword.decoding }}</span>
               </div>
-              <h3 class="card-title">{{ tender.name }}</h3>
-              <div class="card-company"> Организатор: {{ tender.organizer }}</div>
-              <div class="card-meta">
-                <span class="meta-item"><i class="bi bi-calendar3"></i> {{ tender.pub_date }}</span>
-              </div>
-              <div class="card-footer">
-                <div>
-                  <div class="card-budget">{{ tender.price }}</div>
-                  {% set days_left = (tender.end_date - today).days + 1 %}
-                  {% if days_left % 10 in (0, 5, 6, 7, 8, 9) %}
-                    <div class="card-deadline"><i class="bi bi-clock"></i>{{ days_left }} дней</div>
-                  {% elif days_left % 10 == 1 %}
-                    <div class="card-deadline"><i class="bi bi-clock"></i>{{ days_left }} день</div>
-                  {% elif days_left % 10 in (2, 3, 4) %}
-                    <div class="card-deadline"><i class="bi bi-clock"></i>{{ days_left }} дня</div>
-                  {% endif %}
-                </div>
-                <a href="{{ tender.url }}" class="card-link" target="_blank" rel="noopener noreferrer">Подробнее <i
-                  class="bi bi-arrow-right"></i></a>
-              </div>
+              <button class="keyword-toggle"><i class="bi bi-chevron-down"></i></button>
             </div>
-          {% endfor %}
-        </div>
-      </section>
-    {% endif %}
-  {% endfor %}
+            <div class="tenders-grid">
+              {% for tender in keyword.tenders %}
+                <div class="tender-card" data-status="urgent">
+                  <div class="card-top-row">
+                  </div>
+                  <h3 class="card-title">{{ tender.name }}</h3>
+                  <div class="card-company"> Организатор: {{ tender.organizer }}</div>
+                  <div class="card-meta">
+                    <span class="meta-item"><i class="bi bi-calendar3"></i> {{ tender.pub_date }}</span>
+                  </div>
+                  <div class="card-footer">
+                    <div>
+                      <div class="card-budget">{{ tender.price }}</div>
+                      {% set days_left = (tender.end_date - today).days + 1 %}
+                      {% if days_left % 10 in (0, 5, 6, 7, 8, 9) %}
+                        <div class="card-deadline"><i class="bi bi-clock"></i>{{ days_left }} дней</div>
+                      {% elif days_left % 10 == 1 %}
+                        <div class="card-deadline"><i class="bi bi-clock"></i>{{ days_left }} день</div>
+                      {% elif days_left % 10 in (2, 3, 4) %}
+                        <div class="card-deadline"><i class="bi bi-clock"></i>{{ days_left }} дня</div>
+                      {% endif %}
+                    </div>
+                    <a href="{{ tender.url }}" class="card-link" target="_blank" rel="noopener noreferrer">Подробнее <i
+                      class="bi bi-arrow-right"></i></a>
+                  </div>
+                </div>
+              {% endfor %}
+            </div>
+          </section>
+        {% endif %}
+      {% endfor %}
+  </section>
 
 {% endblock %}
 
