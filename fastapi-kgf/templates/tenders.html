@@ -1,9 +1,9 @@
-{% from "macro/navbar.html" import navbar, style_navbar with context %}
+{% from "macro/new_navbar.html" import navbar with context %}
+{% from "macro/footer.html" import footer with context %}
 
 {% extends "base.html" %}
 
 {% block style %}
-  {{ style_navbar() }}
   <style>
       :root {
           --sidebar-width: 280px;
@@ -344,6 +344,7 @@
 {% endblock %}
 
 {% block main %}
+  {{ navbar(user) }}
   <main>
     <section class="py-5 text-center container-fluid px-0 position-relative"
              style="min-height: 500px; overflow: hidden;">
