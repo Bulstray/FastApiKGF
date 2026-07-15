@@ -1,318 +1,162 @@
-{% from "macro/navbar.html" import navbar with context %}
-{% from "macro/navbar.html" import style_navbar with context %}
-
-{% extends "base.html" %}
-
-
-{% block style %}
-  {{ style_navbar() }}
-  <style>
-
-    body {
-      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-      background-color: #f5f7fb;
-      color: #333;
-      overflow-x: hidden;
-    }
-
-    /* Основное содержимое */
-    .main-content {
-      margin-left: 280px;
-      padding: 2rem;
-      min-height: 100vh;
-    }
-
-    @media (max-width: 992px) {
-
-      .main-content {
-        margin-left: 70px;
-      }
-
-      .main-content {
-        margin-left: 280px;
-      }
-    }
-
-    /* Стили для заголовка и поиска */
-    .page-header {
-      margin-bottom: 2rem;
-    }
-
-    .search-container {
-      background-color: white;
-      border-radius: 10px;
-      padding: 1.5rem;
-      box-shadow: var(--card-shadow);
-      margin-bottom: 2rem;
-    }
-
-    .search-box {
-      position: relative;
-    }
-
-    .search-box input {
-      padding-left: 50px;
-      border-radius: 50px;
-      height: 50px;
-      border: 1px solid #e0e0e0;
-      transition: all 0.3s;
-    }
-
-    .search-box input:focus {
-      border-color: var(--primary-color);
-      box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
-    }
-
-    .search-box i {
-      position: absolute;
-      left: 20px;
-      top: 50%;
-      transform: translateY(-50%);
-      color: #aaa;
-      z-index: 10;
-    }
-
-    /* Стили для карточек программ */
-    .program-card {
-      border: none;
-      border-radius: 12px;
-      overflow: hidden;
-      transition: all 0.3s ease;
-      height: 100%;
-      box-shadow: var(--card-shadow);
-      background-color: white;
-    }
-
-    .program-card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
-    }
-
-    .program-icon {
-      width: 60px;
-      height: 60px;
-      border-radius: 12px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-bottom: 15px;
-      color: white;
-      font-size: 1.5rem;
-    }
-
-    .program-category {
-      font-size: 0.85rem;
-      color: var(--primary-color);
-      font-weight: 600;
-      margin-bottom: 5px;
-    }
-
-    .program-title {
-      font-weight: 700;
-      margin-bottom: 10px;
-      color: var(--dark-bg);
-    }
-
-    .program-description {
-      color: #666;
-      font-size: 0.95rem;
-      line-height: 1.5;
-      margin-bottom: 1.5rem;
-    }
-
-    .program-meta {
-      display: flex;
-      justify-content: space-between;
-      font-size: 0.85rem;
-      color: #777;
-      margin-top: auto;
-    }
-
-    .download-btn {
-      background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
-      border: none;
-      color: white;
-      padding: 8px 20px;
-      border-radius: 50px;
-      font-weight: 600;
-      transition: all 0.3s;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .download-btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 5px 15px rgba(67, 97, 238, 0.3);
-      color: white;
-    }
-
-    .download-btn i {
-      margin-right: 8px;
-    }
-
-
-    /* Анимации */
-    @keyframes fadeIn {
-      from {
-        opacity: 0;
-        transform: translateY(20px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    .fade-in {
-      animation: fadeIn 0.5s ease forwards;
-    }
-
-    /* Кастомный скроллбар */
-    ::-webkit-scrollbar {
-      width: 8px;
-    }
-
-    ::-webkit-scrollbar-track {
-      background: #f1f1f1;
-    }
-
-    ::-webkit-scrollbar-thumb {
-      background: var(--primary-color);
-      border-radius: 4px;
-    }
-
-    ::-webkit-scrollbar-thumb:hover {
-      background: var(--secondary-color);
-    }
-  </style>
-{% endblock %}
+{% from "macro/new_navbar.html" import navbar with context %}
+{% from "macro/footer.html" import footer with context %}
+{% extends 'base.html' %}
 
 {% block main %}
-  <!-- Основное содержимое -->
-  <main class="main-content">
-    {{ navbar(is_authenticated, projects) }}
-    <header class="page-header">
-      <h1 class="display-5 fw-bold">Каталог программ</h1>
-      <p class="lead">Скачивайте программы разработанные в KGF</p>
-    </header>
+  {{ navbar() }}
 
-    <!-- Поисковая панель -->
-    <div class="search-container">
-      <div class="row">
-        <div class="col-md-12">
-          <div class="search-box">
-            <i class="bi bi-search"></i>
-            <input type="text" id="searchInput" class="form-control"
-                   placeholder="Поиск по названию или описанию программы...">
+  <main>
+    <section class="py-5 text-center container-fluid px-0 position-relative"
+             style="min-height: 500px; overflow: hidden;">
+
+      <!-- Фоновое изображение -->
+      <img src="{{ url_for('static', path='/pic/1901_n2196983_big.jpg') }}"
+           class="position-absolute top-0 start-0 w-100 h-100"
+           alt="Фон"
+           style="filter: brightness(0.4); object-fit: cover;">
+
+      <!-- Контент поверх изображения -->
+      <div class="position-relative d-flex align-items-center justify-content-center"
+           style="min-height: 500px; z-index: 1;">
+        <div class="row py-lg-5 mx-0">
+          <div class="col-lg-8 col-md-10 mx-auto">
+            <h1 class="fw-light text-white">Библиотека программ</h1>
+            <p class="lead text-white-50 mb-4">
+              Корпоративное хранилище проверенного ПО для сотрудников КазаньГеофизики.
+              Все программы проходят внутреннее тестирование, регулярно обновляются и всегда доступны для скачивания.
+              Экономьте время на поиске — нужный инструмент уже здесь.
+            </p>
+
+            <!-- Поиск -->
+            <form action="{{ url_for('programs:page') }}" method="get" class="row justify-content-center">
+              <div class="col-md-8">
+                <div class="input-group input-group-lg">
+            <span class="input-group-text bg-white border-0">
+                <i class="bi bi-search"></i>
+            </span>
+                  <input type="text"
+                         name="search"
+                         value="{{ search }}"
+                         class="form-control border-0"
+                         placeholder="Поиск программ..."
+                         aria-label="Поиск программ">
+                  <button class="btn btn-primary px-4" type="submit">
+                    <i class="bi bi-search me-1"></i> Найти
+                  </button>
+                  {% if search %}
+                    <a href="{{ url_for('programs:page') }}" class="btn btn-outline-secondary px-3"
+                       title="Очистить поиск">
+                      <i class="bi bi-x-lg"></i>
+                    </a>
+                  {% endif %}
+                </div>
+                {% if search %}
+                  <div class="text-muted mt-2 small">
+                    Результаты поиска по запросу: <strong>{{ search }}</strong>
+                  </div>
+                {% endif %}
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="album py-5">
+      <div class="container">
+        <div class="row row-cols-1 row-cols-md-2 g-3">
+
+          {% if programs %}
+
+            {% for program in programs %}
+
+              <!-- Карточка 1 -->
+              <div class="col-md-3 col-md-6">
+                <div class="card h-100 border-0 shadow rounded-4 overflow-hidden" style="border-radius: 25px;">
+                  <div class="card-body p-3">
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                      <div class="d-flex align-items-center gap-2">
+                        <div class="rounded-3 bg-opacity-10 p-2">
+                          <i class="bi bi-file-pdf fs-2"></i>
+                        </div>
+                        <h4 class="fw-bold mb-0">{{ program.name }}</h4>
+                      </div>
+                      <span class="badge bg-light text-dark rounded-pill px-3 py-2">
+          <i class="bi bi-hdd me-1"></i>{{ program.size_file }}
+        </span>
+                    </div>
+
+                    <p class="text-secondary mb-2">{{ program.description }}</p>
+
+                    <div class="d-flex align-items-center mb-3">
+                      <div class="rounded-circle bg-opacity-10 p-2 me-2">
+                        <i class="bi bi-person-fill"></i>
+                      </div>
+                      <span>{{ program.author }}</span>
+                    </div>
+
+                    <div class="d-flex gap-2">
+                      <a href="{{ url_for('download:program', name=program.name, file_path=program.path_program) }}"
+                         class="btn btn-dark rounded-pill px-4 flex-grow-1">
+                        <i class="bi bi-download me-2"></i>Скачать
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            {% endfor %}
+          {% else %}
+            {% if search %}
+              <!-- Сообщение, когда ничего не найдено -->
+              <div class="col-12">
+                <div class="text-center">
+                  <i class="bi bi-search display-1 text-muted"></i>
+                  <h3 class="text-muted">Ничего не найдено</h3>
+                  <p class="text-secondary mb-4">
+                    По запросу <strong>"{{ search }}"</strong> ничего не найдено.<br>
+                    Попробуйте изменить поисковый запрос.
+                  </p>
+                  <a href="{{ url_for('programs:page') }}" class="btn btn-outline-primary rounded-pill px-4">
+                    <i class="bi bi-arrow-left me-2"></i>Показать все программы
+                  </a>
+                </div>
+              </div>
+            {% else %}
+              <!-- Сообщение, когда нет программ вообще -->
+              <div class="col-12">
+                <div class="text-center">
+                  <i class="bi bi-folder2-open display-1 text-muted"></i>
+                  <h3 class="text-muted">Программ пока нет</h3>
+                  <p class="text-secondary mb-4">
+                    Программы скоро появятся.<br>
+                    Загляните позже!
+                  </p>
+                </div>
+              </div>
+            {% endif %}
+          {% endif %}
+
+        </div>
+      </div>
+    </div>
+    {{ footer() }}
+  </main>
+  {% if error %}
+    <div class="modal show" tabindex="-1" style="display: block;">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Ошибка</h5>
+            <a href="{{ url_for('programs:page') }}" class="btn-close" aria-label="Close"></a>
+          </div>
+          <div class="modal-body">
+            <p>{{ error }}</p>
+          </div>
+          <div class="modal-footer">
+            <a href="{{ url_for('programs:page') }}" class="btn btn-primary">Закрыть</a>
           </div>
         </div>
       </div>
     </div>
-
-
-    <div class="row" id="programsGrid">
-      {% if programs %}
-        {% for program in programs %}
-          <div class="col-lg-4 col-md-6 mb-4 fade-in">
-            <div class="program-card p-4">
-              <div class="program-icon" style="background-color: #4a154b">
-                <i class="bi bi-braces"></i>
-              </div>
-              <div class="program-category">Утилиты</div>
-              <h3 class="program-title">{{ program.name }}</h3>
-              <p class="program-description">{{ program.description }}</p>
-              <div class="program-meta">
-                <div>
-                                <span><i class="bi bi-download"
-                                         style="margin-right: 7px"></i>{{ program.file_size }}</span>
-                  <span class="ms-3"><i class="bi bi-person"
-                                        style="margin-right: 5px"></i>{{ program.author }}</span>
-                </div>
-              </div>
-              <div class="d-grid mt-3">
-                <a class="download-btn" href="{{ url_for('program:download', _id=program.id) }}">
-                  <i class="bi bi-download"></i> Скачать
-                </a>
-              </div>
-              <div class="d-grid">
-
-              </div>
-            </div>
-          </div>
-        {% endfor %}
-      {% else %}
-        <div class="col-12 text-center py-5">
-          <i class="bi bi-file-earmark-x display-1 text-muted"></i>
-          <h4 class="mt-3">Нет доступных программ</h4>
-          <p class="text-muted">Скоро они появятся</p>
-        </div>
-      {% endif %}
-    </div>
-  </main>
-{% endblock %}
-
-{% block script %}
-  <script>
-      document.addEventListener('DOMContentLoaded', function () {
-          const searchInput = document.getElementById('searchInput');
-          const programsGrid = document.getElementById('programsGrid');
-
-          // Сохраняем исходные программы
-          const originalPrograms = Array.from(programsGrid.children);
-
-          // Функция фильтрации
-          function filterPrograms() {
-              const searchTerm = searchInput.value.toLowerCase().trim();
-
-              // Если поиск пустой - показываем все
-              if (!searchTerm) {
-                  programsGrid.innerHTML = '';
-                  originalPrograms.forEach(program => {
-                      programsGrid.appendChild(program);
-                  });
-                  return;
-              }
-
-              // Фильтруем программы
-              const matchingPrograms = originalPrograms.filter(programElement => {
-                  // Получаем текст из элементов
-                  const titleElement = programElement.querySelector('.program-title');
-                  const descriptionElement = programElement.querySelector('.program-description');
-
-                  if (!titleElement || !descriptionElement) return false;
-
-                  const title = titleElement.textContent.toLowerCase();
-                  const description = descriptionElement.textContent.toLowerCase();
-
-                  // Ищем в названии и описании
-                  return title.includes(searchTerm) || description.includes(searchTerm);
-              });
-
-              // Показываем только подходящие
-              programsGrid.innerHTML = '';
-              matchingPrograms.forEach(program => {
-                  programsGrid.appendChild(program);
-              });
-
-              // Если ничего не найдено
-              if (matchingPrograms.length === 0) {
-                  programsGrid.innerHTML = `
-                <div class="col-12 text-center py-5">
-                    <i class="bi bi-search display-1 text-muted"></i>
-                    <h4 class="mt-3">Программы не найдены</h4>
-                    <p class="text-muted">Попробуйте изменить запрос поиска</p>
-                </div>
-            `;
-              }
-          }
-
-          // Обработчик ввода с задержкой (debounce)
-          let timeoutId;
-          searchInput.addEventListener('input', function () {
-              clearTimeout(timeoutId);
-              timeoutId = setTimeout(filterPrograms, 300); // Задержка 300мс
-          });
-      });
-  </script>
+  {% endif %}
 {% endblock %}
