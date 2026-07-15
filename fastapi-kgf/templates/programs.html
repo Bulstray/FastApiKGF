@@ -3,7 +3,7 @@
 {% extends 'base.html' %}
 
 {% block main %}
-  {{ navbar() }}
+  {{ navbar(is_authenticated) }}
 
   <main>
     <section class="py-5 text-center container-fluid px-0 position-relative"
