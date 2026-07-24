@@ -1,6 +1,6 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, PostgresDsn
 
 
 class DatabaseConfig(BaseModel):
-    url: str = "sqlite+aiosqlite:///database.db"
+    url: PostgresDsn
     echo: bool = False

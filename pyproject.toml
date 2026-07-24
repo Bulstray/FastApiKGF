@@ -9,6 +9,7 @@ dependencies = [
     "aiosmtplib>=5.1.0",
     "aiosqlite>=0.22.1",
     "alembic>=1.18.4",
+    "asyncpg>=0.31.0",
     "bcrypt>=5.0.0",
     "beautifulsoup4>=4.14.3",
     "dateparser>=1.4.0",

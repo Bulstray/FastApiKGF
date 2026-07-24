@@ -51,7 +51,9 @@ class BaseTenderPlatform(ABC):
     def get_end_date(card: Tag | Element) -> datetime | None:
         """Метод для определения даты окончания тендера"""
 
-    def search_tenders(self) -> list[dict[str, str | datetime | None | int]]:
+    def search_tenders(
+        self, code: str
+    ) -> list[dict[str, str | datetime | None | int]]:
 
         cards = self.get_cards_data()
 
@@ -68,7 +70,8 @@ class BaseTenderPlatform(ABC):
 
             tenders.append(
                 {
-                    "name": f"{title}",
+                    "title": f"{title}",
+                    "code": code,
                     "pub_date": f"{self.is_tender_pub_date_taken(card)}",
                     "price": f"{self.is_tender_price_taken(card)}",
                     "organizer": f"{self.is_tender_organize_taken(card)}",

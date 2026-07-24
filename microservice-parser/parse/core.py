@@ -19,10 +19,10 @@ class TenderParseCore:
         self.keyword = keyword
         self.keyword_id = keyword_id
         self.parsers = {
-            (TekTorgPlatform, tek_torg_page_fether),
-            (EtpgpbParser, etp_gpb_page_fecher),
-            (SberPlatform, sber_page_fetcher),
-            (LukhoilPlatform, lukh_page_fetcher),
+            (TekTorgPlatform, tek_torg_page_fether, "GAZP"),
+            (EtpgpbParser, etp_gpb_page_fecher, "ROSH"),
+            (SberPlatform, sber_page_fetcher, "SBER"),
+            (LukhoilPlatform, lukh_page_fetcher, "LUKH"),
         }
 
     def search_all_platforms(self) -> list[dict[str, str | datetime | int | None]]:
@@ -30,14 +30,14 @@ class TenderParseCore:
 
         results = []
 
-        for parse_platform, page_fetcher in self.parsers:
+        for parse_platform, page_fetcher, code in self.parsers:
             try:
                 source_html = page_fetcher(self.keyword)
                 if source_html is None:
                     continue
 
                 parse_class = parse_platform(self.keyword, self.keyword_id, source_html)
-                tenders = parse_class.search_tenders()
+                tenders = parse_class.search_tenders(code)
 
             except SessionNotCreatedException as error:
                 logger.error("Не удалось создать сессию Chrome: %s", str(error))

@@ -59,7 +59,10 @@ async def get_cookie_websocket(
 
 
 async def require_auth(
-    user: Annotated[None | UserRead, Depends(get_authenticated_user)],
+    user: Annotated[
+        None | UserRead,
+        Depends(get_authenticated_user),
+    ],
 ) -> UserRead:
     if not user:
         raise HTTPException(

@@ -3,6 +3,7 @@ from collections.abc import AsyncIterator
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
+from sqlalchemy import text
 
 from core import broker
 from core.config import settings
@@ -42,6 +43,8 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
                 session,
                 settings.superuser,
             )
+
+        await session.execute(text("CREATE EXTENSION IF NOT EXISTS pg_trgm"))
 
     # Создаем папки
     await settings.uploads_program_dir.mkdir(exist_ok=True, parents=True)

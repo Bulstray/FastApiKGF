@@ -1,13 +1,12 @@
 services:
-  app:
-    build: .  # ваш Dockerfile для FastAPI
-    ports:
-      - "8000:8000"
-    depends_on:
-      - redis
+  pg:
+    image: postgres
     environment:
-      - REDIS_HOST=redis
-      - REDIS_PORT=6379
+      POSTGRES_DB: service_kgf
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: Ramil1911
+    ports:
+      - "5432:5432"
 
   redis:
     image: redis:latest
